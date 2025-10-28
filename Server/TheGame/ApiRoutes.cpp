@@ -18,38 +18,21 @@ void setupRoutes(crow::SimpleApp& app)
         return res;
             });
 
-    // RUTA DE LOGIN (POST /api/login)
     CROW_ROUTE(app, "/api/login").methods("POST"_method)
         ([&](const crow::request& req) {
-
         auto data = crow::json::load(req.body);
-        crow::response res; // Declaram un obiect de raspuns unic
-
-        // 1. Logica de validare a datelor (Răspuns 400)
         if (!data || !data.count("username") || !data.count("password")) {
-            res.code = 400; // Bad Request
-            res.body = "{\"success\": false, \"message\": \"Missing credentials\"}";
-        }
-        else
-        {
-            std::string username = data["username"].s();
-            std::string password = data["password"].s();
-
-            // 2. MOCKING (Simulare logică)
-            if (username == "valid_user" && password == "secure_pass") {
-                res.code = 200;
-                res.body = "{\"success\": true, \"token\": \"generated_session_abc123\"}";
-            }
-            else {
-                res.code = 401; // Unauthorized
-                res.body = "{\"success\": false, \"message\": \"Invalid username or password\"}";
-            }
+            return crow::response(400, "{\"success\": false, \"message\": \"Missing credentials\"}");
         }
 
-        // 3. APLICAREA CORS: Esențial pentru ca browserul să citească răspunsul
-        res.add_header("Access-Control-Allow-Origin", "*");
+        std::string username = data["username"].s();
+        std::string password = data["password"].s();
 
-        // 4. Returnarea răspunsului unic, rezolvă eroarea 204
-        return res;
+        if (username == "valid_user" && password == "secure_pass") {
+            return crow::response(200, "{\"success\": true, \"token\": \"generated_session_abc123\"}");
+        }
+        else {
+            return crow::response(401, "{\"success\": false, \"message\": \"Invalid username or password\"}");
+        }
             });
 }

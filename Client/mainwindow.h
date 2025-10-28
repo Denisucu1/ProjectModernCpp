@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QNetworkAccessManager>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -25,5 +26,6 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QNetworkAccessManager *m_networkManager;
 };
 #endif // MAINWINDOW_H

@@ -1,5 +1,5 @@
 #pragma once
-#include<stack>
+#include <stack>
 
 class Cards
 {

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "gamewindow.h"
 
 #include <QJsonObject>
 #include <QJsonDocument>
@@ -74,7 +75,9 @@ void MainWindow::onLoginReply(QNetworkReply *reply)
     QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
     QJsonObject jsonObj = jsonDoc.object();
     if (jsonObj["status"].toString() == "success") {
-        QMessageBox::information(this, "Login OK", "Te-ai logat cu succes!");
+        GameWindow *game = new GameWindow(this); // 'this' o face o fereastra "copil"
+        game->show();
+        this->close();
     }
     else {
         QString errorMsg = jsonObj["message"].toString();

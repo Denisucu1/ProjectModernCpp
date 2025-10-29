@@ -5,8 +5,10 @@
 
 struct User {
 
-    int id = 0;
     std::string username;
+    std::string password;
+
+    int id = 0;
     int games_played = 0;
     int games_won = 0;
     float total_cards_at_loss = 0.0f;

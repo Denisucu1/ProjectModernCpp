@@ -35,4 +35,34 @@ void setupRoutes(crow::SimpleApp& app)
             return crow::response(401, "{\"success\": false, \"message\": \"Invalid username or password\"}");
         }
             });
+
+
+    CROW_ROUTE(app, "/api/register").methods("POST"_method)
+        ([&](const crow::request& req) {
+
+        auto data = crow::json::load(req.body);
+        crow::response res;
+        if (!data || !data.count("username") || !data.count("password")) {
+            res.code = 400;
+            res.body = "{\"success\": false, \"message\": \"Missing credentials\"}";
+        }
+        else
+        {
+            std::string username = data["username"].s();
+            if (username == "existent_user") {
+                res.code = 409;
+                res.body = "{\"success\": false, \"message\": \"Username already taken\"}";
+            }
+            else if (username.length() < 4) {
+                res.code = 400;
+                res.body = "{\"success\": false, \"message\": \"Username too short\"}";
+            }
+            else {
+                res.code = 201;
+                res.body = "{\"success\": true, \"message\": \"User registered successfully!\"}";
+            }
+        }
+        res.add_header("Access-Control-Allow-Origin", "*");
+        return res;
+            });
 }

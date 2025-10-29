@@ -32,7 +32,7 @@
      <rect>
       <x>310</x>
       <y>170</y>
-      <width>226</width>
+      <width>231</width>
       <height>26</height>
      </rect>
     </property>
@@ -40,8 +40,8 @@
    <widget class="QPushButton" name="loginButton">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>210</y>
+      <x>310</x>
+      <y>240</y>
       <width>93</width>
       <height>29</height>
      </rect>
@@ -54,13 +54,39 @@
     <property name="geometry">
      <rect>
       <x>450</x>
-      <y>210</y>
+      <y>240</y>
       <width>93</width>
-      <height>29</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
      <string>Register</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="passwordLineEdit">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>200</y>
+      <width>231</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="echoMode">
+     <enum>QLineEdit::EchoMode::Password</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>200</y>
+      <width>63</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Parola:</string>
     </property>
    </widget>
   </widget>

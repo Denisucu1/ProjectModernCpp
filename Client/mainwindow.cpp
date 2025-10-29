@@ -22,17 +22,17 @@ MainWindow::~MainWindow()
 }
 
 
-
-
 void MainWindow::on_registerButton_clicked()
 {
     QString username = ui->usernameLineEdit->text();
-    if (username.isEmpty()) {
-        QMessageBox::warning(this, "Eroare inregistrare", "Numele de utilizator nu poate fi gol!");
+    QString password = ui->passwordLineEdit->text();
+    if (username.isEmpty() || password.isEmpty()) {
+        QMessageBox::warning(this, "Eroare Inregistrare", "Username si Parola nu pot fi goale!");
         return;
     }
     QJsonObject jsonRequest;
     jsonRequest["username"] = username;
+    jsonRequest["password"] = password;
     QJsonDocument jsonDoc(jsonRequest);
     QByteArray jsonData = jsonDoc.toJson();
     QUrl registerUrl("http://127.0.0.1:8080/register");
@@ -47,12 +47,14 @@ void MainWindow::on_registerButton_clicked()
 void MainWindow::on_loginButton_clicked()
 {
     QString username = ui->usernameLineEdit->text();
-    if (username.isEmpty()) {
-        QMessageBox::warning(this, "Eroare Login", "Numele de utilizator nu poate fi gol!");
+    QString password = ui->passwordLineEdit->text();
+    if (username.isEmpty() || password.isEmpty()) {
+        QMessageBox::warning(this, "Eroare Login", "Username si Parola nu pot fi goale!");
         return;
     }
     QJsonObject jsonRequest;
     jsonRequest["username"] = username;
+    jsonRequest["password"] = password;
     QJsonDocument jsonDoc(jsonRequest);
     QByteArray jsonData = jsonDoc.toJson();
     QUrl loginUrl("http://localhost:18080/api/login");

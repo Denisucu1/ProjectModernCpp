@@ -10,24 +10,18 @@ CONFIG += c++17
 
 SOURCES += \
     gamewindow.cpp \
-    gamewindow.cpp \
-    gamewindow.cpp \
-    gamewindow.cpp \
     main.cpp \
+    mainmenu.cpp \
     mainwindow.cpp
 
 HEADERS += \
     gamewindow.h \
-    gamewindow.h \
-    gamewindow.h \
-    gamewindow.h \
+    mainmenu.h \
     mainwindow.h
 
 FORMS += \
     gamewindow.ui \
-    gamewindow.ui \
-    gamewindow.ui \
-    gamewindow.ui \
+    mainmenu.ui \
     mainwindow.ui
 
 # Default rules for deployment.

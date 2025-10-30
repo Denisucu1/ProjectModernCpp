@@ -35,7 +35,7 @@ void MainWindow::on_registerButton_clicked()
     jsonRequest["password"] = password;
     QJsonDocument jsonDoc(jsonRequest);
     QByteArray jsonData = jsonDoc.toJson();
-    QUrl registerUrl("http://127.0.0.1:8080/register");
+    QUrl registerUrl("http://localhost:18080/api/register");
     QNetworkRequest request(registerUrl);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     QNetworkReply *reply = m_networkManager->post(request, jsonData);

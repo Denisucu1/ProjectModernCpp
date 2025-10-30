@@ -127,12 +127,13 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="ApiRoutes.cpp" /><ClCompile Include="Main.cpp" />
-    <ClCompile Include="main.cpp" />
+<ItemGroup>
+    <ClCompile Include="ApiRoutes.cpp" />
+    <ClCompile Include="main.cpp" /> 
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ApiRoutes.h" /><ClInclude Include="src\game_logic\UserService.h" />
+    <ClInclude Include="ApiRoutes.h" />
+    <ClInclude Include="src\game_logic\UserService.h" />
     <ClInclude Include="src\models\DatabaseManager.h" />
     <ClInclude Include="src\models\User.h" />
   </ItemGroup>

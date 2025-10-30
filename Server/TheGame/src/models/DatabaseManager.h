@@ -1,39 +1,94 @@
-#ifndef DATABASE_MANAGER_H
-#define DATABASE_MANAGER_H
+#ifndef USER_SERVICE_H
+#define USER_SERVICE_H
 
-#include "User.h"
-#include <sqlite_orm/sqlite_orm.h> 
+#include "../models/DatabaseManager.h" 
+#include "../models/User.h"             
+#include <optional>                     
 #include <string>
 
-using namespace sqlite_orm;
+class UserService {
 
-inline auto initStorage() 
-{
-    const std::string db_path = "the_game_db.sqlite";
+public:
+    bool registerUser(const std::string& username, const std::string& password) 
+    {
+        auto& storage = getStorage();
 
-    return make_storage(db_path,
-        make_table("users",
+        if (storage.count<User>(is_equal(&User::username, username)) > 0) {
+            return false;
+        }
 
-            make_column("username", &User::username, unique()),
-            make_column("password", &User::password),
-            make_column("id", &User::id, primary_key().autoincrement()),
-            make_column("games_played", &User::games_played),
-            make_column("games_won", &User::games_won),
-            make_column("total_cards_at_loss", &User::total_cards_at_loss),
-            make_column("total_time_minutes", &User::total_time_minutes),
-            make_column("performance_score", &User::performance_score)
-        )
-    );
-}
+        User newUser;
+        newUser.username = username;
+        newUser.password = password;
 
-using Storage = decltype(initStorage());
+        storage.insert(newUser);
+        return true;
+    }
 
+    std::optional<int> authenticate(const std::string& username, const std::string& password) 
+    {
+        auto& storage = getStorage();
 
-inline Storage& getStorage() 
-{
-    static Storage storage = initStorage();
-    static bool schema_synced = (storage.sync_schema(), true);
-    return storage;
-}
+        auto users = storage.get_all<User>(
+            where(is_equal(&User::username, username) and is_equal(&User::password, password))
+        );
 
-#endif // DATABASE_MANAGER_H
+        if (users.empty()) {
+            return std::nullopt;
+        }
+
+        return users.front().id;
+    }
+
+    void updateStats(int userId, bool won, int cards_in_hand_at_loss, int time_played_min) 
+    {
+        auto& storage = getStorage();
+        try {
+            User user = storage.get<User>(userId);
+            user.games_played += 1;
+            user.total_time_minutes += time_played_min;
+            if (won) 
+            {
+                user.games_won += 1;
+            }
+            else {
+
+                user.total_cards_at_loss += cards_in_hand_at_loss;
+            }
+            storage.update(user);
+        }
+        catch (const std::exception& e) 
+        {
+            std::cerr << "Eroare la updateStats pentru ID " << userId << ": " << e.what() << std::endl;
+        }
+    }
+
+    int calculatePerformanceScore(int userId) 
+    {
+        auto& storage = getStorage();
+        try 
+        {
+            User user = storage.get<User>(userId);
+            if (user.games_played == 0) 
+                return 1;
+
+            float win_rate = (float)user.games_won / user.games_played;
+            int games_lost = user.games_played - user.games_won;
+            float average_loss_cards = (games_lost > 0) ? user.total_cards_at_loss / games_lost : 0.0f;
+
+            float raw_score = (win_rate * 5.0f) - (average_loss_cards / 10.0f); 
+            int final_score = (int)std::round(raw_score);
+            final_score = std::min(std::max(final_score, 1), 5); 
+
+            user.performance_score = final_score;
+            storage.update(user);
+
+            return final_score;
+        }
+        catch (...) {
+            return 1; 
+        }
+    }
+};
+
+#endif // USER_SERVICE_H

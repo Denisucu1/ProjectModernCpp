@@ -82,7 +82,8 @@ void MainWindow::onLoginReply(QNetworkReply *reply)
     QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
     QJsonObject jsonObj = jsonDoc.object();
     if (jsonObj["status"].toString() == "success") {
-        MainMenu *menu = new MainMenu(this);
+        QString username = ui->usernameLineEdit->text();
+        MainMenu *menu = new MainMenu(username, this);
         menu->show();
         this->close();
     }

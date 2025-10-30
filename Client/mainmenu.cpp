@@ -4,9 +4,10 @@
 #include <QApplication>
 #include "profilewindow.h"
 
-MainMenu::MainMenu(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::MainMenu)
+MainMenu::MainMenu(const QString &username, QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::MainMenu),
+    m_username(username)
 {
     ui->setupUi(this);
 }
@@ -27,6 +28,7 @@ void MainMenu::on_playButton_clicked()
 void MainMenu::on_profileButton_clicked()
 {
     ProfileWindow *profile = new ProfileWindow(this);
+    profile->fetchProfileData(m_username);
     profile->show();
 }
 

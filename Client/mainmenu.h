@@ -2,6 +2,7 @@
 #define MAINMENU_H
 
 #include <QWidget>
+#include <QString>
 
 namespace Ui {
 class MainMenu;
@@ -12,7 +13,7 @@ class MainMenu : public QWidget
     Q_OBJECT
 
 public:
-    explicit MainMenu(QWidget *parent = nullptr);
+explicit MainMenu(const QString &username, QWidget *parent = nullptr);
     ~MainMenu();
 
 private slots:
@@ -24,6 +25,7 @@ private slots:
 
 private:
     Ui::MainMenu *ui;
+    QString m_username;
 };
 
 #endif // MAINMENU_H

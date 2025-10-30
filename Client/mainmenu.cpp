@@ -2,6 +2,7 @@
 #include "ui_mainmenu.h"
 #include "gamewindow.h"
 #include <QApplication>
+#include "profilewindow.h"
 
 MainMenu::MainMenu(QWidget *parent)
     : QWidget(parent)
@@ -25,7 +26,8 @@ void MainMenu::on_playButton_clicked()
 
 void MainMenu::on_profileButton_clicked()
 {
-
+    ProfileWindow *profile = new ProfileWindow(this);
+    profile->show();
 }
 
 

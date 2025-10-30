@@ -39,7 +39,9 @@ void MainWindow::on_registerButton_clicked()
     QNetworkRequest request(registerUrl);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     QNetworkReply *reply = m_networkManager->post(request, jsonData);
-    connect(reply, &QNetworkReply::finished, this, &MainWindow::onRegisterReply);
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+        onRegisterReply(reply);
+    });
     ui->registerButton->setEnabled(false);
 }
 
@@ -61,7 +63,9 @@ void MainWindow::on_loginButton_clicked()
     QNetworkRequest request(loginUrl);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     QNetworkReply *reply = m_networkManager->post(request, jsonData);
-    connect(reply, &QNetworkReply::finished, this, &MainWindow::onLoginReply);
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+        onLoginReply(reply);
+    });
     ui->loginButton->setEnabled(false);
 }
 

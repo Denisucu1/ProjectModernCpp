@@ -7,17 +7,22 @@
 #include <string>
 
 class UserService {
+
 public:
-    bool registerUser(const std::string& username, const std::string& password) {
+    bool registerUser(const std::string& username, const std::string& password) 
+    {
         auto& storage = getStorage();
-        if (storage.count<User>(is_equal(&User::username, username)) > 0) {
-            return false; 
+
+        auto existing_user = storage.get_pointer<User>(is_equal(&User::username, username));
+
+        if (existing_user) 
+        {
+            return false;
         }
 
         User newUser;
         newUser.username = username;
         newUser.password = password;
-
         storage.insert(newUser);
         return true;
     }
@@ -29,20 +34,21 @@ public:
             where(is_equal(&User::username, username) and is_equal(&User::password, password))
         );
 
-        if (users.empty()) {
+        if (users.empty()) 
+        {
             return std::nullopt;
         }
 
         return users.front().id;
     }
 
-    void updateStats(int userId, bool won, int cards_in_hand_at_loss, int time_played_min) {
-        // Logica de citire/scriere in DB pentru a actualiza statisticile
+    void updateStats(int userId, bool won, int cards_in_hand_at_loss, int time_played_min) 
+    { 
+        //
     }
-
-    int calculatePerformanceScore(int userId) {
-        // Logica de calcul a scorului
-        return 1;
+    int calculatePerformanceScore(int userId) 
+    { 
+        return 1; 
     }
 };
 

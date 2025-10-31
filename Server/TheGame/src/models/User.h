@@ -4,16 +4,15 @@
 #include <string>
 
 struct User {
+    std::string Username;
+    std::string Password;
 
-    std::string username;
-    std::string password;
-
-    int id = 0;
-    int games_played = 0;
-    int games_won = 0;
-    float total_cards_at_loss = 0.0f;
-    int total_time_minutes = 0;
-    int performance_score = 1;
+    int Id = 0;
+    int GamesPlayed = 0;
+    int GamesWon = 0;
+    int TotalTimeMinutes = 0;
+    int PerformanceScore = 1;
+    float TotalCardsAtLoss = 0.0f;
 };
 
-#endif
+#endif // USER_H

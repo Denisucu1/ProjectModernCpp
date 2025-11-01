@@ -1,5 +1,5 @@
 #pragma once
-#include <cstdint>
+#include "Card.h"
 
 class PlayPiles
 {
@@ -12,9 +12,25 @@ public:
 	std::uint8_t GetDescendingColumn1() const;
 	std::uint8_t GetDescendingColumn2() const;
 
+	//verificare daca pot adauga
+
+	bool IsAscend1(const Card& card) const;
+	bool IsAscend2(const Card& card) const;
+
+	bool IsDescend1(const Card& card) const;
+	bool IsDescend2(const Card& card) const;
+
+	//adaugare carti in gramezi
+
+	void SetAscendingColumn1(std::uint8_t valueCard);
+	void SetAscendingColumn2(std::uint8_t valueCard);
+
+	void SetDescendingColumn1(std::uint8_t valueCard);
+	void SetDescendingColumn2(std::uint8_t valueCard);
+
 private:
-	std::uint8_t m_ascendingColumn1, m_ascendingColumn2,
-		m_descendingColum1, m_descendingColumn2;
+	std::uint8_t m_ascendingColumn1:7, m_ascendingColumn2:7,
+		m_descendingColumn1:7, m_descendingColumn2:7;
 };
 
 /*

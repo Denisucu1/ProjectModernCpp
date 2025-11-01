@@ -8,6 +8,6 @@ public:
 	std::uint8_t GetValue() const;
 
 private:
-	std::uint8_t m_value;
+	std::uint8_t m_value:7;
 };
 

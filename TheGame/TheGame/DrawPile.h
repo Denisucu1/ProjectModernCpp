@@ -1,6 +1,6 @@
 #pragma once
-#include <stack>
-#include <cstdint>
+#include <vector>
+#include <numeric>
 #include "Card.h"
 
 class DrawPile
@@ -8,14 +8,16 @@ class DrawPile
 public:
 	DrawPile();
 
-	void SetDrawPile(std::stack<Card> drawPile);
+	void SetDrawPile(std::vector<Card> drawPile);
 
-	std::stack<Card> GetDrawPile() const;
+	std::vector<Card> GetDrawPile() const;
 
 	void MixPile();
 
 	Card DrawACard();
+
+	bool IsEmpty() const;
 private:
-	std::stack<Card> m_drawPile;
+	std::vector<Card> m_drawPile;
 };
 

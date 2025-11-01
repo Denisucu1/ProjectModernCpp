@@ -14,7 +14,7 @@ public:
 
 	void MixPile();
 
-	void DrawACard();
+	Card DrawACard();
 private:
 	std::stack<Card> m_drawPile;
 };

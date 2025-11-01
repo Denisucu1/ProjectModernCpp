@@ -18,6 +18,10 @@ void DrawPile::MixPile()
 {
 }
 
-void DrawPile::DrawACard()
+Card DrawPile::DrawACard()
 {
+	Card drawCard = m_drawPile.top();
+	m_drawPile.pop();
+	return drawCard;
 }
+

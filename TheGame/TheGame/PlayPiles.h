@@ -1,22 +1,18 @@
 #pragma once
-#include <stack>
+#include <cstdint>
 
-class Cards
+class PlayPiles
 {
 public:
-	Cards(std::stack<std::uint8_t> drawCards);
-
-	void SetDrawCards(std::stack<std::uint8_t> drawCards);
-
-	std::stack<std::uint8_t> GetDrawCards() const;
+	PlayPiles();
 
 	std::uint8_t GetAscendingColumn1() const;
 	std::uint8_t GetAscendingColumn2() const;
+
 	std::uint8_t GetDescendingColumn1() const;
 	std::uint8_t GetDescendingColumn2() const;
 
 private:
-	std::stack<std::uint8_t> m_drawCards;
 	std::uint8_t m_ascendingColumn1, m_ascendingColumn2,
 		m_descendingColum1, m_descendingColumn2;
 };

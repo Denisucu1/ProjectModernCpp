@@ -29,8 +29,8 @@ public:
 	void SetDescendingColumn2(std::uint8_t valueCard);
 
 private:
-	std::uint8_t m_ascendingColumn1:7, m_ascendingColumn2:7,
-		m_descendingColumn1:7, m_descendingColumn2:7;
+	std::uint8_t m_ascendingColumn1 : 7, m_ascendingColumn2 : 7,
+		m_descendingColumn1 : 7, m_descendingColumn2 : 7;
 };
 
 /*

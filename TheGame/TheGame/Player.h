@@ -1,5 +1,5 @@
 #pragma once
-#include <set>
+#include <vector>
 #include <string>
 
 class Player
@@ -7,11 +7,11 @@ class Player
 public:
 	Player(std::string name);
 
-	void SetDeck(std::set<std::uint8_t> deck);
+	void SetDeck(std::vector<std::uint8_t> deck);
 
-	std::set<std::uint8_t> GetDeck() const;
+	std::vector<std::uint8_t> GetDeck() const;
 private:
 	std::string m_name;
-	std::set<std::uint8_t> m_deck;
+	std::vector<std::uint8_t> m_deck;
 };
 

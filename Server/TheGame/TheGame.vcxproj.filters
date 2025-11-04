@@ -33,9 +33,15 @@
     <ClInclude Include="src\models\DatabaseManager.h">
       <Filter>src\models</Filter>
     </ClInclude>
+    <ClInclude Include="ApiRoutes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ApiRoutes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

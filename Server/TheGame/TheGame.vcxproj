@@ -140,11 +140,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\TheGame\TheGame\Card.cpp" /><ClCompile Include="..\..\TheGame\TheGame\DrawPile.cpp" /><ClCompile Include="..\..\TheGame\TheGame\Game.cpp" /><ClCompile Include="..\..\TheGame\TheGame\Player.cpp" /><ClCompile Include="..\..\TheGame\TheGame\PlayPiles.cpp" /><ClCompile Include="ApiRoutes.cpp" />
-    <ClCompile Include="main.cpp" /> 
+    <ClCompile Include="ApiRoutes.cpp" /><ClCompile Include="Card.cpp" /><ClCompile Include="DrawPile.cpp" /><ClCompile Include="Game.cpp" />
+    <ClCompile Include="main.cpp" /><ClCompile Include="Player.cpp" /><ClCompile Include="PlayPiles.cpp" /> 
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\TheGame\TheGame\Card.h" /><ClInclude Include="..\..\TheGame\TheGame\DrawPile.h" /><ClInclude Include="..\..\TheGame\TheGame\Game.h" /><ClInclude Include="..\..\TheGame\TheGame\Player.h" /><ClInclude Include="..\..\TheGame\TheGame\PlayPiles.h" /><ClInclude Include="ApiRoutes.h" />
+    <ClInclude Include="ApiRoutes.h" /><ClInclude Include="Card.h" /><ClInclude Include="DrawPile.h" /><ClInclude Include="Game.h" /><ClInclude Include="Player.h" /><ClInclude Include="PlayPiles.h" />
     <ClInclude Include="src\game_logic\UserService.h" />
     <ClInclude Include="src\models\DatabaseManager.h" />
     <ClInclude Include="src\models\User.h" />

@@ -12,6 +12,7 @@ public:
     explicit CustomCard(QWidget* parent = nullptr);
     void setValue(std::uint8_t value);
     std::uint8_t getValue() const;
+    void setFaceDown(bool faceDown);
 
 signals:
     void clicked(std::uint8_t value);
@@ -22,6 +23,7 @@ protected:
 
 private:
     std::uint8_t m_value;
+    bool m_isFaceDown;
 };
 
 #endif

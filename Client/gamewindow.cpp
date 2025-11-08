@@ -19,7 +19,7 @@ GameWindow::GameWindow(QWidget* parent) :
     m_ascendingPile2->setValue(1);
     m_descendingPile1->setValue(100);
     m_descendingPile2->setValue(100);
-    m_drawPile->setValue(98);
+    m_drawPile->setFaceDown(true);
 
     QHBoxLayout* pileLayout = new QHBoxLayout(ui->pileContainer);
 

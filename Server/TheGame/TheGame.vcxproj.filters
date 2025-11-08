@@ -36,12 +36,42 @@
     <ClInclude Include="ApiRoutes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\TheGame\TheGame\Card.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\TheGame\TheGame\DrawPile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\TheGame\TheGame\Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\TheGame\TheGame\Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\TheGame\TheGame\PlayPiles.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ApiRoutes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\TheGame\TheGame\Card.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\TheGame\TheGame\DrawPile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\TheGame\TheGame\Game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\TheGame\TheGame\Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\TheGame\TheGame\PlayPiles.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

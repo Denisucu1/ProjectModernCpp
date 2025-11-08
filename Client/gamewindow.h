@@ -23,6 +23,7 @@ private:
     CustomCard* m_ascendingPile2;
     CustomCard* m_descendingPile1;
     CustomCard* m_descendingPile2;
+    CustomCard* m_drawPile;
 };
 
 #endif

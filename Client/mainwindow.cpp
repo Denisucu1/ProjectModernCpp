@@ -9,7 +9,7 @@
 #include <QNetworkReply>
 #include <QMessageBox>
 #include <QVariant>
-#include <QNetworkAccessManager>
+#include <QPixmap>
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -17,26 +17,35 @@ MainWindow::MainWindow(QWidget* parent)
 {
     ui->setupUi(this);
 
+    ui->logoLabel->setPixmap(QPixmap(":/LOGO.png"));
+    ui->logoLabel->setScaledContents(true);
+
     QString styleSheet = R"(
         
         QWidget#MainWindow {
-            background-color: #f4f4f9;
+            background-color: #1e1e1e;
         }
 
         QLabel {
             font-size: 14px;
             font-weight: bold;
-            color: #555;
+            color: #FFFFFF;
             padding-left: 3px;
             margin-top: 8px;
         }
 
+        QLabel#logoLabel {
+            margin-bottom: 15px;
+            min-height: 50px;
+        }
+
         QLineEdit {
-            border: 1px solid #ccc;
+            border: 1px solid #444;
             border-radius: 8px;
             padding: 10px;
             font-size: 14px;
-            background-color: white;
+            background-color: #333;
+            color: white;
             min-height: 25px;
         }
 

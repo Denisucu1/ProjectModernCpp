@@ -160,6 +160,21 @@
        </property>
       </widget>
      </widget>
+     <widget class="QWidget" name="lobbyPage">
+      <widget class="QPushButton" name="lobbyBackButton">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>330</y>
+         <width>80</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Inapoi</string>
+       </property>
+      </widget>
+     </widget>
     </widget>
    </item>
   </layout>

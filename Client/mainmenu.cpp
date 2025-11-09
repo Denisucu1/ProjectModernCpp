@@ -24,9 +24,7 @@ MainMenu::~MainMenu()
 
 void MainMenu::on_playButton_clicked()
 {
-    GameWindow* game = new GameWindow(this);
-    game->show();
-    this->close();
+    ui->stackedWidget->setCurrentIndex(2);
 }
 
 void MainMenu::on_exitButton_clicked()
@@ -35,6 +33,11 @@ void MainMenu::on_exitButton_clicked()
 }
 
 void MainMenu::on_backButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
+void MainMenu::on_lobbyBackButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
 }

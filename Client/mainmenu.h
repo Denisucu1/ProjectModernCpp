@@ -23,6 +23,7 @@ private slots:
     void on_profileButton_clicked();
     void on_exitButton_clicked();
     void on_backButton_clicked();
+    void on_lobbyBackButton_clicked();
     void onProfileReply(QNetworkReply* reply);
 
 private:

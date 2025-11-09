@@ -47,12 +47,13 @@ public:
         auto& storage = getStorage();
 
         try {
+            // Asigură-te că funcția lambda returnează bool
             storage.transaction([&]() -> bool {
                 std::unique_ptr<User> user_ptr = storage.get_pointer<User>(userId);
 
                 if (!user_ptr) {
                     std::cerr << "Eroare: User ID " << userId << " nu a fost gasit in DB." << std::endl;
-                    return false; 
+                    return false; // NU COMITE: Anulează tranzacția
                 }
 
                 User& user = *user_ptr;

@@ -24,6 +24,7 @@
     <ProjectGuid>{bd1ebcac-f8f0-46b3-a033-54722bfbd27c}</ProjectGuid>
     <RootNamespace>TheGame</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Server</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -139,11 +140,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ApiRoutes.cpp" />
-    <ClCompile Include="main.cpp" /> 
+    <ClCompile Include="ApiRoutes.cpp" /><ClCompile Include="Card.cpp" /><ClCompile Include="DrawPile.cpp" /><ClCompile Include="Game.cpp" />
+    <ClCompile Include="main.cpp" /><ClCompile Include="Player.cpp" /><ClCompile Include="PlayPiles.cpp" /> 
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ApiRoutes.h" />
+    <ClInclude Include="ApiRoutes.h" /><ClInclude Include="Card.h" /><ClInclude Include="DrawPile.h" /><ClInclude Include="Game.h" /><ClInclude Include="Player.h" /><ClInclude Include="PlayPiles.h" />
     <ClInclude Include="src\game_logic\UserService.h" />
     <ClInclude Include="src\models\DatabaseManager.h" />
     <ClInclude Include="src\models\User.h" />

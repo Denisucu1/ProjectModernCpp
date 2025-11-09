@@ -1,6 +1,6 @@
 <FlowDocument xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" FontFamily="Segoe UI" FontSize="12">
   <FlowDocument.Tag><![CDATA[{
-  "timestamp": "2025-11-09 18:37:15",
+  "timestamp": "2025-11-04 16:09:47",
   "files": {
     "C:\\Users\\auras\\Desktop\\FACULTATE\\LAB MC\\ProjectModernCpp\\Client\\TheGame.vcxproj": {
       "before": "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",
@@ -9,6 +9,10 @@
     "C:\\Users\\auras\\Desktop\\FACULTATE\\LAB MC\\ProjectModernCpp\\Client\\TheGame.vcxproj.filters": {
       "before": "5ZhNb5tAEIZzrtRLfwHyfQ0GbEPBjrw2pFEvkareKlUYxmEjYCkLiaWq/73rLxYHUtPEREpr2QdGMC/vPjszmM8fLi7sy3UcSfeQMUKTSW/QV3oSJD4NSHI76RX5Chm9y+n7d/ZNRu/AzyV+esImvTDP04+yzPwQYo/1Y+JnlNFV3vdpLAdwDxFNIZNjtixIFMiqomg9nkaS7Osc4quMFun2kAdcEuWQSdeJHxUBTHouzWKJB4HtrpD4x/6akB8FXAeQ5GRFIJv+NE1NNw3FRMMhniF9aQYIu2MTGe4CY0U1Rg7Wftly7cLNTWxTOuscko1tNi2ILVcOy1NuvIzB9lamKy9iYMuVyO4sW97d///h5goSyLwcghaAxgNnYfAvms2xifS5YyKMnQFyFAVrykDXncGgLSA/TS3f8tdrK6a+FVoBrCwaRBbhvwyY1YDvFJh/yMon8AJeQS1qRjPNoWYoyDDxgteMoiPDcDAaqUMXO0PVwS5uiyS0Qg4l5EjC2CIJZ5H41poFz0Dx1u//Cy0yH1qsv+7Ox9rYHaD5eDZEujYeoZkyGiF1pqmL8VCdqa7bdv1FSVSLIUzvrKWXWx6LN7/1M2i8YTe2fDxd6sNmHs1pnPLhIubNrRfDA0kC+tDna1qZOfvGXl2Px01FLvMd+n8ZEAKxR5IOU8eQFB2m73Rp0oyuOIwzabTAX7CcxnjzTCL4VDZAWMdfbU51/CJfuQFESEhstsCWU5cC+1XsSuKY1UtVWrCql2oAy+L2G38E+F5h1li0j6Z7HdwheYntEBDQMojAY/BqesJduV1exVv3asfO/lTt5+a28XZevabyFv7SDPg4Zv2w7y/zejM5aU9kLzemCDVvzQ4k67VQdXiyZZ90echfejwEnnLYheT+D6eQLEi1rTQ0uNO+9jmFryaRst66lXh6HJzJx8mB8Hc6LSZCUylUJkFB6hUn3ibUZ4BIVwITIbEvSl4d5t/D6kjhmNQLRY458VciuzdD098=",
       "after": "5ZdRb5swEMf7PG3fAeXdgQAJMEiqOIGuD5NaTX2bNBG4FFcYM9u0kaZ9032YOUkTSKiUKEoeuiF44GT+9t3Pd2f+fLy6Cq4XNNeegQvCimGn1zU6GhQJS0nxOOxUco7czvXo04fgjrMnSKSmhhdi2MmkLD/rukgyoLHoUpJwJthcdhNG9RSeIWclcJ2KWUXyVDcNw+ooGU0LbiXQG86qcvWqDBHJJXDttkjyKoVhJ2KcasoIYv2Fpq7goSA/K7hNoZBkToCPfnmeZXuu4aF+H4+RPfNShCPHQ240xdgw3UGIrd+B3vpwuYiVZLiQUCzdFqOKBHrjdTvkLuYCVksZzeNcQKA3LOtRgb5e///hzQ0UwGMJ6RGAnF44ddWNxhPsIXsSegjjsIdCw8CW0bPtsNc7FlBSln7iJ4uFT1niZ34Kc5+luU/Uw0H4b+A7BOYfcuULxKnKoCNyxvK8vuUayPXwVOWMYSPXDTEamP0Ih30zxBE+FknmZwpKppBk1CeFYlEk/kKkJ6B47+v/xiqewBHxt6OJYzlRD02ccR/ZljNAY2MwQObYMqdO3xybUXRs/OuUaCZDVj75s1j6saDLZ3ECjXfsTaDvdpd2s5nkE0ZL1VzqfvMYU3ghRcpeuiqmjZ7zWtib8dgvKvpWb1P/t4Z6AhqT4oLSFIrqgvIXDU3J2VzBONMch/Hfy68sqck00Gdt8M2y1AK/UtpA35NdAl9RObfoa5zOKbtL4HTlw7GfVEIyipfnwZpACrPq8btq6j9KDqqQiW7WTWayDWOvXbd4NNQ3VBqmekIOOcQCLjHl4RDcywfy9varSNvl+iDc8nYltPFzT3W7+86s+br5zqi6u/dOFt6Nuzqjr39VRn8B"
+    },
+    "C:\\Users\\auras\\Desktop\\FACULTATE\\LAB MC\\ProjectModernCpp\\Client\\TheGame.vcxproj.user": {
+      "before": "tZE9a8MwEIbTtdD/IETAyVDL/aCUYiVDCl06JG3obstnW0XWGekUUsgf7r+o7OItYzvee8f7PHDfF7NZvj52hh3AeY1W8ps04wyswkrbRvJA9fUjX6+uLvOtw09QxPaIxn9M95vgHFjiLLZYL3lL1D8J4VULXeHTTiuHHmtKFXaiggMY7MGJzpdBm0rcZtkdj+2MDf1xQ18vDkPPxLnwtSjBSL6jdyCKfp6zDdpK06iezBdxqnUTXDEky9N8sTUF1ei6ZSJl8gxlaE7Hh/vkFxmhO9pjUO3EHqExFufyXExno+I/CL6BgcLDXyqO0sPfVj8=",
+      "after": "tZHNSsNAFIXrVvAdhqGQdmEm/iAimXRRwY2LVov7ZHKTjMzkhpk7pUJf1XdxEulGXOrynns454PzeTab5auDNWwPzmvsJb9KM86gV1jrvpU8UHN5z1fFxXm+cfgOitgO0fi3k38dnIOeOIspvZe8IxoehPCqA1v61Grl0GNDqUIratiDwQGcsL4K2tTiOstueExnbMyPH/p4chgGJn4Tn8sKjORbegWiyOc5W2Nfa5rQk/kiXo1ugytHZXmcLzampAadXSZSJo9QhfZ4uLtNvitj6ZZ2GFR36i5y8VOZ2MTJMMH9A9oLGCg9/A1cPuKOWxVf"
     }
   }
 }]]></FlowDocument.Tag>
@@ -21,7 +25,7 @@
       <Span TextDecorations="Underline">Project Format Conversion</Span>
     </Paragraph>
     <Paragraph Margin="12,8" FontSize="18">
-      <Span>Report generated on 2025-11-09 18:37:15</Span>
+      <Span>Report generated on 2025-11-04 16:09:47</Span>
     </Paragraph>
   </Section>
   <Section>
@@ -56,6 +60,22 @@
                         [Diff before/current]
                     </Hyperlink>
       <Hyperlink NavigateUri="file://C:\Users\auras\Desktop\FACULTATE\LAB MC\ProjectModernCpp\Client\TheGame.vcxproj.filters?diff&amp;after&amp;current">
+                        [Diff after/current]
+                    </Hyperlink>
+      <LineBreak />
+    </Paragraph>
+    <Paragraph Margin="24,12,0,0">
+      <Span FontFamily="Consolas" FontSize="14" Background="WhiteSmoke"><![CDATA[C:\Users\auras\Desktop\FACULTATE\LAB MC\ProjectModernCpp\Client\TheGame.vcxproj.user]]></Span>
+      <LineBreak />
+      <Hyperlink NavigateUri="file://C:\Users\auras\Desktop\FACULTATE\LAB MC\ProjectModernCpp\Client\TheGame.vcxproj.user?before">[Before]</Hyperlink>
+      <Hyperlink NavigateUri="file://C:\Users\auras\Desktop\FACULTATE\LAB MC\ProjectModernCpp\Client\TheGame.vcxproj.user?after">[After]</Hyperlink>
+      <Hyperlink NavigateUri="file://C:\Users\auras\Desktop\FACULTATE\LAB MC\ProjectModernCpp\Client\TheGame.vcxproj.user?diff&amp;before&amp;after">
+                        [Diff before/after]
+                    </Hyperlink>
+      <Hyperlink NavigateUri="file://C:\Users\auras\Desktop\FACULTATE\LAB MC\ProjectModernCpp\Client\TheGame.vcxproj.user?diff&amp;before&amp;current">
+                        [Diff before/current]
+                    </Hyperlink>
+      <Hyperlink NavigateUri="file://C:\Users\auras\Desktop\FACULTATE\LAB MC\ProjectModernCpp\Client\TheGame.vcxproj.user?diff&amp;after&amp;current">
                         [Diff after/current]
                     </Hyperlink>
       <LineBreak />
@@ -3855,4 +3875,4 @@
     <Paragraph />
   </Section>
 </FlowDocument>
-<!--cAoGiyXaR59+p9MfTl3KI8x0ReyMNieni7ikpu/ntF4=-->
+<!--UxOOWjeg5F6qiEboMBkxweef1ukXXr0CJZIRTCqckD4=-->

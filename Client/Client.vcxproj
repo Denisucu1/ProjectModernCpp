@@ -187,6 +187,7 @@
     </QtMoc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="customcard.cpp" />
     <ClCompile Include="gamewindow.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainmenu.cpp" />
@@ -204,6 +205,12 @@
     <QtUic Include="mainmenu.ui" />
     <QtUic Include="mainwindow.ui" />
     <QtUic Include="profilewindow.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="customcard.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="LOGO.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$(QtMsBuild)\qt.targets" Condition="Exists('$(QtMsBuild)\qt.targets')" />

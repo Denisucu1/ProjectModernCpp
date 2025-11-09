@@ -9,12 +9,73 @@
 #include <QNetworkReply>
 #include <QMessageBox>
 #include <QVariant>
+#include <QNetworkAccessManager>
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    QString styleSheet = R"(
+        
+        QWidget#MainWindow {
+            background-color: #f4f4f9;
+        }
+
+        QLabel {
+            font-size: 14px;
+            font-weight: bold;
+            color: #555;
+            padding-left: 3px;
+            margin-top: 8px;
+        }
+
+        QLineEdit {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 14px;
+            background-color: white;
+            min-height: 25px;
+        }
+
+        QPushButton#loginButton {
+            background-color: #E91E63;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            min-height: 30px;
+            margin-top: 15px;
+        }
+
+        QPushButton#loginButton:hover {
+            background-color: #D81B60;
+        }
+
+        QPushButton#registerButton {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            min-height: 30px;
+            margin-top: 5px;
+        }
+
+        QPushButton#registerButton:hover {
+            background-color: #45a049;
+        }
+
+    )";
+
+    this->setStyleSheet(styleSheet);
+
     m_networkManager = new QNetworkAccessManager(this);
 }
 
@@ -43,10 +104,10 @@ void MainWindow::on_registerButton_clicked()
     QNetworkRequest request(registerUrl);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-    QNetworkReply *reply = m_networkManager->post(request, jsonData);
+    QNetworkReply* reply = m_networkManager->post(request, jsonData);
     connect(reply, &QNetworkReply::finished, this, [this, reply]() {
         onRegisterReply(reply);
-    });
+        });
     ui->registerButton->setEnabled(false);
 }
 
@@ -70,14 +131,14 @@ void MainWindow::on_loginButton_clicked()
     QNetworkRequest request(loginUrl);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-    QNetworkReply *reply = m_networkManager->post(request, jsonData);
+    QNetworkReply* reply = m_networkManager->post(request, jsonData);
     connect(reply, &QNetworkReply::finished, this, [this, reply]() {
         onLoginReply(reply);
-    });
+        });
     ui->loginButton->setEnabled(false);
 }
 
-void MainWindow::onLoginReply(QNetworkReply *reply)
+void MainWindow::onLoginReply(QNetworkReply* reply)
 {
     ui->loginButton->setEnabled(true);
     if (reply->error() != QNetworkReply::NoError) {
@@ -91,7 +152,7 @@ void MainWindow::onLoginReply(QNetworkReply *reply)
 
     if (jsonObj["success"].toBool()) {
         QString username = ui->usernameLineEdit->text();
-        MainMenu *menu = new MainMenu(username, this);
+        MainMenu* menu = new MainMenu(username, this);
         menu->show();
         this->close();
     }
@@ -102,7 +163,7 @@ void MainWindow::onLoginReply(QNetworkReply *reply)
     reply->deleteLater();
 }
 
-void MainWindow::onRegisterReply(QNetworkReply *reply)
+void MainWindow::onRegisterReply(QNetworkReply* reply)
 {
     ui->registerButton->setEnabled(true);
     if (reply->error() != QNetworkReply::NoError) {
@@ -116,7 +177,8 @@ void MainWindow::onRegisterReply(QNetworkReply *reply)
 
     if (jsonObj["success"].toBool()) {
         QMessageBox::information(this, "Inregistrare OK", "Te-ai inregistrat cu succes! Acum te poti loga.");
-    } else {
+    }
+    else {
         QString errorMsg = jsonObj["message"].toString();
         QMessageBox::warning(this, "Eroare Inregistrare", "Inregistrare esuata: " + errorMsg);
     }

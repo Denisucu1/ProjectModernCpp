@@ -9,12 +9,12 @@
 
 using namespace sqlite_orm;
 
-bool UserService::registerUser(const std::string& username, const std::string& password) {
+bool UserService::registerUser(const std::string& username, const std::string& password) 
+{
     auto& storage = getStorage();
 
-    if (storage.count<UserProfile>(is_equal(&UserProfile::Username, username)) > 0) {
+    if (storage.count<UserProfile>(is_equal(&UserProfile::Username, username)) > 0) 
         return false;
-    }
 
     UserProfile newUser;
     newUser.Username = username;
@@ -23,21 +23,22 @@ bool UserService::registerUser(const std::string& username, const std::string& p
     return true;
 }
 
-std::optional<int> UserService::authenticate(const std::string& username, const std::string& password) {
+std::optional<int> UserService::authenticate(const std::string& username, const std::string& password) 
+{
     auto& storage = getStorage();
 
     auto users = storage.get_all<UserProfile>(
         where(is_equal(&UserProfile::Username, username) and is_equal(&UserProfile::Password, password))
     );
 
-    if (users.empty()) {
+    if (users.empty()) 
         return std::nullopt;
-    }
 
     return users.front().Id;
 }
 
-void UserService::updateStats(int userId, bool won, int cards_in_hand_at_loss, int time_played_min) {
+void UserService::updateStats(int userId, bool won, int cards_in_hand_at_loss, int time_played_min) 
+{
     auto& storage = getStorage();
 
     try {
@@ -69,7 +70,7 @@ void UserService::updateStats(int userId, bool won, int cards_in_hand_at_loss, i
 
     }
     catch (const std::exception& e) {
-        std::cerr << "Eroare critica in updateStats pentru ID " << userId << ": " << e.what() << std::endl;
+        std::cerr << "Eroare in updateStats pentru ID " << userId << ": " << e.what() << std::endl;
     }
 }
 
@@ -78,18 +79,15 @@ int UserService::calculatePerformanceScore(int userId) {
     try {
         UserProfile user = storage.get<UserProfile>(userId);
 
-        if (user.GamesPlayed == 0) return 1;
+        if (user.GamesPlayed == 0) 
+            return 1;
 
         float win_rate = (float)user.GamesWon / user.GamesPlayed;
-
         int games_lost = user.GamesPlayed - user.GamesWon;
         float average_loss_cards = (games_lost > 0) ? user.TotalCardsAtLoss / games_lost : 0.0f;
-
         float raw_score = (win_rate * 5.0f) - (average_loss_cards / 10.0f);
-
         int final_score = (int)std::round(raw_score);
         final_score = std::min(std::max(final_score, 1), 5);
-
         user.PerformanceScore = final_score;
         storage.update(user);
 

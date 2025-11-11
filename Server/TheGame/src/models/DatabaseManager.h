@@ -12,14 +12,14 @@ inline auto initStorage() {
 
     return make_storage(db_path,
         make_table("users",
-            make_column("Username", &User::Username, unique()),
-            make_column("Password", &User::Password),
-            make_column("Id", &User::Id, primary_key().autoincrement()),
-            make_column("GamesPlayed", &User::GamesPlayed),
-            make_column("GamesWon", &User::GamesWon),
-            make_column("TotalCardsAtLoss", &User::TotalCardsAtLoss),
-            make_column("TotalTimeMinutes", &User::TotalTimeMinutes),
-            make_column("PerformanceScore", &User::PerformanceScore)
+            make_column("Username", &UserProfile::Username, unique()),
+            make_column("Password", &UserProfile::Password),
+            make_column("Id", &UserProfile::Id, primary_key().autoincrement()),
+            make_column("GamesPlayed", &UserProfile::GamesPlayed),
+            make_column("GamesWon", &UserProfile::GamesWon),
+            make_column("TotalCardsAtLoss", &UserProfile::TotalCardsAtLoss),
+            make_column("TotalTimeMinutes", &UserProfile::TotalTimeMinutes),
+            make_column("PerformanceScore", &UserProfile::PerformanceScore)
         )
     );
 }

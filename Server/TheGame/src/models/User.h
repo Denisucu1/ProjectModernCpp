@@ -3,7 +3,7 @@
 
 #include <string>
 
-struct User {
+struct UserProfile {
     std::string Username;
     std::string Password;
 

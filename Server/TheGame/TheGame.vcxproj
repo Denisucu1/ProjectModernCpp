@@ -141,7 +141,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ApiRoutes.cpp" /><ClCompile Include="Card.cpp" /><ClCompile Include="DrawPile.cpp" /><ClCompile Include="Game.cpp" />
-    <ClCompile Include="main.cpp" /><ClCompile Include="Player.cpp" /><ClCompile Include="PlayPiles.cpp" /> 
+    <ClCompile Include="main.cpp" /><ClCompile Include="Player.cpp" /><ClCompile Include="PlayPiles.cpp" /><ClCompile Include="src\game_logic\UserService.cpp" /> 
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApiRoutes.h" /><ClInclude Include="Card.h" /><ClInclude Include="DrawPile.h" /><ClInclude Include="Game.h" /><ClInclude Include="Player.h" /><ClInclude Include="PlayPiles.h" />

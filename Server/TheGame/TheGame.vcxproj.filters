@@ -52,7 +52,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameService.h">
-      <Filter>Header Files</Filter>
+      <Filter>src\game_logic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

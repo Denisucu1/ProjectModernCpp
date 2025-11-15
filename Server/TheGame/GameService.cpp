@@ -1,6 +1,7 @@
-#include "GameService.h"
+#include "src/game_logic/GameService.h"
 #include "crow.h"
 #include <iostream>
+//#include "GameService.h"
 
 GameService::GameService()
 {
@@ -50,20 +51,61 @@ std::optional<GameId> GameService::FindGame(UserId userId, const std::string& us
 
     if (isGameReady)
     {
-        //
+        std::list<WaitingPlayer> gamePlayers;
+
+        int playersToTake = (queue.size() >= desiredPlayerCount) ? desiredPlayerCount : queue.size();
+
+        for (int i = 0; i < playersToTake; ++i)
+        {
+            gamePlayers.push_back(queue.front());
+            m_playerInQueueMap.erase(queue.front().id);
+            queue.pop_front();
+        }
+
+        CreateGame(gamePlayers, gamePlayers.size());
+
+        return m_playerGameMap[userId];
     }
+
+    return std::nullopt;
 }
 
 std::optional<GameId> GameService::GetPlayerGameStatus(UserId userId)
 {
-    //
+    std::lock_guard<std::mutex> lock(m_mutex);
+    if (m_playerGameMap.count(userId))
+    {
+        return m_playerGameMap[userId];
+    }
+
+    return std::nullopt;
 }
 
 Game& GameService::GetGame(const GameId gameId)
 {
-    // TODO: insert return statement here
+    try
+    {
+        return m_activeGames.at(gameId);
+    }
+    catch (const std::out_of_range& e)
+    {
+        std::cerr << "CRITICAL ERROR: Tried to access non-existent game with ID: " << gameId << std::endl;
+        throw std::runtime_error("Game not found");
+    }
 }
 
 void GameService::CreateGame(std::list<WaitingPlayer>& players, int playerCount)
 {
+    GameId newGameId = "game_" + std::to_string(m_gameIdCounter++);
+
+    std::cout << "[GameService] Creating new game (ID: " << newGameId << ") with " << playerCount << " players." << std::endl;
+
+    std::vector<Player> gamePlayers;
+
+    m_activeGames.emplace(newGameId, Game(gamePlayers));
+
+    for (const auto& p : players)
+    {
+        m_playerGameMap[p.id] = newGameId;
+    }
 }

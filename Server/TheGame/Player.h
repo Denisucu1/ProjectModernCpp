@@ -5,7 +5,7 @@
 class Player
 {
 public:
-	Player(std::string name);
+	Player(std::string name, int id);
 
 	void SetDeck(std::vector<std::uint8_t> deck);
 
@@ -18,5 +18,6 @@ private:
 	std::string m_name;
 	std::vector<std::uint8_t> m_deck;
 	std::uint8_t m_score;
+	int m_id;
 };
 

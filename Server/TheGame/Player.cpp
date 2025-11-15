@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player(std::string name) : m_name(name), m_score(0)
+Player::Player(std::string name, int id) : m_name(name), m_score(0), m_id(id)
 {
 }
 

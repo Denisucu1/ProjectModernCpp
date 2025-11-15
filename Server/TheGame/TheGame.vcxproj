@@ -140,11 +140,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ApiRoutes.cpp" /><ClCompile Include="Card.cpp" /><ClCompile Include="DrawPile.cpp" /><ClCompile Include="Game.cpp" />
+    <ClCompile Include="ApiRoutes.cpp" /><ClCompile Include="Card.cpp" /><ClCompile Include="DrawPile.cpp" /><ClCompile Include="Game.cpp" /><ClCompile Include="GameService.cpp" />
     <ClCompile Include="main.cpp" /><ClCompile Include="Player.cpp" /><ClCompile Include="PlayPiles.cpp" /> 
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ApiRoutes.h" /><ClInclude Include="Card.h" /><ClInclude Include="DrawPile.h" /><ClInclude Include="Game.h" /><ClInclude Include="Player.h" /><ClInclude Include="PlayPiles.h" />
+    <ClInclude Include="ApiRoutes.h" /><ClInclude Include="Card.h" /><ClInclude Include="DrawPile.h" /><ClInclude Include="Game.h" /><ClInclude Include="GameService.h" /><ClInclude Include="Player.h" /><ClInclude Include="PlayPiles.h" />
     <ClInclude Include="src\game_logic\UserService.h" />
     <ClInclude Include="src\models\DatabaseManager.h" />
     <ClInclude Include="src\models\User.h" />

@@ -40,5 +40,7 @@ private:
 	std::map<UserId, GameId> m_playerGameMap;
 
 	void CreateGame(std::list<WaitingPlayer>& players, int playerCount);
+
+	long long m_gameIdCounter = 0;
 };
 

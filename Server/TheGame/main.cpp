@@ -8,6 +8,8 @@
 #include <string>
 #include <exception>
 
+#include "GameService.h"
+
 int main() {
 
     try {
@@ -20,7 +22,8 @@ int main() {
     }
     crow::SimpleApp app;
     UserService userSvc;
-    setupRoutes(app, userSvc);
+    GameService gameSvc;
+    setupRoutes(app, userSvc, gameSvc);
     app.port(18080).run();
     return 0;
 }

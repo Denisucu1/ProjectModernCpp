@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "customcard.h"
+#include <vector>
 
 namespace Ui {
     class GameWindow;
@@ -24,6 +25,8 @@ private:
     CustomCard* m_descendingPile1;
     CustomCard* m_descendingPile2;
     CustomCard* m_drawPile;
+
+    std::vector<CustomCard*> m_handCards;
 };
 
 #endif

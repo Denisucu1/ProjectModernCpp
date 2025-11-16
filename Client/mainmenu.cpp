@@ -13,6 +13,64 @@ MainMenu::MainMenu(const QString& username, QWidget* parent) :
     m_username(username)
 {
     ui->setupUi(this);
+
+    QString styleSheet = R"(
+        
+        QWidget#MainMenu {
+            background-color: #1e1e1e;
+        }
+
+        QPushButton {
+            background-color: #4a4a4a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            min-height: 30px;
+            margin-top: 5px;
+        }
+
+        QPushButton:hover {
+            background-color: #616161;
+        }
+
+        QPushButton#playButton {
+            background-color: #4CAF50;
+        }
+        QPushButton#playButton:hover {
+            background-color: #45a049;
+        }
+
+        QPushButton#exitButton {
+            background-color: #F44336;
+        }
+        QPushButton#exitButton:hover {
+            background-color: #E53935;
+        }
+
+        QPushButton#profileButton {
+            background-color: #2196F3;
+        }
+        QPushButton#profileButton:hover {
+            background-color: #1E88E5;
+        }
+
+        QWidget#profilePage QLabel {
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        QWidget#lobbyPage {
+            background-color: #1e1e1e;
+        }
+        
+    )";
+
+    this->setStyleSheet(styleSheet);
+
     m_networkManager = new QNetworkAccessManager(this);
     ui->stackedWidget->setCurrentIndex(0);
 }

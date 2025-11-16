@@ -13,6 +13,7 @@ struct UserProfile {
     int TotalTimeMinutes = 0;
     int PerformanceScore = 1;
     float TotalCardsAtLoss = 0.0f;
+
     std::string SessionToken = "";
     long long TokenExpiration = 0;
     long long LastActivity = 0;

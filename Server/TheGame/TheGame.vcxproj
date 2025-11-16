@@ -146,7 +146,7 @@
   <ItemGroup>
     <ClInclude Include="ApiRoutes.h" /><ClInclude Include="Card.h" /><ClInclude Include="DrawPile.h" /><ClInclude Include="Game.h" /><ClInclude Include="Player.h" /><ClInclude Include="PlayPiles.h" />
     <ClInclude Include="src\game_logic\UserService.h" />
-    <ClInclude Include="src\models\DatabaseManager.h" />
+    <ClInclude Include="src\models\DatabaseManager.h" /><ClInclude Include="src\models\Match.h" />
     <ClInclude Include="src\models\User.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

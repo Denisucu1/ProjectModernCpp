@@ -16,7 +16,7 @@ MainMenu::MainMenu(const QString& username, QWidget* parent) :
 
     QString styleSheet = R"(
         
-        QWidget#MainMenu {
+        QWidget#MainMenu, QWidget#lobbyPage, QWidget#profilePage {
             background-color: #1e1e1e;
         }
 
@@ -57,14 +57,54 @@ MainMenu::MainMenu(const QString& username, QWidget* parent) :
             background-color: #1E88E5;
         }
 
-        QWidget#profilePage QLabel {
+        QPushButton#backButton, QPushButton#lobbyBackButton {
+            background-color: #F44336;
+            max-width: 400px;
+        }
+        QPushButton#backButton:hover, QPushButton#lobbyBackButton:hover {
+            background-color: #E53935;
+        }
+
+        QLabel#usernameLabel {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            qproperty-alignment: 'AlignHCenter | AlignVCenter';
+            margin-bottom: 0px;
+            padding: 10px;
+            background-color: #E53935;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            max-width: 400px;
+        }
+
+        QGridLayout {
+            background-color: #E53935;
+            margin: 0px;
+            padding: 10px;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            max-width: 400px;
+        }
+
+        QGridLayout QLabel {
             color: white;
             font-size: 14px;
             font-weight: bold;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 8px;
+            margin: 2px;
+            border-radius: 4px;
         }
 
-        QWidget#lobbyPage {
-            background-color: #1e1e1e;
+        QLabel#gamesPlayedLabel,
+        QLabel#gamesWonLabel,
+        QLabel#cardsAtLossLabel,
+        QLabel#totalTimeLabel,
+        QLabel#performanceScoreLabel {
+            qproperty-alignment: 'AlignVCenter | AlignRight';
+            color: #f5f5f5;
+            font-size: 16px;
         }
         
     )";
@@ -73,6 +113,8 @@ MainMenu::MainMenu(const QString& username, QWidget* parent) :
 
     m_networkManager = new QNetworkAccessManager(this);
     ui->stackedWidget->setCurrentIndex(0);
+
+    ui->usernameLabel->setText(m_username);
 }
 
 MainMenu::~MainMenu()

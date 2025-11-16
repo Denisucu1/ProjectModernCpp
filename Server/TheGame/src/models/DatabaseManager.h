@@ -19,7 +19,10 @@ inline auto initStorage() {
             make_column("GamesWon", &UserProfile::GamesWon),
             make_column("TotalCardsAtLoss", &UserProfile::TotalCardsAtLoss),
             make_column("TotalTimeMinutes", &UserProfile::TotalTimeMinutes),
-            make_column("PerformanceScore", &UserProfile::PerformanceScore)
+            make_column("PerformanceScore", &UserProfile::PerformanceScore),
+            make_column("SessionToken", &UserProfile::SessionToken),
+            make_column("TokenExpiration", &UserProfile::TokenExpiration),
+            make_column("LastActivity", &UserProfile::LastActivity)
         )
     );
 }

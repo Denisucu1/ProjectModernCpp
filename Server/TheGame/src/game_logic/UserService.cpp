@@ -6,7 +6,9 @@
 #include <cmath>
 #include <sstream>
 #include <random>
+#include <chrono>
 
+using namespace std::chrono;
 using namespace sqlite_orm;
 
 bool UserService::registerUser(const std::string& username, const std::string& password) 
@@ -99,27 +101,75 @@ int UserService::calculatePerformanceScore(int userId) {
     }
 }
 
-std::optional<UserProfile> UserService::getProfileById(int userId) 
-{
+std::optional<UserProfile> UserService::getProfileById(int userId) {
     auto& storage = getStorage();
     try {
-        UserProfile user = storage.get<UserProfile>(userId);
-        return user;
+        return storage.get<UserProfile>(userId);
     }
     catch (...) {
         return std::nullopt;
     }
 }
 
-std::string UserService::generateAndStoreToken(int userId)
+std::optional<std::string> UserService::generateAndStoreToken(int userId)
 {
-    std::stringstream ss;
+    auto& storage = getStorage();
 
     std::random_device rd;
-    std::mt19937 generator(rd());
-    std::uniform_int_distribution<long long> distribution(1000000000LL, 9999999999LL);
+    std::mt19937_64 generator(rd());
+    std::uniform_int_distribution<long long> distribution(1, 999999999999999999LL);
 
+    std::stringstream ss;
     ss << userId << "-" << distribution(generator);
+    std::string token = ss.str();
 
-    return ss.str();
+    long long now_timestamp = duration_cast<seconds>(system_clock::now().time_since_epoch()).count();
+    long long expiration_timestamp = now_timestamp + (24 * 60 * 60);
+
+    try {
+        storage.update_all(
+            set(
+                c(&UserProfile::SessionToken) = token,
+                c(&UserProfile::TokenExpiration) = expiration_timestamp,
+                c(&UserProfile::LastActivity) = now_timestamp
+            ),
+            where(is_equal(&UserProfile::Id, userId))
+        );
+        return token;
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Eroare la stocarea token-ului pentru ID " << userId << ": " << e.what() << std::endl;
+        return std::nullopt;
+    }
+}
+
+std::optional<int> UserService::getUserIdByToken(const std::string& token)
+{
+    auto& storage = getStorage();
+    long long current_time = duration_cast<seconds>(system_clock::now().time_since_epoch()).count();
+
+    try {
+
+        auto users = storage.get_all<UserProfile>(
+            where(
+                is_equal(&UserProfile::SessionToken, token) and
+                greater_than(&UserProfile::TokenExpiration, current_time)
+            )
+        );
+
+        if (users.empty()) {
+            return std::nullopt; 
+        }
+
+        int found_id = users.front().Id;
+        storage.update_all(
+            set(c(&UserProfile::LastActivity) = current_time),
+            where(is_equal(&UserProfile::Id, found_id))
+        );
+
+        return found_id;
+    }
+    catch (...) {
+        return std::nullopt;
+    }
 }

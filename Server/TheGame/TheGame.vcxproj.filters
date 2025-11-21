@@ -51,8 +51,8 @@
     <ClInclude Include="PlayPiles.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\models\Match.h">
-      <Filter>src\models</Filter>
+    <ClInclude Include="GameService.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -77,7 +77,7 @@
     <ClCompile Include="PlayPiles.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\game_logic\UserService.cpp">
+    <ClCompile Include="GameService.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

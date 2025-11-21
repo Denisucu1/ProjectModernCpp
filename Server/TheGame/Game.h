@@ -6,6 +6,8 @@
 class Game
 {
 public:
+	Game(std::vector<Player> players);
+
 	void StartGame();
 
 	void GameStatus();

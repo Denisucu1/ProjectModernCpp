@@ -95,5 +95,8 @@
     <ClCompile Include="MatchService.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\game_logic\MatchService.cpp">
+      <Filter>src\game_logic</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

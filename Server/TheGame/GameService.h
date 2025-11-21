@@ -11,6 +11,21 @@
 using GameId = std::string;
 using UserId = int;
 
+struct MatchPlayerData {
+	int id;             
+	int userId;
+	std::vector<int> cardsInHand;
+};
+
+struct MatchData {
+	int matchId;
+	std::string status;
+	int currentTurnPlayerId;
+	int deckCount;
+	std::vector<int> stacks;
+	std::vector<MatchPlayerData> players;
+};
+
 class GameService
 {
 public:
@@ -21,6 +36,8 @@ public:
 	std::optional<GameId> GetPlayerGameStatus(UserId userId);
 
 	Game& GetGame(const GameId gameId);
+
+	std::optional<MatchData> GetMatchState(int matchIdInt);
 private:
 	std::mutex m_mutex;
 

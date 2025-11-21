@@ -153,44 +153,47 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
     CROW_ROUTE(app, "/api/match/<int>").methods("GET"_method)
         ([&gameSvc](const crow::request& req, int matchId) {
 
-        if (matchId == 0) {
-            return crow::response(404, "{\"error\": \"Match not found (Mock)\"}");
+        auto matchOpt = gameSvc.GetMatchState(matchId);
+
+        if (!matchOpt.has_value()) {
+            crow::json::wvalue errorRes;
+            errorRes["error"] = "Match not found";
+            return crow::response(404, errorRes);
         }
 
+        const auto& match = matchOpt.value();
         crow::json::wvalue res;
 
-        res["matchId"] = matchId;
-        res["status"] = "InProgress";
-        res["currentTurnPlayerId"] = 101;
 
+        res["matchId"] = match.matchId;
+        res["status"] = match.status;   
+        res["currentTurnPlayerId"] = match.currentTurnPlayerId;
 
-        res["stacksState"] = crow::json::load("[1, 1, 100, 100]");
+        crow::json::wvalue stacksJson;
+        int i = 0;
+        for (const auto& val : match.stacks) {
+            stacksJson[i++] = val;
+        }
+        res["stacksState"] = std::move(stacksJson);
 
         crow::json::wvalue deckObj;
-        deckObj["cardsRemaining"] = 40;
-        deckObj["topDiscard"] = 0;
+        deckObj["cardsRemaining"] = match.deckCount;
+        deckObj["topDiscard"] = 0; 
         res["deckState"] = std::move(deckObj);
-
-
-        // Player Simulation
-        std::vector<MatchPlayer> players;
-        MatchPlayer p1;
-        p1.Id = 101; p1.UserId = 5; p1.CardsInHandJSON = "[10, 20, 30]";
-        MatchPlayer p2;
-        p2.Id = 102; p2.UserId = 8; p2.CardsInHandJSON = "[5, 15, 25]";
-        players.push_back(p1);
-        players.push_back(p2);
 
         std::vector<crow::json::wvalue> playersJsonList;
 
-        for (const auto& player : players) {
+        for (const auto& player : match.players) {
             crow::json::wvalue pJson;
-            pJson["id"] = player.Id;
-            pJson["userId"] = player.UserId;
+            pJson["id"] = player.id;
+            pJson["userId"] = player.userId;
 
-            auto handJson = crow::json::load(player.CardsInHandJSON);
-            if (handJson) pJson["cardsInHand"] = handJson;
-            else pJson["cardsInHand"] = crow::json::load("[]");
+            crow::json::wvalue handJson;
+            int k = 0;
+            for (const auto& cardVal : player.cardsInHand) {
+                handJson[k++] = cardVal;
+            }
+            pJson["cardsInHand"] = std::move(handJson);
 
             playersJsonList.push_back(std::move(pJson));
         }

@@ -93,6 +93,11 @@ Game& GameService::GetGame(const GameId gameId)
     }
 }
 
+std::optional<MatchData> GameService::GetMatchState(int matchIdInt)
+{
+    return std::optional<MatchData>();
+}
+
 void GameService::CreateGame(std::list<WaitingPlayer>& players, int playerCount)
 {
     GameId newGameId = "game_" + std::to_string(m_gameIdCounter++);

@@ -14,7 +14,7 @@ public:
 
 
     void startGame(int matchId, const std::vector<int>& userIds);
-    void updateMatchState(int matchId, const std::string& newState);
+    void updateMatchState(int matchId, const std::string& newStacksState, const std::string& newDeckState, int nextPlayerId);
 
 };
 

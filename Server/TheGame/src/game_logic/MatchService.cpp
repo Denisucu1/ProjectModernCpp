@@ -98,6 +98,27 @@ std::optional<int> MatchService::findOrCreateMatch(int requestingUserId)
 
 }
     
+void MatchService::startGame(int matchId, const std::vector<int>& userIds) {}
 
+void MatchService::updateMatchState(int matchId, const std::string& newStacksState, const std::string& newDeckState, int nextPlayerId) 
+{
+
+    auto& storage = getStorage();
+
+    try {
+        storage.update_all(
+            set(
+                c(&Match::StacksStateJSON) = newStacksState,
+                c(&Match::DeckStateJSON) = newDeckState,
+                c(&Match::CurrentTurnPlayerId) = nextPlayerId
+            ),
+            where(is_equal(&Match::MatchId, matchId))
+        );
+
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Eroare la updateMatchState pentru meciul " << matchId << ": " << e.what() << std::endl;
+    }
+}
 
 

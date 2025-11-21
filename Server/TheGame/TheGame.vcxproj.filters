@@ -54,6 +54,9 @@
     <ClInclude Include="GameService.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\models\Match.h">
+      <Filter>src\models</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -79,6 +82,9 @@
     </ClCompile>
     <ClCompile Include="GameService.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_logic\UserService.cpp">
+      <Filter>src\game_logic</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

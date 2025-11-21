@@ -44,7 +44,7 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
                 crow::json::wvalue resp_data;
                 resp_data["success"] = true;
                 resp_data["userId"] = userId.value();
-                resp_data["username"] = username; // Util pentru client!
+                resp_data["username"] = username;
                 res.body = resp_data.dump();
                 res.code = 200;
             }
@@ -124,7 +124,7 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
             res.body = "{\"status\": \"game_found\", \"gameId\": \"" + gameId.value() + "\"}";
         }
         else {
-            res.code = 200; // 200 OK, dar încă așteaptă
+            res.code = 200;
             res.body = "{\"status\": \"waiting\"}";
         }
 

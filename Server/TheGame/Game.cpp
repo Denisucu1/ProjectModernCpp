@@ -57,6 +57,17 @@ void Game::GameStatus()
 
 void Game::GameEndConditions()
 {
+	bool allHandsEmpty = true;
+	for (const auto& player : m_players) {
+		if (!player.GetDeck().empty()) {
+			allHandsEmpty = false;
+			break;
+		}
+	}
+
+	if (m_cards.IsEmpty() && allHandsEmpty) {
+		std::cout << "!!! VICTORIE !!! Toate cartile au fost jucate!" << std::endl;
+	}
 }
 
 void Game::nextPlayer()

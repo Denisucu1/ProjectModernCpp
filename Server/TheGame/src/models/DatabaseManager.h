@@ -19,9 +19,9 @@ inline auto initStorage()
             make_column("Id", &UserProfile::Id, primary_key().autoincrement()),
             make_column("GamesPlayed", &UserProfile::GamesPlayed),
             make_column("GamesWon", &UserProfile::GamesWon),
-            make_column("TotalCardsAtLoss", &UserProfile::TotalCardsAtLoss),
             make_column("TotalTimeMinutes", &UserProfile::TotalTimeMinutes),
             make_column("PerformanceScore", &UserProfile::PerformanceScore),
+            make_column("TotalCardsAtLoss", &UserProfile::TotalCardsAtLoss),
 
             make_column("SessionToken", &UserProfile::SessionToken),
             make_column("TokenExpiration", &UserProfile::TokenExpiration),

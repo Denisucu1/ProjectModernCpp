@@ -2,6 +2,7 @@
 #define USER_H
 
 #include <string>
+#include <cstdint>
 
 struct UserProfile {
     std::string Username;
@@ -12,11 +13,11 @@ struct UserProfile {
     int GamesWon = 0;
     int TotalTimeMinutes = 0;
     int PerformanceScore = 1;
-    float TotalCardsAtLoss = 0.0f;
+    int TotalCardsAtLoss = 0;
 
     std::string SessionToken = "";
-    long long TokenExpiration = 0;
-    long long LastActivity = 0;
+    std::int64_t TokenExpiration = 0;
+    std::int64_t LastActivity = 0;
 };
 
 #endif // USER_H

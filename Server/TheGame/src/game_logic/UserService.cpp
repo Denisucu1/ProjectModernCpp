@@ -1,4 +1,4 @@
-
+﻿
 #include "UserService.h"
 #include "../models/DatabaseManager.h"
 #include <iostream>
@@ -11,17 +11,19 @@
 using namespace std::chrono;
 using namespace sqlite_orm;
 
-bool UserService::registerUser(const std::string& username, const std::string& password) 
+bool UserService::registerUser(const std::string& username, const std::string& password)
 {
     auto& storage = getStorage();
 
-    if (storage.count<UserProfile>(is_equal(&UserProfile::Username, username)) > 0) 
-        return false;
+    // 1. Verifică dacă există deja
+    if (storage.count<UserProfile>(is_equal(&UserProfile::Username, username)) > 0)
+        return false; // Returnează false, ar trebui să ducă la un răspuns 400 (Bad Request) sau 409 (Conflict), nu 500.
 
+    // 2. Inserează noul utilizator
     UserProfile newUser;
     newUser.Username = username;
     newUser.Password = password;
-    storage.insert(newUser);
+    storage.insert(newUser); // <-- CEL MAI PROBABIL AICI EȘUEAZĂ
     return true;
 }
 
@@ -86,7 +88,7 @@ int UserService::calculatePerformanceScore(int userId) {
 
         float win_rate = (float)user.GamesWon / user.GamesPlayed;
         int games_lost = user.GamesPlayed - user.GamesWon;
-        float average_loss_cards = (games_lost > 0) ? user.TotalCardsAtLoss / games_lost : 0.0f;
+        float average_loss_cards = (games_lost > 0) ? float(user.TotalCardsAtLoss) / games_lost : 0.0f;
         float raw_score = (win_rate * 5.0f) - (average_loss_cards / 10.0f);
         int final_score = (int)std::round(raw_score);
         final_score = std::min(std::max(final_score, 1), 5);

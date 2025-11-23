@@ -1,13 +1,13 @@
-#ifndef GAMEWINDOW_H
-#define GAMEWINDOW_H
-
+#pragma once
 #include <QWidget>
-#include "customcard.h"
 #include <vector>
+#include "customcard.h"
 
 namespace Ui {
     class GameWindow;
 }
+
+class MainMenu;
 
 class GameWindow : public QWidget
 {
@@ -28,5 +28,3 @@ private:
 
     std::vector<CustomCard*> m_handCards;
 };
-
-#endif

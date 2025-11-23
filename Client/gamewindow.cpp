@@ -21,20 +21,27 @@ GameWindow::GameWindow(QWidget* parent) :
     m_descendingPile2->setValue(100);
     m_drawPile->setFaceDown(true);
 
-    QHBoxLayout* pileLayout = new QHBoxLayout(ui->pileContainer);
-
-    pileLayout->addWidget(m_drawPile);
-    pileLayout->addWidget(m_descendingPile1);
-    pileLayout->addWidget(m_descendingPile2);
-    pileLayout->addWidget(m_ascendingPile1);
-    pileLayout->addWidget(m_ascendingPile2);
+    if (ui->pileContainer->layout() == nullptr) {
+        QHBoxLayout* pileLayout = new QHBoxLayout(ui->pileContainer);
+        pileLayout->addWidget(m_drawPile);
+        pileLayout->addWidget(m_descendingPile1);
+        pileLayout->addWidget(m_descendingPile2);
+        pileLayout->addWidget(m_ascendingPile1);
+        pileLayout->addWidget(m_ascendingPile2);
+    }
+    else {
+        ui->pileContainer->layout()->addWidget(m_drawPile);
+        ui->pileContainer->layout()->addWidget(m_descendingPile1);
+        ui->pileContainer->layout()->addWidget(m_descendingPile2);
+        ui->pileContainer->layout()->addWidget(m_ascendingPile1);
+        ui->pileContainer->layout()->addWidget(m_ascendingPile2);
+    }
 
     int cardsInHand = 6;
     for (int i = 0; i < cardsInHand; ++i)
     {
         CustomCard* newCard = new CustomCard(this);
         newCard->setValue(0);
-
         ui->handLayout->addWidget(newCard);
         m_handCards.push_back(newCard);
     }

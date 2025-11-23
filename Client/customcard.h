@@ -1,6 +1,4 @@
-#ifndef CUSTOMCARD_H
-#define CUSTOMCARD_H
-
+#pragma once
 #include <QWidget>
 #include <cstdint>
 
@@ -25,5 +23,3 @@ private:
     std::uint8_t m_value;
     bool m_isFaceDown;
 };
-
-#endif

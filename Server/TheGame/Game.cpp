@@ -72,4 +72,22 @@ void Game::GameEndConditions()
 
 void Game::nextPlayer()
 {
+	Player& currentPlayer = m_players[m_currentPlayerIndex];
+
+	int handLimit = 6;
+	if (m_players.size() == 2) handLimit = 8;
+	else if (m_players.size() == 3) handLimit = 7;
+
+	std::vector<std::uint8_t> hand = currentPlayer.GetDeck();
+
+	while (hand.size() < handLimit && !m_cards.IsEmpty()) {
+		Card c = m_cards.DrawACard();
+		hand.push_back(c.GetValue());
+	}
+
+	currentPlayer.SetDeck(hand);
+
+	GameEndConditions();
+
+	m_currentPlayerIndex = (m_currentPlayerIndex + 1) % m_players.size();
 }

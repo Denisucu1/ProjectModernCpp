@@ -8,7 +8,7 @@ Game::Game(std::vector<Player> players) : m_players(players)
 
 void Game::StartGame()
 {
-	m_cards.MixPile();
+	//m_cards.MixPile();
 
 	int cardsPerPlayer = 6;
 	if (m_players.size() == 2) {

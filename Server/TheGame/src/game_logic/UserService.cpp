@@ -21,7 +21,7 @@ bool UserService::registerUser(const std::string& username, const std::string& p
 
     auto& storage = getStorage();
 
-    if (storage.count<UserProfile>(is_equal(&UserProfile::Username, username)) > 0) 
+if (storage.count<UserProfile>(where(c(&UserProfile::Username) == username)) > 0) 
         return false;
 
     UserProfile newUser;

@@ -89,17 +89,16 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
         crow::response res;
         res.add_header("Access-Control-Allow-Origin", "*");
         auto data = parseSimpleJson(req.body);
-        //auto data = crow::json::load(req.body);
 
-        if (!data || !data.count("username") || !data.count("password")) {
+        if (data.empty() || data.find("username") == data.end() || data.find("password") == data.end()) {
             res.code = 400;
             res.body = "{\"success\": false, \"message\": \"Missing credentials\"}";
             return res;
         }
 
         try {
-            std::string username = data["username"].s();
-            std::string password = data["password"].s();
+            std::string username = data["username"];
+            std::string password = std::string(data["password"]);
 
             if (userSvc.registerUser(username, password)) {
                 res.code = 201;

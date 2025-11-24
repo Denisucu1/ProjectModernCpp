@@ -4,8 +4,8 @@
 #include <string>
 
 struct UserProfile {
-    std::string Username;
-    std::string Password;
+    std::string Username ="";
+    std::string Password ="";
 
     int Id = 0;
     int GamesPlayed = 0;

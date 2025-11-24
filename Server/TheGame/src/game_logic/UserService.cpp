@@ -11,32 +11,32 @@
 using namespace std::chrono;
 using namespace sqlite_orm;
 
-bool UserService::registerUser(const std::string& username, const std::string& password)
-{
-    auto& storage = getStorage();
+    bool UserService::registerUser(const std::string& username, const std::string& password)
+    {
+        auto& storage = getStorage();
 
-    if (storage.count<User>(is_equal(&User::Username, username)) > 0)
-        return false;
+        if (storage.count<User>(is_equal(&User::Username, username)) > 0)
+            return false;
 
-    try {
-        storage.transaction([&]()-> bool {
-            User newUser;
-            newUser.Username = username;
-            newUser.Password = password;
-            int newUserId = storage.insert(newUser);
+        try {
+            storage.transaction([&]()-> bool {
+                User newUser;
+                newUser.Username = username;
+                newUser.Password = password;
+                int newUserId = storage.insert(newUser);
 
-            Profile newProfile;
-            newProfile.User_Id = newUserId;
-            storage.insert(newProfile);
+                Profile newProfile;
+                newProfile.User_Id = newUserId;
+                storage.insert(newProfile);
 
+                return true;
+                });
             return true;
-            });
-        return true;
-    }
-    catch (const std::exception& e) {
-        std::cerr << "Eroare la inregistrarea user-ului: " << e.what() << std::endl;
-        return false;
-    }
+        }
+        catch (const std::exception& e) {
+            std::cerr << "Eroare la inregistrarea user-ului: " << e.what() << std::endl;
+            return false;
+        }
 }
 
 std::optional<int> UserService::authenticate(const std::string& username, const std::string& password)

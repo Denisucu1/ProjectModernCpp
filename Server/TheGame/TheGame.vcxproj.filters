@@ -54,14 +54,14 @@
     <ClInclude Include="src\models\Match.h">
       <Filter>src\models</Filter>
     </ClInclude>
-    <ClInclude Include="src\game_logic\UserService.h">
-      <Filter>src\models</Filter>
-    </ClInclude>
     <ClInclude Include="MatchService.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\game_logic\UserService.h">
+      <Filter>src\game_logic</Filter>
+    </ClInclude>
     <ClInclude Include="src\models\MatchService.h">
-      <Filter>src\models</Filter>
+      <Filter>src\game_logic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

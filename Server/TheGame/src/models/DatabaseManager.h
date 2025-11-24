@@ -25,7 +25,7 @@ inline auto initStorage()
             
         ),
 
-        make_table("Profiles",
+        make_table("profiles",
             make_column("id", &Profile::id, primary_key().autoincrement()),
             make_column("user_id", &Profile::User_Id,unique()),
 			make_column("hours_played", &Profile::Hours_Played),

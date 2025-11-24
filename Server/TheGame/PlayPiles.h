@@ -28,9 +28,11 @@ public:
 	void SetDescendingColumn1(std::uint8_t valueCard);
 	void SetDescendingColumn2(std::uint8_t valueCard);
 
+	//trebuie sa fac aici metode pentru verificarea de carti
+
 private:
 	std::uint8_t m_ascendingColumn1 : 7, m_ascendingColumn2 : 7,
-		m_descendingColumn1 : 7, m_descendingColumn2 : 7;
+		m_descendingColumn1 : 7, m_descendingColumn2 : 7; //sa fie de tipul carte
 };
 
 /*

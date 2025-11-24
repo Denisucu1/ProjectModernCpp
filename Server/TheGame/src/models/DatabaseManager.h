@@ -6,6 +6,8 @@
 #include <sqlite_orm/sqlite_orm.h>
 #include <string>
 
+#include <iostream>
+
 using namespace sqlite_orm;
 
 inline auto initStorage() 
@@ -53,6 +55,13 @@ using Storage = decltype(initStorage());
 inline Storage& getStorage() 
 {
     static Storage storage = initStorage();
+
+    storage.on_open = [](sqlite3* db) {
+        sqlite3_trace(db, [](void* data, const char* sql) {
+            std::cout << "[SQL Trace]: " << sql << std::endl;
+            }, nullptr);
+        };
+
     static bool schema_synced = (storage.sync_schema(), true);
     return storage;
 }

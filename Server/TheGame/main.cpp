@@ -8,9 +8,26 @@
 #include <string>
 #include <exception>
 
+#include <clocale>
+#include <locale>
+
+#include <sqlite3.h>
+
 #include "GameService.h"
 
 int main() {
+
+    std::cout << "=== SQLite Version Check ===" << std::endl;
+    std::cout << "Compiled with header version: " << SQLITE_VERSION << std::endl;
+    std::cout << "Running with DLL version:     " << sqlite3_libversion() << std::endl;
+    std::cout << "============================" << std::endl;
+
+    if (std::string(sqlite3_libversion()) < "3.35.0") {
+        std::cerr << "[CRITICAL ERROR] Versiunea DLL de SQLite este prea veche! "
+            << "sqlite_orm necesita minim 3.35.0 pentru RETURNING." << std::endl;
+    }
+
+    std::setlocale(LC_ALL, "C");
 
     try {
         getStorage();

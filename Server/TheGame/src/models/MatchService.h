@@ -13,7 +13,7 @@ public:
     std::optional<int> findOrCreateMatch(int requestingUserId);
 
 
-    void startGame(int matchId, const std::vector<int>& userIds);
+    void startGame(int matchId, const std::vector<int>& userIds);// naming connvension
     void updateMatchState(int matchId, const std::string& newStacksState, const std::string& newDeckState, int nextPlayerId);
 
 };

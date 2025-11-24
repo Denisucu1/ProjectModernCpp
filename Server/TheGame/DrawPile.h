@@ -10,14 +10,16 @@ public:
 
 	void SetDrawPile(std::vector<Card> drawPile);
 
-	std::vector<Card> GetDrawPile() const;
+	std::vector<Card> GetDrawPile() const; //trebuie renuntat la metoda
 
-	void MixPile();
+	//void MixPile();
 
 	Card DrawACard();
 
 	bool IsEmpty() const;
 private:
 	std::vector<Card> m_drawPile;
+
+	void MixPile(); //apelata fie din constructor, fie dintr o functie de reset
 };
 

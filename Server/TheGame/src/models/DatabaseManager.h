@@ -1,49 +1,77 @@
 #ifndef DATABASE_MANAGER_H
 #define DATABASE_MANAGER_H
 
-#include "User.h" 
-#include "Match.h"
+#include "Match.h" 
+
 #include <sqlite_orm/sqlite_orm.h>
 #include <string>
 
 using namespace sqlite_orm;
+
 
 inline auto initStorage() 
 {
     const std::string db_path = "the_game_db.sqlite";
 
     return make_storage(db_path,
-        make_table("users",
-            make_column("Username", &UserProfile::Username, unique()),
-            make_column("Password", &UserProfile::Password),
-            make_column("Id", &UserProfile::Id, primary_key().autoincrement()),
-            make_column("GamesPlayed", &UserProfile::GamesPlayed),
-            make_column("GamesWon", &UserProfile::GamesWon),
-            make_column("TotalCardsAtLoss", &UserProfile::TotalCardsAtLoss),
-            make_column("TotalTimeMinutes", &UserProfile::TotalTimeMinutes),
-            make_column("PerformanceScore", &UserProfile::PerformanceScore),
-
-            make_column("SessionToken", &UserProfile::SessionToken),
-            make_column("TokenExpiration", &UserProfile::TokenExpiration),
-            make_column("LastActivity", &UserProfile::LastActivity)
+        make_table("Users",
+            make_column("id", &User::id, primary_key().autoincrement()),
+            make_column("username", &User::Password,unique()),
+            make_column("password", &User::Password),
+			make_column("SessionToken", &User::SessionToken),
+			make_column("TokenExpiration", &User::TokenExpiration),
+			make_column("LastActivity", &User::LastActivity)
+            
         ),
 
-        make_table("matches",
-            make_column("MatchId", &Match::MatchId, primary_key().autoincrement()),
-            make_column("Status", &Match::Status),
-            make_column("CurrentTurnPlayerId", &Match::CurrentTurnPlayerId),
-            make_column("StacksStateJSON", &Match::StacksStateJSON),
-            make_column("DeckStateJSON", &Match::DeckStateJSON)
+        make_table("Profiles",
+            make_column("id", &Profile::id, primary_key().autoincrement()),
+            make_column("user_id", &Profile::User_Id,unique()),
+			make_column("hours_played", &Profile::Hours_Played),
+			make_column("games_played", &Profile::Games_Played),
+			make_column("games_won", &Profile::Games_Won),
+            make_column("cards_left_on_losses", &Profile::Cards_left_on_losses),
+            make_column("performance_score", &Profile::performance_score),
+			foreign_key(&Profile::User_Id).references(&Jucator::id)
+
+            
         ),
 
-        make_table("match_players",
-            make_column("Id", &MatchPlayer::Id, primary_key().autoincrement()),
-            make_column("MatchId", &MatchPlayer::MatchId),
-            make_column("UserId", &MatchPlayer::UserId),
-            make_column("CardsInHandJSON", &MatchPlayer::CardsInHandJSON),
+        make_table("games",
+            make_column("id", &Joc::id, primary_key().autoincrement()),
+            make_column("status", &Joc::status),
+            make_column("difficulty", &Joc::difficulty),
+            make_column("max_players", &Joc::max_players),
+            make_column("deck_state", &Joc::deck_state),
+            make_column("stacks_state", &Joc::stacks_state)
+        ),
 
-            foreign_key(&MatchPlayer::MatchId).references(&Match::MatchId),
-            foreign_key(&MatchPlayer::UserId).references(&UserProfile::Id)
+        make_table("players",
+            make_column("id", &Jucator::id, primary_key().autoincrement()),
+            make_column("game_id", &Jucator::game_id),
+            make_column("user_id", &Jucator::player_id),
+            make_column("seat_index", &Jucator::seat_index),
+            make_column("cards_played", &Jucator::cards_played),
+            foreign_key(&Jucator::game_id).references(&Joc::id),
+            foreign_key(&Jucator::player_id).references(&User::id)
+        ),
+
+        make_table("moves",
+            make_column("id", &Move::id, primary_key().autoincrement()),
+            make_column("player_id", &Move::player_id),
+            make_column("game_id", &Move::game_id),
+            make_column("cards_played", &Move::cards_played),
+            foreign_key(&Move::player_id).references(&Jucator::id),
+            foreign_key(&Move::game_id).references(&Joc::id)
+        ),
+
+        make_table("chats",
+            make_column("id", &Chat::id, primary_key().autoincrement()),
+            make_column("player_id", &Chat::player_id),
+            make_column("game_id", &Chat::game_id),
+            make_column("message", &Chat::message),
+            foreign_key(&Chat::player_id).references(&Jucator::id),
+            foreign_key(&Chat::game_id).references(&Joc::id)
         )
     );
 }

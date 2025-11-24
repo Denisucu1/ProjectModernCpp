@@ -2,21 +2,33 @@
 #define USER_H
 
 #include <string>
+#include <cstdint>
 
-struct UserProfile {
+
+struct User {
+    
+    int id = 0; //cheie primara
+
     std::string Username;
     std::string Password;
 
-    int Id = 0;
-    int GamesPlayed = 0;
-    int GamesWon = 0;
-    int TotalTimeMinutes = 0;
-    int PerformanceScore = 1;
-    float TotalCardsAtLoss = 0.0f;
-
     std::string SessionToken = "";
-    long long TokenExpiration = 0;
-    long long LastActivity = 0;
+    std::int64_t TokenExpiration = 0;
+    std::int64_t LastActivity = 0;
+};
+
+struct Profile {
+
+    int id = 0;
+    int User_Id = 0;//foreign key pt user
+
+    double Hours_Played = 0.0;
+    int Games_Played = 0;
+    int Games_Won = 0;
+	int Cards_left_on_losses = 0;
+	double performance_score = 1.0;
+
+
 };
 
 #endif // USER_H

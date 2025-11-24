@@ -21,9 +21,11 @@ struct Joc {
 struct Jucator {
 
     int id = 0; 
-    int player_id = 0; // foreign key -> players
+    int user_id = 0; // foreign key -> players
     int game_id = 0; // foreign key -> games
     int seat_index = 0;
+
+    std::string hand = "";
     std::string cards_played = "";
 };
 

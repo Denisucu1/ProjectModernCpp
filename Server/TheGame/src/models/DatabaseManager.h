@@ -1,6 +1,7 @@
 #ifndef DATABASE_MANAGER_H
 #define DATABASE_MANAGER_H
 
+#include "User.h"
 #include "Match.h" 
 
 #include <sqlite_orm/sqlite_orm.h>
@@ -16,7 +17,7 @@ inline auto initStorage()
     return make_storage(db_path,
         make_table("Users",
             make_column("id", &User::id, primary_key().autoincrement()),
-            make_column("username", &User::Password,unique()),
+            make_column("username", &User::Username,unique()),
             make_column("password", &User::Password),
 			make_column("SessionToken", &User::SessionToken),
 			make_column("TokenExpiration", &User::TokenExpiration),
@@ -32,7 +33,7 @@ inline auto initStorage()
 			make_column("games_won", &Profile::Games_Won),
             make_column("cards_left_on_losses", &Profile::Cards_left_on_losses),
             make_column("performance_score", &Profile::performance_score),
-			foreign_key(&Profile::User_Id).references(&Jucator::id)
+			foreign_key(&Profile::User_Id).references(&User::id)
 
             
         ),
@@ -49,11 +50,11 @@ inline auto initStorage()
         make_table("players",
             make_column("id", &Jucator::id, primary_key().autoincrement()),
             make_column("game_id", &Jucator::game_id),
-            make_column("user_id", &Jucator::player_id),
+            make_column("user_id", &Jucator::user_id),
             make_column("seat_index", &Jucator::seat_index),
-            make_column("cards_played", &Jucator::cards_played),
+            make_column("cards_played", &Jucator::hand),
             foreign_key(&Jucator::game_id).references(&Joc::id),
-            foreign_key(&Jucator::player_id).references(&User::id)
+            foreign_key(&Jucator::user_id).references(&User::id)
         ),
 
         make_table("moves",

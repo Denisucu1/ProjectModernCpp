@@ -1,9 +1,9 @@
 ﻿#ifndef MATCH_SERVICE_H
 #define MATCH_SERVICE_H
 
-#include "../models/DatabaseManager.h"
-#include "../models/Match.h" 
-#include "../models/User.h"  
+#include "DatabaseManager.h"
+#include "Match.h" 
+#include "User.h"  
 #include <vector>
 #include <optional>
 #include <string>

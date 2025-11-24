@@ -1,8 +1,8 @@
 ﻿#ifndef USER_SERVICE_H
 #define USER_SERVICE_H
 
-#include "../models/DatabaseManager.h"
-#include "../models/User.h"
+#include "DatabaseManager.h"
+#include "User.h"
 #include <optional>
 #include <string>
 

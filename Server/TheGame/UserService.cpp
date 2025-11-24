@@ -1,6 +1,6 @@
 ﻿#include "UserService.h"
-#include "../models/DatabaseManager.h"
-#include "../models/User.h" 
+#include "DatabaseManager.h"
+#include "User.h" 
 #include <iostream>
 #include <algorithm>
 #include <cmath>

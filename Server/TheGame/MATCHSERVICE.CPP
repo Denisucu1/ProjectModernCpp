@@ -1,7 +1,7 @@
-﻿#include "../game_logic/MatchService.h"
-#include "../models/DatabaseManager.h"
-#include "../models/User.h"
-#include "../models/Match.h"
+﻿#include "MatchService.h"
+#include "DatabaseManager.h"
+#include "User.h"
+#include "Match.h"
 
 #include <iostream>
 #include <algorithm>

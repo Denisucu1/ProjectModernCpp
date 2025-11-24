@@ -13,23 +13,14 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="src">
-      <UniqueIdentifier>{e45b4b8d-f54f-4ae4-9918-87f37ff6d329}</UniqueIdentifier>
+    <Filter Include="Header Files\db">
+      <UniqueIdentifier>{abb2018f-8270-4232-a091-d7843e4cf050}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\models">
-      <UniqueIdentifier>{707d456f-eeef-4248-91c9-c19a462553ca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\game_logic">
-      <UniqueIdentifier>{6b1ecea1-40b8-4bc9-9976-e0ed9add3bd6}</UniqueIdentifier>
+    <Filter Include="Source Files\db">
+      <UniqueIdentifier>{74b3a810-c677-4dbc-adcc-17a7fa31fefd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\models\User.h">
-      <Filter>src\models</Filter>
-    </ClInclude>
-    <ClInclude Include="src\models\DatabaseManager.h">
-      <Filter>src\models</Filter>
-    </ClInclude>
     <ClInclude Include="ApiRoutes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -51,17 +42,20 @@
     <ClInclude Include="GameService.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\models\Match.h">
-      <Filter>src\models</Filter>
-    </ClInclude>
     <ClInclude Include="MatchService.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\game_logic\UserService.h">
-      <Filter>src\game_logic</Filter>
+    <ClInclude Include="src\models\DatabaseManager.h">
+      <Filter>Header Files\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\models\Match.h">
+      <Filter>Header Files\db</Filter>
+    </ClInclude>
+    <ClInclude Include="src\models\User.h">
+      <Filter>Header Files\db</Filter>
     </ClInclude>
     <ClInclude Include="src\models\MatchService.h">
-      <Filter>src\game_logic</Filter>
+      <Filter>Header Files\db</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -89,14 +83,14 @@
     <ClCompile Include="GameService.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\game_logic\UserService.cpp">
-      <Filter>src\game_logic</Filter>
-    </ClCompile>
     <ClCompile Include="MatchService.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\game_logic\UserService.cpp">
+      <Filter>Source Files\db</Filter>
+    </ClCompile>
     <ClCompile Include="src\game_logic\MatchService.cpp">
-      <Filter>src\game_logic</Filter>
+      <Filter>Source Files\db</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

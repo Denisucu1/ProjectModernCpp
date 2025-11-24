@@ -11,18 +11,19 @@
 using namespace std::chrono;
 using namespace sqlite_orm;
 
-    bool UserService::registerUser(const std::string& username, const std::string& password)
-    {
-        auto& storage = getStorage();
+bool UserService::registerUser(const std::string& username, const std::string& password)
+{
+    auto& storage = getStorage();
 
-        if (storage.count<User>(is_equal(&User::Username, username)) > 0)
-            return false;
+    if (storage.count<User>(is_equal(&User::username, username)) > 0)
+       return false;
 
-        try {
-            storage.transaction([&]()-> bool {
+       try 
+       {
+         storage.transaction([&]()-> bool {
                 User newUser;
-                newUser.Username = username;
-                newUser.Password = password;
+                newUser.username = username;
+                newUser.password = password;
                 int newUserId = storage.insert(newUser);
 
                 Profile newProfile;
@@ -33,7 +34,8 @@ using namespace sqlite_orm;
                 });
             return true;
         }
-        catch (const std::exception& e) {
+        catch (const std::exception& e) 
+        {
             std::cerr << "Eroare la inregistrarea user-ului: " << e.what() << std::endl;
             return false;
         }
@@ -44,7 +46,7 @@ std::optional<int> UserService::authenticate(const std::string& username, const 
     auto& storage = getStorage();
 
     auto users = storage.get_all<User>(
-        where(is_equal(&User::Username, username) and is_equal(&User::Password, password))
+        where(is_equal(&User::username, username) and is_equal(&User::password, password))
     );
 
     if (users.empty())
@@ -59,7 +61,6 @@ void UserService::updateStats(int userId, bool won, int cards_in_hand_at_loss, i
 
     try {
         storage.transaction([&]()-> bool {
-            // 1. Găsește Profilul după User_Id
             auto profiles = storage.get_all<Profile>(is_equal(&Profile::User_Id, userId));
 
             if (profiles.empty()) {
@@ -69,9 +70,7 @@ void UserService::updateStats(int userId, bool won, int cards_in_hand_at_loss, i
 
             Profile& profile = profiles.front();
 
-            // 2. Actualizează statisticile
             profile.Games_Played += 1;
-            // Notă: time_played_min este adăugat la Hours_Played (convertit la ore)
             profile.Hours_Played += (double)time_played_min / 60.0;
 
             if (won) {
@@ -81,9 +80,8 @@ void UserService::updateStats(int userId, bool won, int cards_in_hand_at_loss, i
                 profile.Cards_left_on_losses += cards_in_hand_at_loss;
             }
 
-            storage.update(profile); // Actualizează tabela Profiles
+            storage.update(profile); 
 
-            // 3. Recalculează și actualizează PerformanceScore
             this->calculatePerformanceScore(userId);
             return true;
             });

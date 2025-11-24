@@ -17,8 +17,8 @@ inline auto initStorage()
     return make_storage(db_path,
         make_table("Users",
             make_column("id", &User::id, primary_key().autoincrement()),
-            make_column("username", &User::Username,unique()),
-            make_column("password", &User::Password),
+            make_column("username", &User::username,unique()),
+            make_column("password", &User::password),
 			make_column("SessionToken", &User::SessionToken),
 			make_column("TokenExpiration", &User::TokenExpiration),
 			make_column("LastActivity", &User::LastActivity)

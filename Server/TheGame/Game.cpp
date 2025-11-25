@@ -10,7 +10,7 @@ void Game::StartGame()
 {
 	//m_cards.MixPile();
 
-	int cardsPerPlayer = 6;
+	std::uint8_t cardsPerPlayer = 6;
 	if (m_players.size() == 2) {
 		cardsPerPlayer = 8;
 	}

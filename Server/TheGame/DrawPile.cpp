@@ -8,6 +8,8 @@ DrawPile::DrawPile()
 	{
 		m_drawPile.push_back(Card(value));
 	}
+
+	MixPile();
 }
 
 void DrawPile::SetDrawPile(std::vector<Card> drawPile)

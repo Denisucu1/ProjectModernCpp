@@ -19,24 +19,15 @@
     <Filter Include="Source Files\db">
       <UniqueIdentifier>{74b3a810-c677-4dbc-adcc-17a7fa31fefd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\game_logic">
+      <UniqueIdentifier>{b99a0fdf-0e65-4388-900f-4f8f79c3eec6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\game_logic">
+      <UniqueIdentifier>{5eeea3f2-b4f0-4a16-abc6-3222409ddd25}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApiRoutes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Card.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DrawPile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayPiles.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="User.h">
@@ -48,36 +39,30 @@
     <ClInclude Include="DatabaseManager.h">
       <Filter>Header Files\db</Filter>
     </ClInclude>
-    <ClInclude Include="GameService.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MatchService.h">
       <Filter>Header Files\db</Filter>
     </ClInclude>
+    <ClInclude Include="Card.h">
+      <Filter>Header Files\game_logic</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawPile.h">
+      <Filter>Header Files\game_logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Header Files\game_logic</Filter>
+    </ClInclude>
+    <ClInclude Include="GameService.h">
+      <Filter>Header Files\game_logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files\game_logic</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayPiles.h">
+      <Filter>Header Files\game_logic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ApiRoutes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Card.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DrawPile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayPiles.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameService.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="UserService.cpp">
@@ -85,6 +70,27 @@
     </ClCompile>
     <ClCompile Include="MatchService.cpp">
       <Filter>Source Files\db</Filter>
+    </ClCompile>
+    <ClCompile Include="Card.cpp">
+      <Filter>Source Files\game_logic</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawPile.cpp">
+      <Filter>Source Files\game_logic</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Source Files\game_logic</Filter>
+    </ClCompile>
+    <ClCompile Include="GameService.cpp">
+      <Filter>Source Files\game_logic</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files\game_logic</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files\game_logic</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayPiles.cpp">
+      <Filter>Source Files\game_logic</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

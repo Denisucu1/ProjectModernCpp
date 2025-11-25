@@ -13,20 +13,11 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="src">
-      <UniqueIdentifier>{e45b4b8d-f54f-4ae4-9918-87f37ff6d329}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\models">
-      <UniqueIdentifier>{707d456f-eeef-4248-91c9-c19a462553ca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\game_logic">
-      <UniqueIdentifier>{6b1ecea1-40b8-4bc9-9976-e0ed9add3bd6}</UniqueIdentifier>
+    <Filter Include="Header Files\db">
+      <UniqueIdentifier>{abb2018f-8270-4232-a091-d7843e4cf050}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\db">
-      <UniqueIdentifier>{a889f8c3-8612-49ab-9b54-c1bbe057a36d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\db">
-      <UniqueIdentifier>{1fa9d98d-aeb0-4a9c-a62a-a13e51df8bb0}</UniqueIdentifier>
+      <UniqueIdentifier>{74b3a810-c677-4dbc-adcc-17a7fa31fefd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -48,22 +39,19 @@
     <ClInclude Include="PlayPiles.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="User.h">
+      <Filter>Header Files\db</Filter>
+    </ClInclude>
+    <ClInclude Include="UserService.h">
+      <Filter>Header Files\db</Filter>
+    </ClInclude>
+    <ClInclude Include="DatabaseManager.h">
+      <Filter>Header Files\db</Filter>
+    </ClInclude>
     <ClInclude Include="GameService.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\models\DatabaseManager.h">
-      <Filter>Header Files\db</Filter>
-    </ClInclude>
-    <ClInclude Include="src\models\Match.h">
-      <Filter>Header Files\db</Filter>
-    </ClInclude>
-    <ClInclude Include="src\models\MatchService.h">
-      <Filter>Header Files\db</Filter>
-    </ClInclude>
-    <ClInclude Include="src\models\User.h">
-      <Filter>Header Files\db</Filter>
-    </ClInclude>
-    <ClInclude Include="src\game_logic\UserService.h">
+    <ClInclude Include="MatchService.h">
       <Filter>Header Files\db</Filter>
     </ClInclude>
   </ItemGroup>
@@ -92,13 +80,10 @@
     <ClCompile Include="GameService.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MatchService.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\game_logic\MatchService.cpp">
+    <ClCompile Include="UserService.cpp">
       <Filter>Source Files\db</Filter>
     </ClCompile>
-    <ClCompile Include="src\game_logic\UserService.cpp">
+    <ClCompile Include="MatchService.cpp">
       <Filter>Source Files\db</Filter>
     </ClCompile>
   </ItemGroup>

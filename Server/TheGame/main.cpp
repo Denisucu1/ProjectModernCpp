@@ -2,8 +2,8 @@
 
 #include <iostream>
 #include "crow.h"
-#include "src/models/DatabaseManager.h"
-#include "src/game_logic/UserService.h"
+#include "DatabaseManager.h"
+#include "UserService.h"
 #include "ApiRoutes.h"
 #include <string>
 #include <exception>

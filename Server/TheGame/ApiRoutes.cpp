@@ -129,7 +129,7 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
             return res;
         }
 
-        UserId userId = data["userId"].i();
+        user_id userId = data["userId"].i();
         std::string username = data["username"].s();
         int playerCount = data["playerCount"].i();
 
@@ -139,7 +139,7 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
             return res;
         }
 
-        auto gameId = gameSvc.FindGame(userId, username, playerCount);
+        auto gameId = gameSvc.find_game(userId, username, playerCount);
 
         if (gameId.has_value()) {
             res.code = 200;
@@ -154,11 +154,11 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
             });
 
     CROW_ROUTE(app, "/api/game_status/<int>").methods("GET"_method)
-        ([&gameSvc](UserId userId) {
+        ([&gameSvc](user_id userId) {
         crow::response res;
         res.add_header("Access-Control-Allow-Origin", "*");
 
-        auto gameId = gameSvc.GetPlayerGameStatus(userId);
+        auto gameId = gameSvc.get_player_game_status(userId);
 
         if (gameId.has_value()) {
             res.code = 200;
@@ -175,7 +175,7 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
     CROW_ROUTE(app, "/api/match/<int>").methods("GET"_method)
         ([&gameSvc](const crow::request& req, int matchId) {
 
-        auto matchOpt = gameSvc.GetMatchState(matchId);
+        auto matchOpt = gameSvc.get_match_state(matchId);
 
         if (!matchOpt.has_value()) {
             crow::json::wvalue errorRes;
@@ -187,9 +187,9 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
         crow::json::wvalue res;
 
 
-        res["matchId"] = match.matchId;
+        res["matchId"] = match.match_id;
         res["status"] = match.status;   
-        res["currentTurnPlayerId"] = match.currentTurnPlayerId;
+        res["currentTurnPlayerId"] = match.current_turn_player_id;
 
         crow::json::wvalue stacksJson;
         int i = 0;
@@ -199,7 +199,7 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
         res["stacksState"] = std::move(stacksJson);
 
         crow::json::wvalue deckObj;
-        deckObj["cardsRemaining"] = match.deckCount;
+        deckObj["cardsRemaining"] = match.deck_count;
         deckObj["topDiscard"] = 0; 
         res["deckState"] = std::move(deckObj);
 
@@ -212,7 +212,7 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
 
             crow::json::wvalue handJson;
             int k = 0;
-            for (const auto& cardVal : player.cardsInHand) {
+            for (const auto& cardVal : player.cards_in_hand) {
                 handJson[k++] = cardVal;
             }
             pJson["cardsInHand"] = std::move(handJson);

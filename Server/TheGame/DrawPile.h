@@ -8,18 +8,15 @@ class DrawPile
 public:
 	DrawPile();
 
-	void SetDrawPile(std::vector<Card> drawPile);
-
-	std::vector<Card> GetDrawPile() const; //trebuie renuntat la metoda
-
 	//void MixPile();
 
-	Card DrawACard();
-
-	bool IsEmpty() const;
+	Card draw_a_card();
+	
+	bool is_empty() const;
 private:
-	std::vector<Card> m_drawPile;
 
-	void MixPile(); //apelata fie din constructor, fie dintr o functie de reset
+	std::vector<Card> m_drawPile;
+	
+	void mix_pile(); //apelata fie din constructor, fie dintr o functie de reset
 };
 

@@ -8,17 +8,15 @@ class Game
 public:
 	Game(std::vector<Player> players);
 
-	void StartGame();
+	void start_game();
 
-	void GameStatus();
+	void game_end_conditions();
 
-	void GameEndConditions();
-
-	void nextPlayer();
+	void next_player();
 private:
 	DrawPile m_cards;
 	std::vector<Player> m_players;
-	PlayPiles m_playPiles;
-	std::uint8_t m_currentPlayerIndex : 3;
+	PlayPiles m_play_piles_;
+	std::uint8_t m_current_player_index_ : 3;
 };
 

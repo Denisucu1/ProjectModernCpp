@@ -8,20 +8,22 @@
 #include "Game.h"
 #include "Player.h"
 
-using GameId = std::string;
-using UserId = int;
+using game_id = std::string;
+using user_id = int;
 
 struct MatchPlayerData {
+
 	int id;             
 	int userId;
-	std::vector<int> cardsInHand;
+	std::vector<int> cards_in_hand;
 };
 
 struct MatchData {
-	int matchId;
+
+	int match_id;
 	std::string status;
-	int currentTurnPlayerId;
-	int deckCount;
+	int current_turn_player_id;
+	int deck_count;
 	std::vector<int> stacks;
 	std::vector<MatchPlayerData> players;
 };
@@ -31,33 +33,32 @@ class GameService
 public:
 	GameService();
 
-	std::optional<GameId> FindGame(UserId userId, const std::string& username, int desiredPlayerCount);
+	std::optional<game_id> find_game(user_id userId, const std::string& username, int desiredPlayerCount);
+	std::optional<game_id> get_player_game_status(user_id userId);
+	std::optional<MatchData> get_match_state(int matchIdInt);
 
-	std::optional<GameId> GetPlayerGameStatus(UserId userId);
+	Game& get_game(const game_id gameId);
 
-	Game& GetGame(const GameId gameId);
-
-	std::optional<MatchData> GetMatchState(int matchIdInt);
 private:
+
 	std::mutex m_mutex;
 
 	struct WaitingPlayer
 	{
-		UserId id;
+		user_id id;
 		std::string name;
 		std::chrono::steady_clock::time_point joinTime;
 	};
 
-	std::map<int, std::list<WaitingPlayer>> m_waitingQueues;
+	std::map<int, std::list<WaitingPlayer>> m_waiting_queues_;
+	std::map<game_id, Game> m_active_games_;
+	std::map<user_id, int> m_player_in_queue_map_;
+	std::map<user_id, game_id> m_player_game_map_;
 
-	std::map<GameId, Game> m_activeGames;
+	void create_game(std::list<WaitingPlayer>& players, int playerCount);
 
-	std::map<UserId, int> m_playerInQueueMap;
+	MatchData generate_match_data(const Game& game);
 
-	std::map<UserId, GameId> m_playerGameMap;
-
-	void CreateGame(std::list<WaitingPlayer>& players, int playerCount);
-
-	long long m_gameIdCounter = 0;
+	long long m_game_id_counter_ = 0;
 };
 

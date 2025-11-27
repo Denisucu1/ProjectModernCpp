@@ -1,25 +1,25 @@
 #include "Player.h"
 
-Player::Player(std::string name, int id) : m_name(name), m_score(0), m_id(id)
+Player::Player(std::string name_string, int id) : m_name(name_string), m_score(0), m_id(id)
 {
 }
 
-void Player::SetDeck(std::vector<std::uint8_t> deck)
+void Player::set_deck(std::vector<std::uint8_t> deck) const
 {
 	deck = m_deck;
 }
 
-std::vector<std::uint8_t> Player::GetDeck() const
+std::vector<std::uint8_t> Player::get_deck() const
 {
 	return m_deck;
 }
 
-void Player::SetScore(std::uint8_t score)
+void Player::set_score(std::uint8_t score)
 {
 	m_score = score;
 }
 
-std::uint8_t Player::GetScore() const
+std::uint8_t Player::get_score() const
 {
 	return m_score;
 }

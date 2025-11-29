@@ -15,6 +15,7 @@ public:
     int max_players = 5;
     std::string deck_state = "";
     std::string stacks_state = "[1, 1, 100, 100]";
+    std::int64_t creation_timestamp = 0;
 
 public:
     Joc() = default;
@@ -43,6 +44,12 @@ public:
     { 
         return stacks_state; 
     }
+
+    std::int64_t get_creation_timestamp() const
+    {
+        return creation_timestamp;
+    }
+
 };
 
 class Jucator {

@@ -44,7 +44,9 @@ inline auto initStorage()
             make_column("difficulty", &Joc::difficulty),
             make_column("max_players", &Joc::max_players),
             make_column("deck_state", &Joc::deck_state),
+            make_column("creation_timestamp", &Joc::creation_timestamp),
             make_column("stacks_state", &Joc::stacks_state)
+
         ),
 
         make_table("players",
@@ -52,7 +54,7 @@ inline auto initStorage()
             make_column("game_id", &Jucator::game_id),
             make_column("user_id", &Jucator::user_id),
             make_column("seat_index", &Jucator::seat_index),
-            make_column("cards_played", &Jucator::hand),
+            make_column("hand_state", &Jucator::hand),
             foreign_key(&Jucator::game_id).references(&Joc::id),
             foreign_key(&Jucator::user_id).references(&User::id)
         ),

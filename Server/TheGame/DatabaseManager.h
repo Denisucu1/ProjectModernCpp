@@ -44,8 +44,9 @@ inline auto initStorage()
             make_column("difficulty", &Joc::difficulty),
             make_column("max_players", &Joc::max_players),
             make_column("deck_state", &Joc::deck_state),
-            make_column("creation_timestamp", &Joc::creation_timestamp),
-            make_column("stacks_state", &Joc::stacks_state)
+            make_column("stacks_state", &Joc::stacks_state),
+            make_column("first_player_score", &Joc::first_player_score),
+            make_column("creation_timestamp", &Joc::creation_timestamp)
 
         ),
 
@@ -75,7 +76,8 @@ inline auto initStorage()
             make_column("message", &Chat::message),
             foreign_key(&Chat::player_id).references(&Jucator::id),
             foreign_key(&Chat::game_id).references(&Joc::id)
-        )
+        ),
+        make_index("idx_match_status_score", &Joc::status, &Joc::first_player_score)
     );
 }
 

@@ -16,7 +16,7 @@ public:
 
     void startGame(int matchId, const std::vector<int>& userIds);
     void updateMatchState(int matchId, const std::string& newStacksState, const std::string& newDeckState, int nextPlayerId);
-
+    void checkForTimeouts();
 };
 
 #endif // MATCH_SERVICE_H

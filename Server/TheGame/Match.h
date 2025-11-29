@@ -10,12 +10,15 @@ class Joc {
 public:
 
     int id = 0;
+    int max_players = 5;
+
     std::string status = "Waiting for players";
     std::string difficulty = "Normal";
-    int max_players = 5;
     std::string deck_state = "";
     std::string stacks_state = "[1, 1, 100, 100]";
     std::int64_t creation_timestamp = 0;
+
+    double first_player_score = 1.0;
 
 public:
     Joc() = default;
@@ -50,6 +53,11 @@ public:
         return creation_timestamp;
     }
 
+    double get_first_player_score() const
+    {
+        return first_player_score;
+    }
+
 };
 
 class Jucator {
@@ -61,7 +69,6 @@ public:
     int game_id = 0;
     int seat_index = 0;
     std::string hand = "";
-    std::string cards_played = "";
 
 public:
     Jucator() = default;
@@ -86,10 +93,7 @@ public:
     { 
         return hand; 
     }
-    const std::string& get_cards_played() const 
-    { 
-        return cards_played; 
-    }
+    
 };
 
 class Move {

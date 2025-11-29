@@ -31,15 +31,21 @@ std::optional<int> MatchService::findOrCreateMatch(int requestingUserId)
     catch (...) {
         return std::nullopt;
     }
-    int userScore = (int)std::round(requestingProfile->performance_score);
+    double userScore = requestingProfile->performance_score;
+
+    int roundedUserScore = (int)std::round(userScore);
 
     storage.update_all(
         set(c(&User::LastActivity) = currentTime),
         where(is_equal(&User::id, requestingUserId))
     );
 
+    int lowerScore = std::max(1, roundedUserScore - MAX_SCORE_DIFFERENCE);
+    int upperScore = std::min(5, roundedUserScore + MAX_SCORE_DIFFERENCE);
+
     auto waitingMatches = storage.get_all<Joc>(
-        where(is_equal(&Joc::status, "Waiting for players"))
+        where(is_equal(&Joc::status, "Waiting for players") and
+            between(&Joc::first_player_score, lowerScore, upperScore))
     );
 
     for (auto& match : waitingMatches) {
@@ -51,51 +57,47 @@ std::optional<int> MatchService::findOrCreateMatch(int requestingUserId)
         if (matchPlayers.size() >= MAX_PLAYERS)
             continue;
 
-        int firstPlayerUserId = matchPlayers.front().user_id;
-        std::optional<Profile> firstPlayerProfile = storage.get_all<Profile>(is_equal(&Profile::User_Id, firstPlayerUserId)).front();
-        int firstPlayerScore = (int)std::round(firstPlayerProfile->performance_score);
+        Jucator newPlayer;
+        newPlayer.id = 0;
+        newPlayer.user_id = requestingUserId;
+        newPlayer.game_id = match.id;
+        newPlayer.seat_index = (int)matchPlayers.size() + 1;
+        newPlayer.hand = "";
+        storage.insert(newPlayer);
 
-        if (std::abs(userScore - firstPlayerScore) <= MAX_SCORE_DIFFERENCE) 
+        if (matchPlayers.size() + 1 >= MIN_PLAYERS_TO_START)
         {
+            std::vector<int> userIds;
+            for (const auto& mp : matchPlayers) userIds.push_back(mp.user_id);
+            userIds.push_back(requestingUserId);
 
-            Jucator newPlayer;
-            newPlayer.id = 0;
-            newPlayer.user_id = requestingUserId;
-            newPlayer.game_id = match.id;
-            newPlayer.seat_index = (int)matchPlayers.size() + 1;
-            newPlayer.hand = "";
-            newPlayer.cards_played = "";
-            storage.insert(newPlayer);
-
-            if (matchPlayers.size() + 1 >= MIN_PLAYERS_TO_START) 
-            {
-                std::vector<int> userIds;
-                for (const auto& mp : matchPlayers) userIds.push_back(mp.user_id);
-                userIds.push_back(requestingUserId);
-
-                this->startGame(match.id, userIds);
-            }
-            return match.id;
+            this->startGame(match.id, userIds);
         }
+        return match.id;
     }
 
     Joc newMatch;
+
     newMatch.id = 0;
     newMatch.status = "Waiting for players";
     newMatch.difficulty = "Normal";
     newMatch.max_players = MAX_PLAYERS;
     newMatch.deck_state = "";
     newMatch.stacks_state = "[1, 1, 100, 100]";
+
+    newMatch.first_player_score = userScore;
+    newMatch.creation_timestamp = currentTime;
+
     int newMatchId = storage.insert(newMatch);
     
 
     Jucator newPlayer;
+
     newPlayer.id = 0;
     newPlayer.user_id = requestingUserId;
     newPlayer.game_id = newMatchId;
     newPlayer.seat_index = 1;
     newPlayer.hand = "";
-    newPlayer.cards_played = "";
     storage.insert(newPlayer);
 
     return newMatchId;
@@ -142,5 +144,33 @@ void MatchService::updateMatchState(int matchId, const std::string& newStacksSta
     }
     catch (const std::exception& e) {
         std::cerr << "Eroare la updateMatchState pentru Match ID " << matchId << ": " << e.what() << std::endl;
+    }
+}
+
+void MatchService::checkForTimeouts()
+{
+    auto& storage = getStorage();
+    long long currentTime = duration_cast<seconds>(system_clock::now().time_since_epoch()).count();
+
+    auto timedOutMatches = storage.get_all<Joc>(
+        where(
+            is_equal(&Joc::status, "Waiting for players") and
+            less_than(&Joc::creation_timestamp, currentTime - MATCHMAKING_TIMEOUT_SECONDS))
+    );
+
+    for (auto& match : timedOutMatches) 
+    {
+        auto matchPlayers = storage.get_all<Jucator>(
+            where(is_equal(&Jucator::game_id, match.id))
+        );
+
+        if (matchPlayers.size() >= MIN_PLAYERS_TO_START) {
+            std::vector<int> userIds;
+            for (const auto& mp : matchPlayers) 
+                userIds.push_back(mp.user_id);
+
+            this->startGame(match.id, userIds);
+            std::cout << "Meciul ID " << match.id << " a pornit automat dupa de 30s." << std::endl;
+        }
     }
 }

@@ -1,57 +1,57 @@
 #include "PlayPiles.h"
+#include <stdexcept>
 
-PlayPiles::PlayPiles() : m_ascendingColumn1(1), m_ascendingColumn2(1),
-	m_descendingColumn1(100), m_descendingColumn2(100)
+PlayPiles::PlayPiles()
 {
+	m_stacks[ascend_1] = 1;
+	m_stacks[ascend_2] = 1;
+	m_stacks[descend_1] = 100;
+	m_stacks[descend_2] = 100;
 }
 
-std::uint8_t PlayPiles::get_ascending_column1() const
+std::uint8_t PlayPiles::GetStackValue(StackIndex index) const
 {
-	return m_ascendingColumn1;
+	if (index < 0 || index >= m_stacks.size())
+		throw std::out_of_range("Invalid stack index requested.");
+
+	return m_stacks[index];
 }
 
-std::uint8_t PlayPiles::get_ascending_column2() const
+void PlayPiles::PlayCardOnStack(StackIndex index, std::uint8_t cardValue)
 {
-	return m_ascendingColumn2;
+
+	if (index < 0 || index >= m_stacks.size()) 
+		throw std::out_of_range("Invalid stack index for playing card.");
+
+	m_stacks[index] = cardValue;
 }
 
-std::uint8_t PlayPiles::get_descending_column1() const
+bool PlayPiles::IsMoveValid(StackIndex index, const Card& card) const
 {
-	return m_descendingColumn1;
+	std::uint8_t topCard = m_stacks[index];
+	std::uint8_t cardValue = card.GetValue();
+
+	if (index == ascend_1 || index == ascend_2)
+	{
+	
+		if (cardValue > topCard) 
+			return true;
+		
+		if (cardValue + 10 == topCard) 
+			return true;
+	
+		return false;
+	}
+	else if (index == descend_1 || index == descend_2)
+	{
+		
+		if (cardValue < topCard) 
+			return true;
+		if (cardValue - 10 == topCard) 
+			return true;
+		
+		return false;
+	}
+
+	return false;
 }
-
-std::uint8_t PlayPiles::get_descending_column2() const
-{
-	return m_descendingColumn2;
-}
-
-bool PlayPiles::is_ascend1(const Card& card) const
-{
-	if (card.GetValue() + 10 == m_ascendingColumn1)
-		return true;
-	return card.GetValue() >= m_ascendingColumn1;
-}
-
-bool PlayPiles::is_ascend2(const Card& card) const
-{
-	if (card.GetValue() + 10 == m_ascendingColumn2)
-		return true;
-	return card.GetValue() >= m_ascendingColumn2;
-}
-
-bool PlayPiles::is_descend1(const Card& card) const
-{
-	if (card.GetValue() - 10 == m_descendingColumn1)
-		return true;
-	return card.GetValue() <= m_descendingColumn1;
-}
-
-bool PlayPiles::is_descend2(const Card& card) const
-{
-	if (card.GetValue() - 10 == m_descendingColumn2)
-		return true;
-	return card.GetValue() <= m_descendingColumn2;
-}
-
-
-

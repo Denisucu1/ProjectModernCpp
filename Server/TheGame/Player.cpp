@@ -4,22 +4,22 @@ Player::Player(std::string name_string, int id) : m_name(name_string), m_score(0
 {
 }
 
-void Player::set_deck(std::vector<std::uint8_t> deck) 
+void Player::SetDeck(std::vector<std::uint8_t> deck) 
 {
 	m_deck = deck;
 }
 
-std::vector<std::uint8_t> Player::get_deck() const
+std::vector<std::uint8_t> Player::GetDeck() const
 {
 	return m_deck;
 }
 
-void Player::set_score(std::uint8_t score)
+void Player::SetScore(std::uint8_t score)
 {
 	m_score = score;
 }
 
-std::uint8_t Player::get_score() const
+std::uint8_t Player::GetScore() const
 {
 	return m_score;
 }

@@ -15,13 +15,13 @@ public:
 		descend_2 = 3
 	};
 
-	std::uint8_t get_stack_value(StackIndex index) const;
+	std::uint8_t GetStackValue(StackIndex index) const;
 
 	//verificare daca pot adauga
 
-	void play_card_on_stack(StackIndex index, std::uint8_t cardValue);
+	void PlayCardOnStack(StackIndex index, std::uint8_t cardValue);
 
-	bool is_move_valid(StackIndex index, const Card& card) const;
+	bool IsMoveValid(StackIndex index, const Card& card) const;
 
 	//adaugare carti in gramezi
 

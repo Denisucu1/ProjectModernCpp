@@ -12,11 +12,11 @@
 class MatchService {
 public:
 
-    std::optional<int> findOrCreateMatch(int requestingUserId);
+    std::optional<int> FindOrCreateMatch(int requestingUserId);
 
-    void startGame(int matchId, const std::vector<int>& userIds);
-    void updateMatchState(int matchId, const std::string& newStacksState, const std::string& newDeckState, int nextPlayerId);
-    void checkForTimeouts();
+    void StartGame(int matchId, const std::vector<int>& userIds);
+    void UpdateMatchState(int matchId, const std::string& newStacksState, const std::string& newDeckState, int nextPlayerId);
+    void CheckForTimeouts();
 };
 
 #endif // MATCH_SERVICE_H

@@ -10,13 +10,13 @@ public:
 
 	//void MixPile();
 
-	Card draw_a_card();
+	Card DrawACard();
 	
-	bool is_empty() const;
+	bool IsEmpty() const;
 private:
 
 	std::vector<Card> m_drawPile;
 	
-	void mix_pile(); //apelata fie din constructor, fie dintr o functie de reset
+	void MixPile(); //apelata fie din constructor, fie dintr o functie de reset
 };
 

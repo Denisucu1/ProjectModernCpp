@@ -33,11 +33,11 @@ class GameService
 public:
 	GameService();
 
-	std::optional<game_id> find_game(user_id userId, const std::string& username, int desiredPlayerCount);
-	std::optional<game_id> get_player_game_status(user_id userId);
-	std::optional<MatchData> get_match_state(int matchIdInt);
+	std::optional<game_id> FindGame(user_id userId, const std::string& username, int desiredPlayerCount);
+	std::optional<game_id> GetPlayerGameStatus(user_id userId);
+	std::optional<MatchData> GetMatchState(int matchIdInt);
 
-	Game& get_game(const game_id gameId);
+	Game& GetGame(const game_id gameId);
 
 private:
 
@@ -55,9 +55,9 @@ private:
 	std::map<user_id, int> m_player_in_queue_map_;
 	std::map<user_id, game_id> m_player_game_map_;
 
-	void create_game(std::list<WaitingPlayer>& players, int playerCount);
+	void CreateGame(std::list<WaitingPlayer>& players, int playerCount);
 
-	MatchData generate_match_data(const Game& game);
+	MatchData GenerateMatchData(const Game& game);
 
 	long long m_game_id_counter_ = 0;
 };

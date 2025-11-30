@@ -18,27 +18,27 @@ public:
 public:
     User() = default;
 
-    int get_id() const 
+    int GetId() const 
     { 
         return id; 
     }
-    const std::string& get_username() const 
+    const std::string& GetUsername() const 
     { 
         return username; 
     }
-    const std::string& get_password() const 
+    const std::string& GetPassword() const 
     { 
         return password; 
     }
-    const std::string& get_SessionToken() const 
+    const std::string& GetSessionToken() const 
     { 
         return SessionToken; 
     }
-    std::int64_t get_TokenExpiration() const 
+    std::int64_t GetTokenExpiration() const 
     { 
         return TokenExpiration; 
     }
-    std::int64_t get_LastActivity() const 
+    std::int64_t GetLastActivity() const 
     { 
         return LastActivity; 
     }
@@ -50,41 +50,41 @@ class Profile {
 public:
 
     int id = 0;
-    int User_Id = 0;
-    double Hours_Played = 0.0;
-    int Games_Played = 0;
-    int Games_Won = 0;
-    int Cards_left_on_losses = 0;
+    int user_id = 0;
+    double hours_played = 0.0;
+    int games_played = 0;
+    int games_won = 0;
+    int cards_left_on_losses = 0;
     double performance_score = 1.0;
 
 public:
     Profile() = default;
 
-    int get_id() const 
+    int GetId() const 
     { 
         return id; 
     }
-    int get_User_Id() const 
+    int GetUserId() const 
     { 
-        return User_Id; 
+        return user_id; 
     }
-    double get_Hours_Played() const 
+    double GetHoursPlayed() const 
     { 
-        return Hours_Played; 
+        return hours_played; 
     }
-    int get_Games_Played() const 
+    int GetGamesPlayed() const 
     { 
-        return Games_Played; 
+        return games_played; 
     }
-    int get_Games_Won() const 
+    int GetGamesWon() const 
     { 
-        return Games_Won; 
+        return games_won; 
     }
-    int get_Cards_left_on_losses() const 
+    int GetCardsLeftOnLosses() const 
     { 
-        return Cards_left_on_losses; 
+        return cards_left_on_losses; 
     }
-    double get_performance_score() const 
+    double GetPerformanceScore() const 
     { 
         return performance_score; 
     }

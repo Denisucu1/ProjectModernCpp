@@ -19,14 +19,14 @@ constexpr int MIN_PLAYERS_TO_START = 2;
 constexpr int MAX_PLAYERS = 5;                 
 constexpr int MAX_SCORE_DIFFERENCE = 1;
 
-std::optional<int> MatchService::findOrCreateMatch(int requestingUserId)
+std::optional<int> MatchService::FindOrCreateMatch(int requestingUserId)
 {
     auto& storage = getStorage();
     long long currentTime = duration_cast<seconds>(system_clock::now().time_since_epoch()).count();
 
     std::optional<Profile> requestingProfile;
     try {
-        requestingProfile = storage.get_all<Profile>(is_equal(&Profile::User_Id, requestingUserId)).front();
+        requestingProfile = storage.get_all<Profile>(is_equal(&Profile::user_id, requestingUserId)).front();
     }
     catch (...) {
         return std::nullopt;
@@ -71,7 +71,7 @@ std::optional<int> MatchService::findOrCreateMatch(int requestingUserId)
             for (const auto& mp : matchPlayers) userIds.push_back(mp.user_id);
             userIds.push_back(requestingUserId);
 
-            this->startGame(match.id, userIds);
+            this->StartGame(match.id, userIds);
         }
         return match.id;
     }
@@ -103,7 +103,7 @@ std::optional<int> MatchService::findOrCreateMatch(int requestingUserId)
     return newMatchId;
 }
 
-void MatchService::startGame(int matchId, const std::vector<int>& userIds)
+void MatchService::StartGame(int matchId, const std::vector<int>& userIds)
 {
     auto& storage = getStorage();
 
@@ -129,7 +129,7 @@ void MatchService::startGame(int matchId, const std::vector<int>& userIds)
 
 }
 
-void MatchService::updateMatchState(int matchId, const std::string& newStacksState, const std::string& newDeckState, int nextPlayerId)
+void MatchService::UpdateMatchState(int matchId, const std::string& newStacksState, const std::string& newDeckState, int nextPlayerId)
 {
     auto& storage = getStorage();
 
@@ -147,7 +147,7 @@ void MatchService::updateMatchState(int matchId, const std::string& newStacksSta
     }
 }
 
-void MatchService::checkForTimeouts()
+void MatchService::CheckForTimeouts()
 {
     auto& storage = getStorage();
     long long currentTime = duration_cast<seconds>(system_clock::now().time_since_epoch()).count();
@@ -169,7 +169,7 @@ void MatchService::checkForTimeouts()
             for (const auto& mp : matchPlayers) 
                 userIds.push_back(mp.user_id);
 
-            this->startGame(match.id, userIds);
+            this->StartGame(match.id, userIds);
             std::cout << "Meciul ID " << match.id << " a pornit automat dupa de 30s." << std::endl;
         }
     }

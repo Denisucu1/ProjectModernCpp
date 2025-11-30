@@ -11,7 +11,7 @@
 using namespace std::chrono;
 using namespace sqlite_orm;
 
-bool UserService::registerUser(const std::string& username, const std::string& password)
+bool UserService::RegisterUser(const std::string& username, const std::string& password)
 {
     auto& storage = getStorage();
 
@@ -27,7 +27,7 @@ bool UserService::registerUser(const std::string& username, const std::string& p
                 int newUserId = storage.insert(newUser);
 
                 Profile newProfile;
-                newProfile.User_Id = newUserId;
+                newProfile.user_id = newUserId;
                 storage.insert(newProfile);
 
                 return true;
@@ -41,7 +41,7 @@ bool UserService::registerUser(const std::string& username, const std::string& p
         }
 }
 
-std::optional<int> UserService::authenticate(const std::string& username, const std::string& password)
+std::optional<int> UserService::Authenticate(const std::string& username, const std::string& password)
 {
     auto& storage = getStorage();
 
@@ -55,13 +55,13 @@ std::optional<int> UserService::authenticate(const std::string& username, const 
     return users.front().id;
 }
 
-void UserService::updateStats(int userId, bool won, int cards_in_hand_at_loss, int time_played_min)
+void UserService::UpdateStats(int userId, bool won, int cards_in_hand_at_loss, int time_played_min)
 {
     auto& storage = getStorage();
 
     try {
         storage.transaction([&]()-> bool {
-            auto profiles = storage.get_all<Profile>(is_equal(&Profile::User_Id, userId));
+            auto profiles = storage.get_all<Profile>(is_equal(&Profile::user_id, userId));
 
             if (profiles.empty()) {
                 std::cerr << "Eroare: Profile pentru User ID " << userId << " nu a fost gasit." << std::endl;
@@ -70,19 +70,19 @@ void UserService::updateStats(int userId, bool won, int cards_in_hand_at_loss, i
 
             Profile& profile = profiles.front();
 
-            profile.Games_Played += 1;
-            profile.Hours_Played += (double)time_played_min / 60.0;
+            profile.games_played += 1;
+            profile.hours_played += (double)time_played_min / 60.0;
 
             if (won) {
-                profile.Games_Won += 1;
+                profile.games_won += 1;
             }
             else {
-                profile.Cards_left_on_losses += cards_in_hand_at_loss;
+                profile.cards_left_on_losses += cards_in_hand_at_loss;
             }
 
             storage.update(profile); 
 
-            this->calculatePerformanceScore(userId);
+            this->CalculatePerformanceScore(userId);
             return true;
             });
 
@@ -92,26 +92,26 @@ void UserService::updateStats(int userId, bool won, int cards_in_hand_at_loss, i
     }
 }
 
-int UserService::calculatePerformanceScore(int userId) 
+int UserService::CalculatePerformanceScore(int userId) 
 {
     auto& storage = getStorage();
     try {
         
-        auto profiles = storage.get_all<Profile>(is_equal(&Profile::User_Id, userId));
+        auto profiles = storage.get_all<Profile>(is_equal(&Profile::user_id, userId));
         if (profiles.empty()) {
             std::cerr << "Eroare: Profile pentru User ID " << userId << " nu a fost gasit la calcul." << std::endl;
             return 1;
         }
         Profile& profile = profiles.front();
 
-        if (profile.Games_Played == 0)
+        if (profile.games_played == 0)
             return 1;
 
-        float win_rate = (float)profile.Games_Won / profile.Games_Played;
-        int games_lost = profile.Games_Played - profile.Games_Won;
+        float win_rate = (float)profile.games_won / profile.games_played;
+        int games_lost = profile.games_played - profile.games_won;
 
         float average_loss_cards = (games_lost > 0)
-            ? float(profile.Cards_left_on_losses) / games_lost
+            ? float(profile.cards_left_on_losses) / games_lost
             : 0.0f;
 
         float raw_score = (win_rate * 5.0f) - (average_loss_cards / 10.0f);
@@ -130,11 +130,11 @@ int UserService::calculatePerformanceScore(int userId)
     }
 }
 
-std::optional<Profile> UserService::getProfileById(int userId) 
+std::optional<Profile> UserService::GetProfileById(int userId) 
 {
     auto& storage = getStorage();
     try {
-        auto profiles = storage.get_all<Profile>(is_equal(&Profile::User_Id, userId));
+        auto profiles = storage.get_all<Profile>(is_equal(&Profile::user_id, userId));
         if (profiles.empty()) {
             return std::nullopt;
         }
@@ -145,7 +145,7 @@ std::optional<Profile> UserService::getProfileById(int userId)
     }
 }
 
-std::optional<std::string> UserService::generateAndStoreToken(int userId)
+std::optional<std::string> UserService::GenerateAndStoreToken(int userId)
 {
     auto& storage = getStorage();
 
@@ -177,7 +177,7 @@ std::optional<std::string> UserService::generateAndStoreToken(int userId)
     }
 }
 
-std::optional<int> UserService::getUserIdByToken(const std::string& token)
+std::optional<int> UserService::GetUserIdByToken(const std::string& token)
 {
     auto& storage = getStorage();
     long long current_time = duration_cast<seconds>(system_clock::now().time_since_epoch()).count();

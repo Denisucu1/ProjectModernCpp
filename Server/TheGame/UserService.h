@@ -9,15 +9,15 @@
 
 class UserService {
 public:
-    bool registerUser(const std::string& username, const std::string& password);
-    std::optional<int> authenticate(const std::string& username, const std::string& password);
-    void updateStats(int userId, bool won, int cards_in_hand_at_loss, int time_played_min);
-    int calculatePerformanceScore(int userId);
+    bool RegisterUser(const std::string& username, const std::string& password);
+    std::optional<int> Authenticate(const std::string& username, const std::string& password);
+    void UpdateStats(int userId, bool won, int cards_in_hand_at_loss, int time_played_min);
+    int CalculatePerformanceScore(int userId);
 
-    std::optional <Profile> getProfileById(int userId);
+    std::optional <Profile> GetProfileById(int userId);
 
-    std::optional<std::string> generateAndStoreToken(int userId);
-    std::optional<int> getUserIdByToken(const std::string& token);
+    std::optional<std::string> GenerateAndStoreToken(int userId);
+    std::optional<int> GetUserIdByToken(const std::string& token);
 };
 
 #endif // USER_SERVICE_H

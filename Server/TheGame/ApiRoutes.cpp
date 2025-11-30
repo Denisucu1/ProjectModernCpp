@@ -60,7 +60,7 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
             std::string username = data["username"].s();
             std::string password = data["password"].s();
 
-            std::optional<int> userId = userSvc.authenticate(username, password);
+            std::optional<int> userId = userSvc.Authenticate(username, password);
 
             if (userId.has_value()) {
                 crow::json::wvalue resp_data;
@@ -100,7 +100,7 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
             std::string username = data["username"];
             std::string password = std::string(data["password"]);
 
-            if (userSvc.registerUser(username, password)) {
+            if (userSvc.RegisterUser(username, password)) {
                 res.code = 201;
                 res.body = "{\"success\": true, \"message\": \"User registered successfully!\"}";
             }
@@ -139,7 +139,7 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
             return res;
         }
 
-        auto gameId = gameSvc.find_game(userId, username, playerCount);
+        auto gameId = gameSvc.FindGame(userId, username, playerCount);
 
         if (gameId.has_value()) {
             res.code = 200;
@@ -158,7 +158,7 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
         crow::response res;
         res.add_header("Access-Control-Allow-Origin", "*");
 
-        auto gameId = gameSvc.get_player_game_status(userId);
+        auto gameId = gameSvc.GetPlayerGameStatus(userId);
 
         if (gameId.has_value()) {
             res.code = 200;
@@ -175,7 +175,7 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
     CROW_ROUTE(app, "/api/match/<int>").methods("GET"_method)
         ([&gameSvc](const crow::request& req, int matchId) {
 
-        auto matchOpt = gameSvc.get_match_state(matchId);
+        auto matchOpt = gameSvc.GetMatchState(matchId);
 
         if (!matchOpt.has_value()) {
             crow::json::wvalue errorRes;

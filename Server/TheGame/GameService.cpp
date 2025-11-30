@@ -10,7 +10,7 @@ GameService::GameService()
 	m_waiting_queues_[5] = std::list<WaitingPlayer>();
 }
 
-std::optional<game_id> GameService::find_game(user_id userId, const std::string& username, int desiredPlayerCount)
+std::optional<game_id> GameService::FindGame(user_id userId, const std::string& username, int desiredPlayerCount)
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
 
@@ -62,7 +62,7 @@ std::optional<game_id> GameService::find_game(user_id userId, const std::string&
 			queue.pop_front();
 		}
 
-		create_game(gamePlayers, gamePlayers.size());
+		CreateGame(gamePlayers, gamePlayers.size());
 
 		return m_player_game_map_[userId];
 	}
@@ -70,7 +70,7 @@ std::optional<game_id> GameService::find_game(user_id userId, const std::string&
 	return std::nullopt;
 }
 
-std::optional<game_id> GameService::get_player_game_status(user_id userId)
+std::optional<game_id> GameService::GetPlayerGameStatus(user_id userId)
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
 	if (m_player_game_map_.contains(userId))
@@ -81,7 +81,7 @@ std::optional<game_id> GameService::get_player_game_status(user_id userId)
 	return std::nullopt;
 }
 
-Game& GameService::get_game(const game_id gameId)
+Game& GameService::GetGame(const game_id gameId)
 {
 	try
 	{
@@ -94,12 +94,12 @@ Game& GameService::get_game(const game_id gameId)
 	}
 }
 
-std::optional<MatchData> GameService::get_match_state(int matchIdInt)
+std::optional<MatchData> GameService::GetMatchState(int matchIdInt)
 {
 	return std::optional<MatchData>();
 }
 
-void GameService::create_game(std::list<WaitingPlayer>& players, int playerCount)
+void GameService::CreateGame(std::list<WaitingPlayer>& players, int playerCount)
 {
 	game_id newGameId = "game_" + std::to_string(m_game_id_counter_++);
 
@@ -116,7 +116,7 @@ void GameService::create_game(std::list<WaitingPlayer>& players, int playerCount
 	}
 }
 
-MatchData GameService::generate_match_data(const Game& game)
+MatchData GameService::GenerateMatchData(const Game& game)
 {
 	MatchData state;
 	state.match_id = 0;

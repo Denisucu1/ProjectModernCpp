@@ -7,13 +7,13 @@ class Player
 public:
 	Player(std::string name, int id);
 
-	void set_deck(std::vector<std::uint8_t> deck);
+	void SetDeck(std::vector<std::uint8_t> deck);
 
-	std::vector<std::uint8_t> get_deck() const;
+	void SetScore(std::uint8_t score);
 
-	void set_score(std::uint8_t score);
+	std::vector<std::uint8_t> GetDeck() const;
 
-	std::uint8_t get_score() const;
+	std::uint8_t GetScore() const;
 
 private:
 

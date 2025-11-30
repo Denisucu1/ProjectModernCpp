@@ -8,11 +8,11 @@ class Game
 public:
 	Game(std::vector<Player> players);
 
-	void start_game();
+	void StartGame();
 
-	void game_end_conditions();
+	void GameEndConditions();
 
-	void next_player();
+	void NextPlayer();
 private:
 	DrawPile m_cards;
 	std::vector<Player> m_players;

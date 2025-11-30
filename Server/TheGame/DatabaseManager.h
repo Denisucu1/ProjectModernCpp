@@ -27,13 +27,13 @@ inline auto initStorage()
 
         make_table("profiles",
             make_column("id", &Profile::id, primary_key().autoincrement()),
-            make_column("user_id", &Profile::User_Id,unique()),
-			make_column("hours_played", &Profile::Hours_Played),
-			make_column("games_played", &Profile::Games_Played),
-			make_column("games_won", &Profile::Games_Won),
-            make_column("cards_left_on_losses", &Profile::Cards_left_on_losses),
+            make_column("user_id", &Profile::user_id,unique()),
+			make_column("hours_played", &Profile::hours_played),
+			make_column("games_played", &Profile::games_played),
+			make_column("games_won", &Profile::games_won),
+            make_column("cards_left_on_losses", &Profile::cards_left_on_losses),
             make_column("performance_score", &Profile::performance_score),
-			foreign_key(&Profile::User_Id).references(&User::id)
+			foreign_key(&Profile::user_id).references(&User::id)
 
             
         ),

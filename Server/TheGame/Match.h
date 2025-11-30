@@ -23,37 +23,37 @@ public:
 public:
     Joc() = default;
 
-    int get_id() const 
+    int GetId() const 
     { 
         return id; 
     }
-    const std::string& get_status() const 
+    const std::string& GetStatus() const 
     { 
         return status; 
     }
-    const std::string& get_difficulty() const 
+    const std::string& GetDifficulty() const 
     { 
         return difficulty; 
     }
-    int get_max_players() const 
+    int GetMaxPlayers() const 
     { 
         return max_players; 
     }
-    const std::string& get_deck_state() const 
+    const std::string& GetDeckState() const 
     { 
         return deck_state; 
     }
-    const std::string& get_stacks_state() const 
+    const std::string& GetStacksState() const 
     { 
         return stacks_state; 
     }
 
-    std::int64_t get_creation_timestamp() const
+    std::int64_t GetCreationTimestamp() const
     {
         return creation_timestamp;
     }
 
-    double get_first_player_score() const
+    double GetFirstPlayerScore() const
     {
         return first_player_score;
     }
@@ -73,23 +73,23 @@ public:
 public:
     Jucator() = default;
 
-    int get_id() const 
+    int GetId() const 
     { 
         return id; 
     }
-    int get_user_id() const 
+    int GetUserId() const 
     { 
         return user_id; 
     }
-    int get_game_id() const 
+    int GetGameId() const 
     { 
         return game_id; 
     }
-    int get_seat_index() const 
+    int GetSeatIndex() const 
     { 
         return seat_index; 
     }
-    const std::string& get_hand() const 
+    const std::string& GetHand() const 
     { 
         return hand; 
     }
@@ -108,19 +108,19 @@ public:
 public:
     Move() = default;
 
-    int get_id() const 
+    int GetId() const 
     { 
         return id; 
     }
-    int get_player_id() const 
+    int GetPlayerId() const 
     { 
         return player_id; 
     }
-    int get_game_id() const 
+    int GetGameId() const 
     { 
         return game_id; 
     }
-    const std::string& get_cards_played() const 
+    const std::string& GetCardsPlayed() const 
     { 
         return cards_played; 
     }
@@ -138,19 +138,19 @@ public:
 public:
     Chat() = default;
 
-    int get_id() const 
+    int GetId() const 
     { 
         return id; 
     }
-    int get_player_id() const 
+    int GetPlayerId() const 
     { 
         return player_id; 
     }
-    int get_game_id() const 
+    int GetGameId() const 
     { 
         return game_id; 
     }
-    const std::string& get_message() const 
+    const std::string& GetMessage() const 
     { 
         return message; 
     }

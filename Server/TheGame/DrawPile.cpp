@@ -9,25 +9,25 @@ DrawPile::DrawPile()
 		m_drawPile.push_back(Card(value));
 	}
 
-	mix_pile();
+	MixPile();
 }
 
 
-void DrawPile::mix_pile()
+void DrawPile::MixPile()
 {
 	std::random_device rd;
 	std::mt19937 g(rd());
 	std::shuffle(m_drawPile.begin(), m_drawPile.end(), g);
 }
 
-Card DrawPile::draw_a_card()
+Card DrawPile::DrawACard()
 {
 	Card card = m_drawPile.back();
 	m_drawPile.pop_back();
 	return card;
 }
 
-bool DrawPile::is_empty() const
+bool DrawPile::IsEmpty() const
 {
 	return m_drawPile.empty();
 }

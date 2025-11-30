@@ -56,3 +56,34 @@ Abi: ae5e05cd44a11f8124f4db37b8b283ba390a8c517ebf0c3262e9006ea094b9da
 Description: SQLite ORM light header only library for modern C++
 Status: install ok installed
 
+Package: abseil
+Version: 20250512.1
+Port-Version: 1
+Depends: vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-windows
+Multi-Arch: same
+Abi: d86a2cc5a787fab4020046fe19b10d942d62c0ba4c5a90c6ba7a2b269edb511d
+Description: Abseil is an open-source collection of C++ library code designed to augment the C++ standard library. The Abseil library code is collected from Google's own C++ code base, has been extensively tested and used in production, and is the same code we depend on in our daily coding lives.
+    In some cases, Abseil provides pieces missing from the C++ standard; in others, Abseil provides alternatives to the standard for special needs we've found through usage in the Google code base. We denote those cases clearly within the library code we provide you.
+    Abseil is not meant to be a competitor to the standard library; we've just found that many of these utilities serve a purpose within our code base, and we now want to provide those resources to the C++ community as a whole.
+Status: install ok installed
+
+Package: utf8-range
+Version: 5.29.5
+Depends: abseil, vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-windows
+Multi-Arch: same
+Abi: c50b524963415775db677fe09d6db38caa9a7d14c972e7bc7b9de4beaacdb4d9
+Description: Fast UTF-8 validation with Range algorithm (NEON+SSE4+AVX2)
+Status: install ok installed
+
+Package: protobuf
+Version: 5.29.5
+Port-Version: 2
+Depends: abseil, protobuf, utf8-range, vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-windows
+Multi-Arch: same
+Abi: 580009a562377c91a4a387afc0d7d67b8083500cf073e36d19630204105849e1
+Description: Google's language-neutral, platform-neutral, extensible mechanism for serializing structured data.
+Status: install ok installed
+

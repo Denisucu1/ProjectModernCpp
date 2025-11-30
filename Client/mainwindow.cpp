@@ -150,25 +150,32 @@ void MainWindow::on_loginButton_clicked()
 void MainWindow::onLoginReply(QNetworkReply* reply)
 {
     ui->loginButton->setEnabled(true);
+
     if (reply->error() != QNetworkReply::NoError) {
         QMessageBox::critical(this, "Eroare Retea", "Eroare de conexiune: " + reply->errorString());
         reply->deleteLater();
         return;
     }
+
     QByteArray responseData = reply->readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
     QJsonObject jsonObj = jsonDoc.object();
 
     if (jsonObj["success"].toBool()) {
         QString username = ui->usernameLineEdit->text();
-        MainMenu* menu = new MainMenu(username, this);
+        MainMenu* menu = new MainMenu(username, nullptr);
+
+        menu->setAttribute(Qt::WA_DeleteOnClose);
+
         menu->show();
+
         this->close();
     }
     else {
         QString errorMsg = jsonObj["message"].toString();
         QMessageBox::warning(this, "Eroare Login", "Login esuat: " + errorMsg);
     }
+
     reply->deleteLater();
 }
 

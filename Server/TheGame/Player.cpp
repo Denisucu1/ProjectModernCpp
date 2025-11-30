@@ -4,9 +4,9 @@ Player::Player(std::string name_string, int id) : m_name(name_string), m_score(0
 {
 }
 
-void Player::set_deck(std::vector<std::uint8_t> deck) const
+void Player::set_deck(std::vector<std::uint8_t> deck) 
 {
-	deck = m_deck;
+	m_deck = deck;
 }
 
 std::vector<std::uint8_t> Player::get_deck() const

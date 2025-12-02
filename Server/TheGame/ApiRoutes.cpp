@@ -225,5 +225,54 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
         return crow::response(200, res);
             });
 
+	CROW_WEBSOCKET_ROUTE(app, "/ws/game")
+        .onopen([&](crow::websocket::connection& conn) {
+		std::cout << "WebSocket connection opened." << std::endl;
+    })
+        .onclose([&](crow::websocket::connection& conn, const std::string& reason) {
+		std::cout << "WebSocket connection closed: " << reason << std::endl;
+            })
+        .onmessage([&](crow::websocket::connection& conn, const std::string& data, bool isBinary) {
+        if (isBinary)
+			return; //aici se vor face mesajele din timpul meciului cu protocol binar folosind protobuf
+        try {
+            auto msg = crow::json::load(data);
+            if (!msg || !msg.has("type")) {
+                conn.send_text("{\"error\": \"Invalid JSON or missing file\"}");
+                return;
+            }
+            std::string type = msg["type"].s();
+            if (type == "login")
+            {
+                if (msg.has("userId"))
+                {
+                    int userId = msg["userId"].i();
+                    if (!userSvc.GetProfileById(userId))
+                    {
+                        conn.close();
+						std::cout << "WebSocket connection closed: User does not exist" << std::endl;
+						return;
+                    }
+                    gameSvc.addConnection(userId, &conn);
+                    conn.send_text("{\"status\": \"logged_in\"}");
+					std::cout << "WebSocket user " << userId << " logged in via WebSocket." << std::endl;
+
+					crow::json::wvalue resp;
+                    resp["status"] = "connected";
+					resp["userId"] = userId;
+					conn.send_text(resp.dump());
+                }
+                else
+                {
+					conn.send_text("{\"error\": \"Missing userId\"}");
+                }
+            }
+        }
+        catch (const std::exception& e) {
+            std::cerr << "WebSocket message exception: " << e.what() << std::endl;
+            conn.send_text("{\"error\": \"Server error: " + std::string(e.what()) + "\"}");
+        }
+   });
+
 }
 

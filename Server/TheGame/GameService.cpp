@@ -128,6 +128,7 @@ void GameService::sendMessageToUser(user_id userId, const std::string& message)
 	{
 		crow::websocket::connection* conn = it->second;
 		conn->send_text(message);
+		std::cout << "Sent message to user ID: " << userId << '\n';
 	}
 }
 

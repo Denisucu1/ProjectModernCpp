@@ -8,7 +8,7 @@
 #include "Game.h"
 #include "Player.h"
 #include <unordered_map>
-#include <crow/websocket.h>
+#include "crow.h"
 
 using game_id = std::string;
 using user_id = int;

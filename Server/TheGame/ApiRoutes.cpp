@@ -229,8 +229,8 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
         .onopen([&](crow::websocket::connection& conn) {
 		std::cout << "WebSocket connection opened." << std::endl;
     })
-        .onclose([&](crow::websocket::connection& conn, const std::string& reason) {
-		std::cout << "WebSocket connection closed: " << reason << std::endl;
+        .onclose([&](crow::websocket::connection& conn, const std::string& reason, uint16_t code) {
+		std::cout << "WebSocket connection closed: " << reason << " (code " << code << ")" << std::endl;
             })
         .onmessage([&](crow::websocket::connection& conn, const std::string& data, bool isBinary) {
         if (isBinary)
@@ -254,7 +254,6 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
 						return;
                     }
                     gameSvc.addConnection(userId, &conn);
-                    conn.send_text("{\"status\": \"logged_in\"}");
 					std::cout << "WebSocket user " << userId << " logged in via WebSocket." << std::endl;
 
 					crow::json::wvalue resp;

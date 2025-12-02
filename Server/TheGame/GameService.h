@@ -7,6 +7,8 @@
 #include <chrono>
 #include "Game.h"
 #include "Player.h"
+#include <unordered_map>
+#include <crow/websocket.h>
 
 using game_id = std::string;
 using user_id = int;
@@ -36,12 +38,17 @@ public:
 	std::optional<game_id> FindGame(user_id userId, const std::string& username, int desiredPlayerCount);
 	std::optional<game_id> GetPlayerGameStatus(user_id userId);
 	std::optional<MatchData> GetMatchState(int matchIdInt);
-
+	void addConnection(user_id userId, crow::websocket::connection* conn);
+	void removeConnection(crow::websocket::connection* conn);
+	void sendMessageToUser(user_id userId, const std::string& message);
 	Game& GetGame(const game_id gameId);
 
 private:
 
 	std::mutex m_mutex;
+	std::mutex m_connection_mutex;
+	std::unordered_map<user_id, crow::websocket::connection*> m_userConnections;
+	std::unordered_map<crow::websocket::connection*, user_id> m_connectionToUser;
 
 	struct WaitingPlayer
 	{

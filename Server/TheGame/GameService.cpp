@@ -99,6 +99,38 @@ std::optional<MatchData> GameService::GetMatchState(int matchIdInt)
 	return std::optional<MatchData>();
 }
 
+void GameService::addConnection(user_id userId, crow::websocket::connection* conn)
+{
+	std::lock_guard<std::mutex> lock(m_connection_mutex);
+	m_userConnections[userId] = conn;
+	m_connectionToUser[conn] = userId;
+	std::cout << "WebSocket connection added for user ID: " << userId << '\n';
+}
+
+void GameService::removeConnection(crow::websocket::connection* conn)
+{
+	std::lock_guard<std::mutex> lock(m_connection_mutex);
+	auto it = m_connectionToUser.find(conn);
+	if (it != m_connectionToUser.end())
+	{
+		user_id userId = it->second;
+		m_connectionToUser.erase(it);
+		m_userConnections.erase(userId);
+		std::cout << "WebSocket connection removed for user ID: " << userId << '\n';
+	}
+}
+
+void GameService::sendMessageToUser(user_id userId, const std::string& message)
+{
+	std::lock_guard<std::mutex> lock(m_connection_mutex);
+	auto it = m_userConnections.find(userId);
+	if (it != m_userConnections.end())
+	{
+		crow::websocket::connection* conn = it->second;
+		conn->send_text(message);
+	}
+}
+
 void GameService::CreateGame(std::list<WaitingPlayer>& players, int playerCount)
 {
 	game_id newGameId = "game_" + std::to_string(m_game_id_counter_++);

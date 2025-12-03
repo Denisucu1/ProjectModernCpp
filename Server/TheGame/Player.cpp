@@ -26,4 +26,12 @@ std::uint8_t Player::GetScore() const
 
 bool Player::RemoveCard(std::uint8_t cardValue)
 {
+    auto it = std::find(m_deck.begin(), m_deck.end(), cardValue);
+
+    if (it != m_deck.end()) 
+    {
+        m_deck.erase(it);
+        return true;
+    }
+    return false;
 }

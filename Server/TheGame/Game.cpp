@@ -70,3 +70,74 @@ void Game::NextPlayer()
 
 	m_current_player_index_ = (m_current_player_index_ + 1) % m_players.size();
 }
+
+bool Game::ProcessTurn(int playerId, const std::vector<PlayerMove>& moves)
+{
+	Player& currentPlayer = m_players[m_current_player_index_];
+
+	std::uint8_t minMoves = GetMinCardsToPlay();
+
+	if (moves.size() < minMoves)
+	{
+		std::cerr << "!!! PIERDERE !!! Jucatorul " << playerId
+			<< " nu a putut plasa minimul de " << (int)minMoves << " carti." << std::endl;
+		return false;
+	}
+
+	int successfulMoves = 0;
+	std::vector<std::uint8_t> tempHand = currentPlayer.GetDeck();
+
+	for (const auto& move : moves)
+	{
+		Card card(move.card_value);
+
+		if (!m_play_piles_.IsMoveValid(move.stack_index, card))
+		{
+			std::cerr << "Eroare: Mutare invalida. Cartea " << move.card_value << " nu poate fi plasata pe teancul "
+				<< move.stack_index << std::endl;
+			return false;
+		}
+
+		if (currentPlayer.RemoveCard(move.card_value))
+		{
+			m_play_piles_.PlayCardOnStack(move.stack_index, move.card_value);
+			successfulMoves++;
+		}
+		else {
+			std::cerr << "Eroare: Jucatorul " << playerId << " nu are cartea " << move.card_value << std::endl;
+			return false;
+		}
+	}
+
+	NextPlayer(successfulMoves);
+	return true;
+}
+
+std::uint8_t Game::GetMinCardsToPlay() const
+{
+	if (m_cards.IsEmpty())
+		return 1;
+	return 2;
+}
+
+void Game::NextPlayer(int cardsPlayed)
+{
+	Player& currentPlayer = m_players[m_current_player_index_];
+
+	std::vector<std::uint8_t> hand = currentPlayer.GetDeck();
+
+	for (int i = 0; i < cardsPlayed; ++i) 
+	{
+		if (!m_cards.IsEmpty()) {
+			Card c = m_cards.DrawACard();
+			hand.push_back(c.GetValue());
+		}
+		else 
+			break;
+	}
+	currentPlayer.SetDeck(hand);
+
+	GameEndConditions(); 
+
+	m_current_player_index_ = (m_current_player_index_ + 1) % m_players.size();
+}

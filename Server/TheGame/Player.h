@@ -15,6 +15,8 @@ public:
 
 	std::uint8_t GetScore() const;
 
+	bool RemoveCard(std::uint8_t cardValue);
+
 private:
 
 	std::string m_name;

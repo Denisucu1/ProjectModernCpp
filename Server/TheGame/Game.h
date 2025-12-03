@@ -3,6 +3,11 @@
 #include "Player.h"
 #include "PlayPiles.h"
 
+struct PlayerMove {
+	std::uint8_t card_value;
+	PlayPiles::StackIndex stack_index;
+};
+
 class Game
 {
 public:
@@ -13,6 +18,13 @@ public:
 	void GameEndConditions();
 
 	void NextPlayer();
+
+	bool ProcessTurn(int playerId, const std::vector<PlayerMove>& moves);
+
+	std::uint8_t GetMinCardsToPlay() const;
+
+	void NextPlayer(int cardsPlayed);
+
 private:
 	DrawPile m_cards;
 	std::vector<Player> m_players;

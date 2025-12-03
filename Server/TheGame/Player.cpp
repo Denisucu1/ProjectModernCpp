@@ -23,3 +23,7 @@ std::uint8_t Player::GetScore() const
 {
 	return m_score;
 }
+
+bool Player::RemoveCard(std::uint8_t cardValue)
+{
+}

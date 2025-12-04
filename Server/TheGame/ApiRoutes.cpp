@@ -172,6 +172,33 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
         return res;
             });
 
+
+    CROW_ROUTE(app, "/api/profile/<int>").methods("GET"_method)
+        ([&userSvc](user_id userId) {
+        crow::response res;
+        res.add_header("Access-Control-Allow-Origin", "*");
+        res.add_header("Content-Type", "application/json");
+
+        auto userProfile = userSvc.GetProfileById(userId);
+
+        if (!userProfile) {
+            res.code = 404;
+            res.body = "{\"error\": \"User not found\"}";
+            return res;
+        }
+
+        crow::json::wvalue profileJson;
+        profileJson["userId"] = userProfile->GetUserId();
+        profileJson["hoursPlayed"] = userProfile->GetHoursPlayed();
+        profileJson["gamesPlayed"] = userProfile->GetGamesPlayed();
+        profileJson["gamesWon"] = userProfile->GetGamesWon();
+        profileJson["cardsLeftOnLosses"] = userProfile->GetCardsLeftOnLosses();
+        profileJson["performanceScore"] = userProfile->GetPerformanceScore();
+        res.code = 200;
+        res.body = profileJson.dump();
+        return res;
+            });
+
     CROW_ROUTE(app, "/api/match/<int>").methods("GET"_method)
         ([&gameSvc](const crow::request& req, int matchId) {
 

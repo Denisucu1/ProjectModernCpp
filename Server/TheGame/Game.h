@@ -13,6 +13,10 @@ class Game
 public:
 	Game(std::vector<Player> players);
 
+	Game(Game&& other) noexcept;
+	Game& operator=(Game&& other) noexcept;
+
+
 	void StartGame();
 
 	void GameEndConditions();

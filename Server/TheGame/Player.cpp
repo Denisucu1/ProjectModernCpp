@@ -1,7 +1,38 @@
-#include "Player.h"
+﻿#include "Player.h"
+#include <algorithm>
+#include <utility>
 
-Player::Player(std::string name_string, int id) : m_name(name_string), m_score(0), m_id(id)
+Player::Player(std::string name_string, int id)
+    : m_name(name_string),
+    m_deck(), 
+    m_score(0),
+    m_id(id)
 {
+}
+
+Player::Player(Player&& other) noexcept
+    : m_name(std::move(other.m_name)), 
+    m_deck(std::move(other.m_deck)),  
+    m_score(other.m_score),         
+    m_id(other.m_id)                
+{
+    other.m_score = 0;
+    other.m_id = -1;
+}
+
+Player& Player::operator=(Player&& other) noexcept
+{
+    if (this != &other)
+    {
+        m_name = std::move(other.m_name);
+        m_deck = std::move(other.m_deck);
+        m_score = other.m_score;
+        m_id = other.m_id;
+
+        other.m_score = 0;
+        other.m_id = -1;
+    }
+    return *this;
 }
 
 void Player::SetDeck(std::vector<std::uint8_t> deck) 

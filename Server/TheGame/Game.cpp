@@ -1,10 +1,37 @@
 #include "Game.h"
 #include <iostream>
 
-Game::Game(std::vector<Player> players) : m_players(players)
+Game::Game(std::vector<Player> players) 
+	: m_cards(), 
+	m_players(std::move(players)), 
+	m_play_piles_(), 
+	m_current_player_index_(0)
 {
     StartGame();
 }
+
+ Game::Game(Game&& other) noexcept
+ 	: m_cards(std::move(other.m_cards)),
+ 	m_players(std::move(other.m_players)),
+ 	m_play_piles_(std::move(other.m_play_piles_)), 
+ 	m_current_player_index_(other.m_current_player_index_)
+ {
+ 	other.m_current_player_index_ = 0;
+ }
+
+ Game& Game::operator=(Game&& other) noexcept
+ {
+ 	if (this != &other)
+ 	{
+ 		m_cards = std::move(other.m_cards);
+ 		m_players = std::move(other.m_players);
+ 		m_play_piles_ = std::move(other.m_play_piles_);
+ 		m_current_player_index_ = other.m_current_player_index_;
+
+ 		other.m_current_player_index_ = 0;
+ 	}
+ 	return *this;
+ }
 
 void Game::StartGame()
 {

@@ -17,7 +17,7 @@ MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
 
     QString styleSheet = R"(
         
-        QWidget#MainMenu, QWidget#lobbyPage, QWidget#profilePage {
+        QWidget#MainMenu, QWidget#lobbyPage, QWidget#profilePage, QWidget#modeSelectionPage {
             background-color: #1e1e1e;
         }
 
@@ -37,17 +37,25 @@ MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
             background-color: #616161;
         }
 
-        QPushButton#playButton {
+        QPushButton#playButton, 
+        QPushButton#createGameButton, 
+        QPushButton#joinGameButton {
             background-color: #4CAF50;
         }
-        QPushButton#playButton:hover {
+        
+        QPushButton#playButton:hover, 
+        QPushButton#createGameButton:hover, 
+        QPushButton#joinGameButton:hover {
             background-color: #45a049;
         }
 
-        QPushButton#exitButton {
+        QPushButton#exitButton,
+        QPushButton#modeBackButton {
             background-color: #F44336;
         }
-        QPushButton#exitButton:hover {
+        
+        QPushButton#exitButton:hover,
+        QPushButton#modeBackButton:hover {
             background-color: #E53935;
         }
 
@@ -148,6 +156,19 @@ void MainMenu::on_lobbyBackButton_clicked()
     ui->stackedWidget->setCurrentIndex(0);
 }
 
+void MainMenu::on_createGameButton_clicked()
+{
+}
+
+void MainMenu::on_joinGameButton_clicked()
+{
+}
+
+void MainMenu::on_modeBackButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
 void MainMenu::on_profileButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
@@ -196,7 +217,7 @@ void MainMenu::onProfileReply(QNetworkReply* reply)
 
         ui->totalTimeLabel->setText(QString::number(jsonObj["hoursPlayed"].toInt()));
 
-        ui->performanceScoreLabel->setText(QString::number(jsonObj["performanceScore"].toDouble(), 'f', 2)); 
+        ui->performanceScoreLabel->setText(QString::number(jsonObj["performanceScore"].toDouble(), 'f', 2));
     }
 
     reply->deleteLater();

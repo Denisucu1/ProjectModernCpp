@@ -232,6 +232,47 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="page">
+      <widget class="QPushButton" name="createGameButton">
+       <property name="geometry">
+        <rect>
+         <x>120</x>
+         <y>180</y>
+         <width>161</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Create Game</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="joinGameButton">
+       <property name="geometry">
+        <rect>
+         <x>120</x>
+         <y>250</y>
+         <width>161</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Join Game</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="modeBackButton">
+       <property name="geometry">
+        <rect>
+         <x>160</x>
+         <y>320</y>
+         <width>80</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Inapoi</string>
+       </property>
+      </widget>
+     </widget>
      <widget class="QWidget" name="lobbyPage">
       <widget class="QPushButton" name="lobbyBackButton">
        <property name="geometry">

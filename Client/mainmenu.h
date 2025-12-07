@@ -26,6 +26,9 @@ private slots:
     void on_backButton_clicked();
     void on_lobbyBackButton_clicked();
     void onProfileReply(QNetworkReply* reply);
+    void on_createGameButton_clicked();
+    void on_joinGameButton_clicked();
+    void on_modeBackButton_clicked();
 
 private:
     Ui::MainMenu* ui;

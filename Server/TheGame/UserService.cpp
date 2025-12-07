@@ -130,11 +130,12 @@ int UserService::CalculatePerformanceScore(int userId)
     }
 }
 
-std::optional<Profile> UserService::GetProfileById(int userId) 
+std::optional<Profile> UserService::GetProfileById(int userId)
 {
     auto& storage = getStorage();
     try {
-        auto profiles = storage.get_all<Profile>(is_equal(&Profile::user_id, userId));
+        auto profiles = storage.get_all<Profile>(where(is_equal(&Profile::user_id, userId)));
+
         if (profiles.empty()) {
             return std::nullopt;
         }

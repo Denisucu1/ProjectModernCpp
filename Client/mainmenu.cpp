@@ -151,18 +151,11 @@ void MainMenu::on_lobbyBackButton_clicked()
 void MainMenu::on_profileButton_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
+    QString urlString = QString("http://localhost:18080/api/profile/%1").arg(m_userId);
+    QUrl profileUrl(urlString);
 
-    QJsonObject jsonRequest;
-    jsonRequest["userId"] = m_userId;
-
-    QJsonDocument jsonDoc(jsonRequest);
-    QByteArray jsonData = jsonDoc.toJson();
-
-    QUrl profileUrl("http://localhost:18080/api/profile");
     QNetworkRequest request(profileUrl);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
-    QNetworkReply* reply = m_networkManager->post(request, jsonData);
+    QNetworkReply* reply = m_networkManager->get(request);
 
     connect(reply, &QNetworkReply::finished, this, [this, reply]() {
         onProfileReply(reply);
@@ -174,7 +167,14 @@ void MainMenu::on_profileButton_clicked()
 void MainMenu::onProfileReply(QNetworkReply* reply)
 {
     if (reply->error() != QNetworkReply::NoError) {
-        QMessageBox::critical(this, "Eroare Retea", "Eroare de conexiune: " + reply->errorString());
+        QString errStr = reply->errorString();
+        QByteArray responseData = reply->readAll();
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
+        if (!jsonDoc.isNull() && jsonDoc.object().contains("error")) {
+            errStr = jsonDoc.object()["error"].toString();
+        }
+
+        QMessageBox::critical(this, "Eroare Profil", "Nu am putut incarca profilul: " + errStr);
         ui->gamesPlayedLabel->setText("Eroare");
         reply->deleteLater();
         return;
@@ -184,20 +184,19 @@ void MainMenu::onProfileReply(QNetworkReply* reply)
     QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
     QJsonObject jsonObj = jsonDoc.object();
 
-    if (jsonObj["success"].toBool()) {
-        QJsonObject profileData = jsonObj["data"].toObject();
-
-        ui->gamesPlayedLabel->setText(QString::number(profileData["games_played"].toInt()));
-        ui->gamesWonLabel->setText(QString::number(profileData["games_won"].toInt()));
-        ui->cardsAtLossLabel->setText(QString::number(profileData["total_cards_at_loss"].toInt()));
-        ui->totalTimeLabel->setText(QString::number(profileData["total_time_minutes"].toInt()));
-        ui->performanceScoreLabel->setText(QString::number(profileData["performance_score"].toDouble()));
-
+    if (jsonObj.contains("error")) {
+        QString errorMsg = jsonObj["error"].toString();
+        QMessageBox::warning(this, "Eroare Profil", "Server: " + errorMsg);
+        ui->gamesPlayedLabel->setText("Eroare");
     }
     else {
-        QString errorMsg = jsonObj["message"].toString();
-        QMessageBox::warning(this, "Eroare Profil", "Nu am putut incarca profilul: " + errorMsg);
-        ui->gamesPlayedLabel->setText("Eroare");
+        ui->gamesPlayedLabel->setText(QString::number(jsonObj["gamesPlayed"].toInt()));
+        ui->gamesWonLabel->setText(QString::number(jsonObj["gamesWon"].toInt()));
+        ui->cardsAtLossLabel->setText(QString::number(jsonObj["cardsLeftOnLosses"].toInt()));
+
+        ui->totalTimeLabel->setText(QString::number(jsonObj["hoursPlayed"].toInt()));
+
+        ui->performanceScoreLabel->setText(QString::number(jsonObj["performanceScore"].toDouble(), 'f', 2)); 
     }
 
     reply->deleteLater();

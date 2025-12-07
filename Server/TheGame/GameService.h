@@ -13,6 +13,13 @@
 using game_id = std::string;
 using user_id = int;
 
+struct Room {
+	std::string code;
+	user_id hostUserId;
+	std::list<user_id> players;
+	bool isGameStarted = false;
+};
+
 struct MatchPlayerData {
 
 	int id;             
@@ -35,6 +42,9 @@ class GameService
 public:
 	GameService();
 
+	std::string CreateRoom(user_id hostId);
+	bool JoinRoom(user_id userId, const std::string& roomCode);
+	bool StartGameInRoom(user_id requestorId, const std::string& roomCode);
 	std::optional<game_id> FindGame(user_id userId, const std::string& username, int desiredPlayerCount);
 	std::optional<game_id> GetPlayerGameStatus(user_id userId);
 	std::optional<MatchData> GetMatchState(int matchIdInt);
@@ -50,21 +60,16 @@ private:
 	std::unordered_map<user_id, crow::websocket::connection*> m_userConnections;
 	std::unordered_map<crow::websocket::connection*, user_id> m_connectionToUser;
 
-	struct WaitingPlayer
-	{
-		user_id id;
-		std::string name;
-		std::chrono::steady_clock::time_point joinTime;
-	};
+	std::unordered_map<std::string, Room> m_rooms;
+	std::unordered_map<user_id, std::string> m_user_room_map;
 
-	std::map<int, std::list<WaitingPlayer>> m_waiting_queues_;
 	std::map<game_id, Game> m_active_games_;
-	std::map<user_id, int> m_player_in_queue_map_;
 	std::map<user_id, game_id> m_player_game_map_;
 
-	void CreateGame(std::list<WaitingPlayer>& players, int playerCount);
+	void CreateGame(std::list<user_id>& playerIds);
 
 	MatchData GenerateMatchData(const Game& game);
+	std::string GenerateRandomCode();
 
 	long long m_game_id_counter_ = 0;
 };

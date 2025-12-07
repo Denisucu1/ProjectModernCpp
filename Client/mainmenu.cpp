@@ -7,10 +7,11 @@
 #include <QJsonDocument>
 #include <QMessageBox>
 
-MainMenu::MainMenu(const QString& username, QWidget* parent) :
+MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
     QWidget(parent),
     ui(new Ui::MainMenu),
-    m_username(username)
+    m_username(username),
+    m_userId(userId)
 {
     ui->setupUi(this);
 
@@ -112,9 +113,14 @@ MainMenu::MainMenu(const QString& username, QWidget* parent) :
     this->setStyleSheet(styleSheet);
 
     m_networkManager = new QNetworkAccessManager(this);
+    GameWindow* gamePage = new GameWindow(this);
+    ui->stackedWidget->addWidget(gamePage);
     ui->stackedWidget->setCurrentIndex(0);
-
     ui->usernameLabel->setText(m_username);
+
+    QUrl wsUrl("ws://localhost:18080/ws/game");
+    m_gameClient = new GameClient(wsUrl, m_userId, this);
+    m_gameClient->connectToServer();
 }
 
 MainMenu::~MainMenu()
@@ -147,7 +153,8 @@ void MainMenu::on_profileButton_clicked()
     ui->stackedWidget->setCurrentIndex(1);
 
     QJsonObject jsonRequest;
-    jsonRequest["username"] = m_username;
+    jsonRequest["userId"] = m_userId;
+
     QJsonDocument jsonDoc(jsonRequest);
     QByteArray jsonData = jsonDoc.toJson();
 

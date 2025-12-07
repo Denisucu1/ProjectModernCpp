@@ -5,6 +5,7 @@
 #include <QString>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include "gameclient.h"
 
 namespace Ui {
     class MainMenu;
@@ -15,7 +16,7 @@ class MainMenu : public QWidget
     Q_OBJECT
 
 public:
-    explicit MainMenu(const QString& username, QWidget* parent = nullptr);
+    explicit MainMenu(const QString& username, int userId, QWidget* parent = nullptr);
     ~MainMenu();
 
 private slots:
@@ -29,7 +30,9 @@ private slots:
 private:
     Ui::MainMenu* ui;
     QString m_username;
+    int m_userId;
     QNetworkAccessManager* m_networkManager;
+    GameClient* m_gameClient;
 };
 
 #endif

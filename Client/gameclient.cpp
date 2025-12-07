@@ -18,21 +18,30 @@ void GameClient::connectToServer()
 
 void GameClient::onConnected()
 {
-    qDebug() << "Conectat! Trimit login...";
+    qDebug() << "WebSocket conectat! Trimit datele de autentificare...";
+
     QJsonObject loginObj;
     loginObj["type"] = "login";
     loginObj["userId"] = m_userId;
 
     QJsonDocument doc(loginObj);
-    m_webSocket.sendTextMessage(QString::fromUtf8(doc.toJson(QJsonDocument::Compact)));
+    QString message = QString::fromUtf8(doc.toJson(QJsonDocument::Compact));
+
+    m_webSocket.sendTextMessage(message);
 }
 
 void GameClient::onTextMessageReceived(QString message)
 {
-    qDebug() << "Mesaj primit:" << message;
+    QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
+    if (!doc.isNull() && doc.isObject()) {
+        QJsonObject obj = doc.object();
+        if (obj.contains("status")) {
+            qDebug() << "STATUS PRIMIT DE LA SERVER:" << obj["status"].toString();
+        }
+    }
 }
 
 void GameClient::onClosed()
 {
-    qDebug() << "Deconectat.";
+    qDebug() << "Conexiunea WebSocket s-a inchis.";
 }

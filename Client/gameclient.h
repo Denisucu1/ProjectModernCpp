@@ -12,7 +12,7 @@ class GameClient : public QObject
 {
     Q_OBJECT
 public:
-    explicit GameClient(const QUrl& url, int userId = 123, QObject* parent = nullptr);
+    explicit GameClient(const QUrl& url, int userId, QObject* parent = nullptr);
     void connectToServer();
 
 private slots:

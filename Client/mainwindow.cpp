@@ -163,12 +163,13 @@ void MainWindow::onLoginReply(QNetworkReply* reply)
 
     if (jsonObj["success"].toBool()) {
         QString username = ui->usernameLineEdit->text();
-        MainMenu* menu = new MainMenu(username, nullptr);
+
+        int userId = jsonObj["userId"].toInt();
+
+        MainMenu* menu = new MainMenu(username, userId, nullptr);
 
         menu->setAttribute(Qt::WA_DeleteOnClose);
-
         menu->show();
-
         this->close();
     }
     else {

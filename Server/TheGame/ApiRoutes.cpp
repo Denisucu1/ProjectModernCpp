@@ -117,41 +117,7 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
         return res;
             });
 
-    CROW_ROUTE(app, "/api/find_game").methods("POST"_method)
-        ([&gameSvc](const crow::request& req) {
-        crow::response res;
-        res.add_header("Access-Control-Allow-Origin", "*");
-
-        auto data = crow::json::load(req.body);
-        if (!data || !data.count("userId") || !data.count("username") || !data.count("playerCount")) {
-            res.code = 400;
-            res.body = "{\"success\": false, \"message\": \"Missing userId, username, or playerCount\"}";
-            return res;
-        }
-
-        user_id userId = data["userId"].i();
-        std::string username = data["username"].s();
-        int playerCount = data["playerCount"].i();
-
-        if (playerCount < 2 || playerCount > 5) {
-            res.code = 400;
-            res.body = "{\"success\": false, \"message\": \"playerCount must be between 2 and 5\"}";
-            return res;
-        }
-
-        auto gameId = gameSvc.FindGame(userId, username, playerCount);
-
-        if (gameId.has_value()) {
-            res.code = 200;
-            res.body = "{\"status\": \"game_found\", \"gameId\": \"" + gameId.value() + "\"}";
-        }
-        else {
-            res.code = 200;
-            res.body = "{\"status\": \"waiting\"}";
-        }
-
-        return res;
-            });
+    
 
     CROW_ROUTE(app, "/api/game_status/<int>").methods("GET"_method)
         ([&gameSvc](user_id userId) {
@@ -171,7 +137,6 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
 
         return res;
             });
-
 
     CROW_ROUTE(app, "/api/profile/<int>").methods("GET"_method)
         ([&userSvc](user_id userId) {

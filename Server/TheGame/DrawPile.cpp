@@ -12,6 +12,21 @@ DrawPile::DrawPile()
 	MixPile();
 }
 
+DrawPile::DrawPile(DrawPile&& other) noexcept
+	: m_drawPile(std::move(other.m_drawPile))
+{
+}
+
+DrawPile& DrawPile::operator=(DrawPile&& other) noexcept
+{
+	if (this != &other)
+	{
+		m_drawPile = std::move(other.m_drawPile);
+		other.m_drawPile.clear();
+	}
+	return *this;
+}
+
 
 void DrawPile::MixPile()
 {
@@ -32,5 +47,3 @@ bool DrawPile::IsEmpty() const
 	return m_drawPile.empty();
 }
 
-//daca e gol --> true
-//daca nu e gol --> false

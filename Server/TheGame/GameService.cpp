@@ -1,6 +1,7 @@
 #include "GameService.h"
 #include "crow.h"
 #include <iostream>
+#include <utility>
 
 GameService::GameService()
 {
@@ -140,8 +141,14 @@ void GameService::CreateGame(std::list<WaitingPlayer>& players, int playerCount)
 		std::endl;
 
 	std::vector<Player> gamePlayers;
+	gamePlayers.reserve(static_cast<size_t>(playerCount));
 
-	m_active_games_.emplace(newGameId, Game(gamePlayers));
+	for (const auto& wp : players)
+	{
+		gamePlayers.emplace_back(wp.name, wp.id);
+	}
+
+	m_active_games_.emplace(newGameId, Game(std::move(gamePlayers)));
 
 	for (const auto& p : players)
 	{

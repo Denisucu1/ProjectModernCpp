@@ -8,7 +8,11 @@ class DrawPile
 public:
 	DrawPile();
 
-	//void MixPile();
+	DrawPile(DrawPile&& other) noexcept;
+	DrawPile& operator=(DrawPile&& other) noexcept;
+
+	DrawPile(const DrawPile& other) = delete;
+	DrawPile& operator=(const DrawPile& other) = delete;
 
 	Card DrawACard();
 	
@@ -17,6 +21,6 @@ private:
 
 	std::vector<Card> m_drawPile;
 	
-	void MixPile(); //apelata fie din constructor, fie dintr o functie de reset
+	void MixPile(); 
 };
 

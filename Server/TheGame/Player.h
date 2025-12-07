@@ -7,6 +7,12 @@ class Player
 public:
 	Player(std::string name, int id);
 
+	Player(Player&& other) noexcept;
+	Player& operator=(Player&& other) noexcept;
+
+	Player(const Player& other) = delete;
+	Player& operator=(const Player& other) = delete;
+
 	void SetDeck(std::vector<std::uint8_t> deck);
 
 	void SetScore(std::uint8_t score);
@@ -14,6 +20,8 @@ public:
 	std::vector<std::uint8_t> GetDeck() const;
 
 	std::uint8_t GetScore() const;
+
+	bool RemoveCard(std::uint8_t cardValue);
 
 private:
 

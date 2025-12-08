@@ -168,3 +168,13 @@ void Game::NextPlayer(int cardsPlayed)
 
 	m_current_player_index_ = (m_current_player_index_ + 1) % m_players.size();
 }
+
+const std::vector<Player>& Game::GetPlayers() const
+{
+	return m_players;
+}
+
+std::uint8_t Game::GetCurrentPlayerIndex() const
+{
+	return m_current_player_index_;
+}

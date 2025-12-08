@@ -9,7 +9,6 @@ TEST(DrawPileTest, InitialCardCount) {
 TEST(DrawPileTest, DrawACardReducesCount) {
     DrawPile pile;
     Card drawn = pile.DrawACard();
-    // Daca nu poti accesa GetCount(), acest test este suficient:
     ASSERT_FALSE(pile.IsEmpty());
 }
 

@@ -29,6 +29,10 @@ public:
 
 	void NextPlayer(int cardsPlayed);
 
+	const std::vector<Player>& GetPlayers() const;
+
+	std::uint8_t GetCurrentPlayerIndex() const;
+
 private:
 	DrawPile m_cards;
 	std::vector<Player> m_players;

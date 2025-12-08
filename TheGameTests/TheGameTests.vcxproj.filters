@@ -36,5 +36,8 @@
     <ClCompile Include="DrawPileTests.cpp">
       <Filter>Source Files\Tests_game_logic</Filter>
     </ClCompile>
+    <ClCompile Include="GameTests.cpp">
+      <Filter>Source Files\Tests_game_logic</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

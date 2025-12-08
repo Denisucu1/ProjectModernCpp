@@ -133,6 +133,7 @@
     <ClCompile Include="..\..\..\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\src\gtest_main.cc" />
     <ClCompile Include="CardTests.cpp" />
     <ClCompile Include="DrawPileTests.cpp" />
+    <ClCompile Include="GameTests.cpp" />
     <ClCompile Include="PlayerTests.cpp" />
     <ClCompile Include="PlayPilesTests.cpp" />
   </ItemGroup>

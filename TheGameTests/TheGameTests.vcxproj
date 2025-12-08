@@ -102,12 +102,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\include;D:\Proiect la MC\ProjectModernCpp\Server\TheGame;D:\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\include;D:\Proiect la MC\ProjectModernCpp\Server\TheGame;D:\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest;D:\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>Card.obj;PlayPiles.obj;Player.obj;DrawPile.obj;Game.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Proiect la MC\ProjectModernCpp\Server\TheGame\x64\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -125,7 +127,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\src\gtest-all.cc" />
+    <ClCompile Include="..\..\..\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\src\gtest-all.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\src\gtest_main.cc" />
     <ClCompile Include="PlayPilesTests.cpp" />
   </ItemGroup>

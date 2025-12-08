@@ -42,15 +42,14 @@ bool PlayPiles::IsMoveValid(StackIndex index, const Card& card) const
 	
 		return false;
 	}
-	else if (index == descend_1 || index == descend_2)
+	if (index == descend_1 || index == descend_2)
 	{
-		
 		if (cardValue < topCard) 
 			return true;
-		if (cardValue + 10 == topCard) 
+		if (cardValue - 10 == topCard) 
 			return true;
+
 		return false;
 	}
 
-	return false;
 }

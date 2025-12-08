@@ -28,3 +28,11 @@ TEST(PlayerTest, ScoreManagement) {
     p.SetScore(15);
     ASSERT_EQ(15, p.GetScore());
 }
+
+TEST(PlayerTest, DeckIsSetCorrectly) {
+    Player p("Charlie", 3);
+    std::vector<std::uint8_t> newDeck = { 1, 5, 9 };
+    p.SetDeck(newDeck);
+
+    ASSERT_EQ(newDeck, p.GetDeck());
+}

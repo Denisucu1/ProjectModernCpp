@@ -8,7 +8,6 @@ TEST(PlayerTest, CardRemovalSuccessful) {
     ASSERT_TRUE(p.RemoveCard(20));
     ASSERT_EQ(2, p.GetDeck().size());
 
-    // Check if the card is indeed removed
     bool found = false;
     for (auto card : p.GetDeck()) {
         if (card == 20) found = true;
@@ -20,7 +19,6 @@ TEST(PlayerTest, CardRemovalFailed) {
     Player p("Bob", 2);
     p.SetDeck({ 5, 15 });
 
-    // Trying to remove a card not held
     ASSERT_FALSE(p.RemoveCard(10));
     ASSERT_EQ(2, p.GetDeck().size());
 }

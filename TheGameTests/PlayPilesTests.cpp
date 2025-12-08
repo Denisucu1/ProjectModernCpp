@@ -46,7 +46,6 @@ TEST(PlayPilesAscending, InvalidTrickValue) {
 }
 
 
-
 TEST(PlayPilesDescending, RegularValidMove) {
     PlayPiles piles;
     piles.PlayCardOnStack(PlayPiles::descend_1, 50); 

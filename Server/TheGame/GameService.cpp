@@ -2,18 +2,105 @@
 #include "crow.h"
 #include <iostream>
 #include <utility>
+#include <random>
 
 GameService::GameService()
 {
 
 }
 
+std::string GameService::GenerateRoomCode()
+{
+	std::string roomCode;
+	roomCode.resize(6);
+	static const char alphanum[] =
+		"0123456789"
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<> dis(0, sizeof(alphanum) - 2);
+	for (int i = 0; i < 6; ++i)
+	{
+		roomCode[i] = alphanum[dis(gen)];
+	}
+	return roomCode;
+}
+
+std::string GameService::CreateRoom(user_id hostId)
+{
+	std::lock_guard<std::mutex> lock(m_mutex);
+	std::string roomCode;
+	if(m_user_room_map.count(hostId))
+	{
+		return "";
+	}
+	do {
+		roomCode = GenerateRoomCode();
+	} while (m_rooms.count(roomCode));
+
+	Room newRoom;
+	newRoom.code = roomCode;
+	newRoom.hostUserId = hostId;
+	newRoom.players.insert(hostId);
+	m_user_room_map[hostId] = roomCode;
+	m_rooms[roomCode] = newRoom;
+	std::cout << "Room created with code: " << roomCode << " by host ID: " << hostId << std::endl;	
+	return roomCode;
+}
+
+bool GameService::JoinRoom(user_id userId, const std::string& roomCode)
+{
+	std::lock_guard<std::mutex> lock(m_mutex);
+
+	if(m_rooms.find(roomCode) == m_rooms.end())
+	{
+		std::cout << "JoinRoom failed: Room code " << roomCode << " does not exist." << std::endl;
+		return false;
+	}
+
+	Room& room = m_rooms[roomCode];
+
+	if (room.players.count(userId) || room.isGameStarted)
+	{
+		return room.players.count(userId);
+	}
+
+	if(room.players.size() >= 5)
+	{
+		std::cout << "JoinRoom failed: Room code " << roomCode << " is full." << std::endl;
+		return false;
+	}
+
+	room.players.insert(userId);
+	m_user_room_map[userId] = roomCode;
+
+	std::cout << "User ID: " << userId << " joined room code: " << roomCode << std::endl;
+
+	crow::json::wvalue updateMsg;
+	updateMsg["type"] = "room_update";
+	updateMsg["roomCode"] = roomCode;
+	updateMsg["players"] = crow::json::wvalue::list();
+
+	int i = 0;
+	for(auto pid : room.players)
+	{
+		updateMsg["players"][i++] = pid;
+	}
+	std::string msgStr = updateMsg.dump();
+	for(auto pid : room.players)
+	{
+		sendMessageToUser(pid, msgStr);
+	}
+
+	return true;
+}
+
 std::optional<game_id> GameService::GetPlayerGameStatus(user_id userId)
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
-	if (m_player_game_map_.contains(userId))
+	if (m_player_game_map.contains(userId))
 	{
-		return m_player_game_map_[userId];
+		return m_player_game_map[userId];
 	}
 
 	return std::nullopt;
@@ -23,7 +110,7 @@ Game& GameService::GetGame(const game_id gameId)
 {
 	try
 	{
-		return m_active_games_.at(gameId);
+		return m_active_games.at(gameId);
 	}
 	catch (const std::out_of_range& e)
 	{

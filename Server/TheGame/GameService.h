@@ -1,5 +1,4 @@
 #pragma once
-#include <list>
 #include <string>
 #include <map>
 #include <mutex>
@@ -9,6 +8,7 @@
 #include "Player.h"
 #include <unordered_map>
 #include "crow.h"
+#include <unordered_set>
 
 using game_id = std::string;
 using user_id = int;
@@ -16,7 +16,7 @@ using user_id = int;
 struct Room {
 	std::string code;
 	user_id hostUserId;
-	std::list<user_id> players;
+	std::unordered_set<user_id> players;
 	bool isGameStarted = false;
 };
 
@@ -42,6 +42,7 @@ class GameService
 public:
 	GameService();
 
+	std::string GenerateRoomCode();
 	std::string CreateRoom(user_id hostId);
 	bool JoinRoom(user_id userId, const std::string& roomCode);
 	bool StartGameInRoom(user_id requestorId, const std::string& roomCode);
@@ -63,8 +64,8 @@ private:
 	std::unordered_map<std::string, Room> m_rooms;
 	std::unordered_map<user_id, std::string> m_user_room_map;
 
-	std::map<game_id, Game> m_active_games_;
-	std::map<user_id, game_id> m_player_game_map_;
+	std::map<game_id, Game> m_active_games;
+	std::map<user_id, game_id> m_player_game_map;
 
 	void CreateGame(std::list<user_id>& playerIds);
 

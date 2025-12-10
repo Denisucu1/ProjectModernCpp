@@ -95,6 +95,78 @@ bool GameService::JoinRoom(user_id userId, const std::string& roomCode)
 	return true;
 }
 
+void GameService::RemovePlayerFromRoom(user_id userId)
+{
+	std::lock_guard<std::mutex> lock(m_mutex);	
+	
+	if (m_user_room_map.count(userId)) {
+		std::string roomCode = m_user_room_map[userId];
+		m_user_room_map.erase(userId);
+
+		if (m_rooms.count(roomCode))
+		{
+			Room& room = m_rooms[roomCode];
+			room.players.erase(userId);
+			if (room.isGameStarted)
+			{
+				//Aici se va notifica jocul despre plecarea jucatorului in timpul jocului
+
+				if(room.players.empty())
+				{
+					m_rooms.erase(roomCode);
+					std::cout << "Room code: " << roomCode << " deleted as all players left during game." << std::endl;
+				}
+			}
+		}
+	}
+}
+
+void GameService::RemoveConnectionFromRoom(crow::websocket::connection* conn)
+{
+	std::lock_guard<std::mutex> lock(m_mutex);
+	auto it = m_connectionToUser.find(conn);
+	if (it != m_connectionToUser.end())
+	{
+		user_id userId = it->second;
+
+		m_connectionToUser.erase(it);
+		m_userConnections.erase(userId);
+		RemovePlayerFromRoom(userId);
+		std::cout << "Connection removed and player ID: " << userId << " removed from room." << std::endl;
+	}
+}
+
+bool GameService::StartGameInRoom(user_id requestorId, const std::string& roomCode)
+{
+	std::lock_guard<std::mutex> lock(m_mutex);
+	if (m_rooms.find(roomCode) == m_rooms.end())
+	{
+		std::cout << "StartGameInRoom failed: Room code " << roomCode << " does not exist." << std::endl;
+		return false;
+	}
+	Room& room = m_rooms[roomCode];
+	if (room.hostUserId != requestorId)
+	{
+		std::cout << "StartGameInRoom failed: User ID " << requestorId << " is not the host of room code " << roomCode << "." << std::endl;
+		return false;
+	}
+	if (room.isGameStarted)
+	{
+		std::cout << "StartGameInRoom failed: Game in room code " << roomCode << " has already started." << std::endl;
+		return false;
+	}
+	if (room.players.size() < 2)
+	{
+		std::cout << "StartGameInRoom failed: Not enough players in room code " << roomCode << " to start the game." << std::endl;
+		return false;
+	}
+	room.isGameStarted = true;
+	std::list<user_id> playerIds(room.players.begin(), room.players.end());
+	CreateGame(playerIds);
+	std::cout << "Game started in room code: " << roomCode << " by host ID: " << requestorId << std::endl;
+	return true;
+}
+
 std::optional<game_id> GameService::GetPlayerGameStatus(user_id userId)
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
@@ -157,6 +229,10 @@ void GameService::sendMessageToUser(user_id userId, const std::string& message)
 	}
 }
 
+
+void GameService::CreateGame(std::list<user_id>& playerIds)
+{
+}
 
 MatchData GameService::GenerateMatchData(const Game& game)
 {

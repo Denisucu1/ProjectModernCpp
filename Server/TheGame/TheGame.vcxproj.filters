@@ -96,4 +96,7 @@
       <Filter>Source Files\game_logic</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="server_data.proto" />
+  </ItemGroup>
 </Project>

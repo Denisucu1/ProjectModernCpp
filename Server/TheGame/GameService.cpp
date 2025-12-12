@@ -95,7 +95,7 @@ bool GameService::JoinRoom(user_id userId, const std::string& roomCode)
 	return true;
 }
 
-void GameService::RemovePlayerFromRoom(user_id userId)
+bool GameService::RemovePlayerFromRoom(user_id userId)
 {
 	std::lock_guard<std::mutex> lock(m_mutex);	
 	
@@ -115,10 +115,13 @@ void GameService::RemovePlayerFromRoom(user_id userId)
 				{
 					m_rooms.erase(roomCode);
 					std::cout << "Room code: " << roomCode << " deleted as all players left during game." << std::endl;
+					return true;
 				}
 			}
+			return true;
 		}
 	}
+	return false;
 }
 
 void GameService::RemoveConnectionFromRoom(crow::websocket::connection* conn)

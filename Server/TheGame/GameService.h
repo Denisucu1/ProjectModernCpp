@@ -45,7 +45,7 @@ public:
 	std::string GenerateRoomCode();
 	std::string CreateRoom(user_id hostId);
 	bool JoinRoom(user_id userId, const std::string& roomCode);
-	void RemovePlayerFromRoom(user_id userId);
+	bool RemovePlayerFromRoom(user_id userId);
 	void RemoveConnectionFromRoom(crow::websocket::connection* conn);
 	bool StartGameInRoom(user_id requestorId, const std::string& roomCode);
 	std::optional<game_id> FindGame(user_id userId, const std::string& username, int desiredPlayerCount);

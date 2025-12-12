@@ -258,6 +258,71 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
 					conn.send_text("{\"error\": \"Missing userId\"}");
                 }
             }
+            else if (type == "create_room")
+            {
+				std::string code = gameSvc.CreateRoom(msg["userId"].i());
+
+				crow::json::wvalue resp;
+                if(!code.empty())
+                {
+                    resp["status"] = "room_created";
+                    resp["roomCode"] = code;
+                }
+                else
+                {
+                    resp["status"] = "error";
+                    resp["message"] = "Failed to create room";
+				}
+				conn.send_text(resp.dump());
+            }
+            else if (type == "join_room")
+            {
+                if (msg.has("roomCode") && msg.has("userId"))
+                {
+					std::string roomCode = msg["roomCode"].s();
+					std::transform(roomCode.begin(), roomCode.end(), roomCode.begin(), ::toupper);
+					bool succes = gameSvc.JoinRoom(msg["userId"].i(), roomCode);
+
+					crow::json::wvalue resp;
+                    if(succes)
+                    {
+                        resp["status"] = "joined_room";
+                        resp["roomCode"] = roomCode;
+                    }
+                    else
+                    {
+                        resp["status"] = "error";
+                        resp["message"] = "Failed to join room";
+                    }
+                }
+            }
+            else if (type == "start_game")
+            {
+                if (msg.has("roomCode"))
+                {
+					std::string roomCode = msg["roomCode"].s();
+					bool success = gameSvc.StartGameInRoom(msg["userId"].i(), roomCode);
+                    if (!success)
+                    {
+                        conn.send_text("{\"error\": \"Failed to start game in room\"}");
+                    }
+                }
+            }
+            else if (type == "leave_room")
+            {
+				bool success = gameSvc.RemovePlayerFromRoom(msg["userId"].i());
+				crow::json::wvalue resp;
+                if (success)
+                {
+                    resp["status"] = "left_room";
+                }
+                else
+                {
+                    resp["status"] = "error";
+                    resp["message"] = "Failed to leave room";
+				}
+				conn.send_text(resp.dump());
+            }
         }
         catch (const std::exception& e) {
             std::cerr << "WebSocket message exception: " << e.what() << std::endl;

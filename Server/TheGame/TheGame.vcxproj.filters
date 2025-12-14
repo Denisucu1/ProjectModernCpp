@@ -66,6 +66,9 @@
     <ClInclude Include="JsonUtil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AuthRoutes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ApiRoutes.cpp">
@@ -99,6 +102,9 @@
       <Filter>Source Files\game_logic</Filter>
     </ClCompile>
     <ClCompile Include="JsonUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AuthRoutes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

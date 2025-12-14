@@ -63,6 +63,9 @@
     <ClInclude Include="Match.h">
       <Filter>Header Files\db</Filter>
     </ClInclude>
+    <ClInclude Include="JsonUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ApiRoutes.cpp">
@@ -94,6 +97,9 @@
     </ClCompile>
     <ClCompile Include="PlayPiles.cpp">
       <Filter>Source Files\game_logic</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonUtil.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

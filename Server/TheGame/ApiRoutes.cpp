@@ -3,33 +3,13 @@
 #include "ApiRoutes.h"
 #include "crow.h"
 #include "UserService.h"
+#include "JsonUtil.h"
 #include <exception>
 #include <string>
 #include <iostream>
 #include "GameService.h"
 #include <regex>
 
-std::unordered_map<std::string, std::string> parseSimpleJson(const std::string& json) {
-    std::unordered_map<std::string, std::string> data;
-
-    // Expresie regulată pentru a găsi tiparul: "cheie": "valoare"
-    // \"(.*?)\"  -> caută text între ghilimele (cheia)
-    // \s*:\s* -> caută două puncte, ignorând spațiile din jur
-    // \"(.*?)\"  -> caută text între ghilimele (valoarea)
-    std::regex pattern(R"(\"([^\"]+)\"\s*:\s*\"([^\"]+)\")");
-
-    auto begin = std::sregex_iterator(json.begin(), json.end(), pattern);
-    auto end = std::sregex_iterator();
-
-    for (std::sregex_iterator i = begin; i != end; ++i) {
-        std::smatch match = *i;
-        // match[1] este cheia (ex: username)
-        // match[2] este valoarea (ex: aaa)
-        data[match[1].str()] = match[2].str();
-    }
-
-    return data;
-}
 void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSvc)
 {
     CROW_ROUTE(app, "/<string>path")
@@ -88,7 +68,7 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
 
         crow::response res;
         res.add_header("Access-Control-Allow-Origin", "*");
-        auto data = parseSimpleJson(req.body);
+		auto data = JsonUtil::parseSimpleJson(req.body);
 
         if (data.empty() || data.find("username") == data.end() || data.find("password") == data.end()) {
             res.code = 400;

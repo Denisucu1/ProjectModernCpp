@@ -1,7 +1,8 @@
 #include "gtest/gtest.h"
 #include "Player.h" 
 
-TEST(PlayerTest, CardRemovalSuccessful) {
+TEST(PlayerTest, CardRemovalSuccessful) 
+{
     Player p("Alice", 1);
     p.SetDeck({ 10, 20, 30 });
 
@@ -15,7 +16,8 @@ TEST(PlayerTest, CardRemovalSuccessful) {
     ASSERT_FALSE(found);
 }
 
-TEST(PlayerTest, CardRemovalFailed) {
+TEST(PlayerTest, CardRemovalFailed) 
+{
     Player p("Bob", 2);
     p.SetDeck({ 5, 15 });
 
@@ -23,13 +25,15 @@ TEST(PlayerTest, CardRemovalFailed) {
     ASSERT_EQ(2, p.GetDeck().size());
 }
 
-TEST(PlayerTest, ScoreManagement) {
+TEST(PlayerTest, ScoreManagement) 
+{
     Player p("Charlie", 3);
     p.SetScore(15);
     ASSERT_EQ(15, p.GetScore());
 }
 
-TEST(PlayerTest, DeckIsSetCorrectly) {
+TEST(PlayerTest, DeckIsSetCorrectly) 
+{
     Player p("Charlie", 3);
     std::vector<std::uint8_t> newDeck = { 1, 5, 9 };
     p.SetDeck(newDeck);

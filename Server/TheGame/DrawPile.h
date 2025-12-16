@@ -17,6 +17,9 @@ public:
 	Card DrawACard();
 	
 	bool IsEmpty() const;
+
+	size_t GetSize() const;
+
 private:
 
 	std::vector<Card> m_drawPile;

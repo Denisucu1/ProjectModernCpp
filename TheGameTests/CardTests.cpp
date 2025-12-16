@@ -1,12 +1,14 @@
 #include "gtest/gtest.h"
 #include "Card.h"
 
-TEST(CardTest, CorrectInitialization) {
+TEST(CardTest, CorrectInitialization) 
+{
     Card c(42);
     ASSERT_EQ(42, c.GetValue());
 }
 
-TEST(CardTest, EdgeValueCheck) {
+TEST(CardTest, EdgeValueCheck) 
+{
     Card min(2);
     Card max(99);
     ASSERT_EQ(2, min.GetValue());

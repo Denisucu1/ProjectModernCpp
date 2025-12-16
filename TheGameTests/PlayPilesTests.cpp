@@ -3,7 +3,8 @@
 #include "Card.h" 
 
 
-TEST(PlayPilesTest, InitialValuesAreCorrect) {
+TEST(PlayPilesTest, InitialValuesAreCorrect) 
+{
     PlayPiles piles;
 
     ASSERT_EQ(1, piles.GetStackValue(PlayPiles::ascend_1)) 
@@ -13,7 +14,8 @@ TEST(PlayPilesTest, InitialValuesAreCorrect) {
 }
 
 
-TEST(PlayPilesAscending, RegularValidMove) {
+TEST(PlayPilesAscending, RegularValidMove) 
+{
     PlayPiles piles;
     piles.PlayCardOnStack(PlayPiles::ascend_1, 50); 
     Card card_51(51);
@@ -21,7 +23,8 @@ TEST(PlayPilesAscending, RegularValidMove) {
 	<< "51 pe 50 (Ascendent) ar trebui sa fie valid.";
 }
 
-TEST(PlayPilesAscending, BackwardsTrickValid) {
+TEST(PlayPilesAscending, BackwardsTrickValid) 
+{
     PlayPiles piles;
     piles.PlayCardOnStack(PlayPiles::ascend_1, 50); 
     Card card_40(40); 
@@ -29,7 +32,8 @@ TEST(PlayPilesAscending, BackwardsTrickValid) {
 	<< "40 pe 50 (-10 Trick) ar trebui sa fie valid.";
 }
 
-TEST(PlayPilesAscending, InvalidSmallerCard) {
+TEST(PlayPilesAscending, InvalidSmallerCard) 
+{
     PlayPiles piles;
     piles.PlayCardOnStack(PlayPiles::ascend_1, 50); 
     Card card_49(49); 
@@ -37,7 +41,8 @@ TEST(PlayPilesAscending, InvalidSmallerCard) {
 	<< "49 pe 50 (Ascendent) nu ar trebui sa fie valid.";
 }
 
-TEST(PlayPilesAscending, InvalidTrickValue) {
+TEST(PlayPilesAscending, InvalidTrickValue) 
+{
     PlayPiles piles;
     piles.PlayCardOnStack(PlayPiles::ascend_1, 50);
     Card card_41(41); 
@@ -46,7 +51,8 @@ TEST(PlayPilesAscending, InvalidTrickValue) {
 }
 
 
-TEST(PlayPilesDescending, RegularValidMove) {
+TEST(PlayPilesDescending, RegularValidMove) 
+{
     PlayPiles piles;
     piles.PlayCardOnStack(PlayPiles::descend_1, 50); 
     Card card_49(49);
@@ -54,7 +60,8 @@ TEST(PlayPilesDescending, RegularValidMove) {
 	<< "49 pe 50 (Descendent) ar trebui sa fie valid.";
 }
 
-TEST(PlayPilesDescending, BackwardsTrickValid) {
+TEST(PlayPilesDescending, BackwardsTrickValid) 
+{
     PlayPiles piles;
     piles.PlayCardOnStack(PlayPiles::descend_1, 50); 
     Card card_60(60); 
@@ -62,7 +69,8 @@ TEST(PlayPilesDescending, BackwardsTrickValid) {
 	<< "60 pe 50 (+10 Trick) ar trebui sa fie valid.";
 }
 
-TEST(PlayPilesDescending, InvalidLargerCard) {
+TEST(PlayPilesDescending, InvalidLargerCard) 
+{
     PlayPiles piles;
     piles.PlayCardOnStack(PlayPiles::descend_1, 50); 
     Card card_51(51);
@@ -70,7 +78,8 @@ TEST(PlayPilesDescending, InvalidLargerCard) {
 	<< "51 pe 50 (Descendent) nu ar trebui sa fie valid.";
 }
 
-TEST(PlayPilesDescending, InvalidTrickValue) {
+TEST(PlayPilesDescending, InvalidTrickValue) 
+{
     PlayPiles piles;
     piles.PlayCardOnStack(PlayPiles::descend_1, 50); 
     Card card_59(59); 
@@ -79,7 +88,8 @@ TEST(PlayPilesDescending, InvalidTrickValue) {
 }
 
 
-TEST(PlayPilesUtils, CardPlacementUpdatesValue) {
+TEST(PlayPilesUtils, CardPlacementUpdatesValue) 
+{
     PlayPiles piles;
     piles.PlayCardOnStack(PlayPiles::ascend_2, 25);
     ASSERT_EQ(25, piles.GetStackValue(PlayPiles::ascend_2)) 

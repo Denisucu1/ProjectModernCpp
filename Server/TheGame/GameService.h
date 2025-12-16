@@ -19,7 +19,7 @@ struct Room {
 	user_id hostUserId;
 	std::list<user_id> players;
 	bool isGameStarted = false;
-	int maxPlayers = 4;
+	int maxPlayers = 5;
 };
 
 struct MatchPlayerData {

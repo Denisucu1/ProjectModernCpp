@@ -169,7 +169,6 @@ void GameService::RemovePlayerFromGame(user_id userId)
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
 
-	// Logica de curățenie a mapărilor
 	if (m_player_game_map_.count(userId)) {
 		m_player_game_map_.erase(userId);
 	}

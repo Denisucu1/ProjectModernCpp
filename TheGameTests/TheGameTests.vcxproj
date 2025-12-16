@@ -108,7 +108,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Card.obj;PlayPiles.obj;Player.obj;DrawPile.obj;Game.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Card.obj;PlayPiles.obj;Player.obj;DrawPile.obj;Game.obj;GameService.obj;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>D:\Proiect la MC\ProjectModernCpp\Server\TheGame\x64\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

@@ -102,7 +102,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\include;D:\Proiect la MC\ProjectModernCpp\Server\TheGame;D:\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest;D:\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\include;D:\Proiect la MC\ProjectModernCpp\Server\TheGame;D:\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest;D:\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\src;D:\Proiect la MC\ProjectModernCpp\vcpkg_installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
@@ -133,6 +133,7 @@
     <ClCompile Include="..\..\..\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\src\gtest_main.cc" />
     <ClCompile Include="CardTests.cpp" />
     <ClCompile Include="DrawPileTests.cpp" />
+    <ClCompile Include="GameServiceTests.cpp" />
     <ClCompile Include="GameTests.cpp" />
     <ClCompile Include="PlayerTests.cpp" />
     <ClCompile Include="PlayPilesTests.cpp" />

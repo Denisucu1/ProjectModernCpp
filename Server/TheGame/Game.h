@@ -21,8 +21,6 @@ public:
 
 	void GameEndConditions();
 
-	void NextPlayer();
-
 	bool ProcessTurn(int playerId, const std::vector<PlayerMove>& moves);
 
 	std::uint8_t GetMinCardsToPlay() const;

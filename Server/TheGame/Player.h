@@ -23,6 +23,8 @@ public:
 
 	bool RemoveCard(std::uint8_t cardValue);
 
+	int GetId() const;
+
 private:
 
 	std::string m_name;

@@ -17,16 +17,11 @@ public:
 
 	std::uint8_t GetStackValue(StackIndex index) const;
 
-	//verificare daca pot adauga
 
 	void PlayCardOnStack(StackIndex index, std::uint8_t cardValue);
 
 	bool IsMoveValid(StackIndex index, const Card& card) const;
 
-	//adaugare carti in gramezi
-
-
-	//trebuie sa fac aici metode pentru verificarea de carti
 
 private:
 	std::array<std::uint8_t, 4> m_stacks; //sa fie de tipul carte

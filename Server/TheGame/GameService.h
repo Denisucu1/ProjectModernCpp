@@ -6,9 +6,10 @@
 #include <optional>
 #include <chrono>
 #include "Game.h"
+#include "crow.h"
 #include "Player.h"
 #include <unordered_map>
-#include "crow.h"
+#include <algorithm>
 
 using game_id = std::string;
 using user_id = int;
@@ -18,6 +19,7 @@ struct Room {
 	user_id hostUserId;
 	std::list<user_id> players;
 	bool isGameStarted = false;
+	int maxPlayers = 4;
 };
 
 struct MatchPlayerData {
@@ -42,16 +44,17 @@ class GameService
 public:
 	GameService();
 
-	std::string CreateRoom(user_id hostId);
+	std::string CreateRoom(user_id hostId, int maxPlayers);
 	bool JoinRoom(user_id userId, const std::string& roomCode);
 	bool StartGameInRoom(user_id requestorId, const std::string& roomCode);
-	std::optional<game_id> FindGame(user_id userId, const std::string& username, int desiredPlayerCount);
+
 	std::optional<game_id> GetPlayerGameStatus(user_id userId);
 	std::optional<MatchData> GetMatchState(int matchIdInt);
 	void addConnection(user_id userId, crow::websocket::connection* conn);
 	void removeConnection(crow::websocket::connection* conn);
 	void sendMessageToUser(user_id userId, const std::string& message);
 	Game& GetGame(const game_id gameId);
+	void RemovePlayerFromGame(user_id userId);
 
 private:
 
@@ -66,7 +69,7 @@ private:
 	std::map<game_id, Game> m_active_games_;
 	std::map<user_id, game_id> m_player_game_map_;
 
-	void CreateGame(std::list<user_id>& playerIds);
+	std::optional<game_id> CreateGame(std::list<user_id> playerIds);
 
 	MatchData GenerateMatchData(const Game& game);
 	std::string GenerateRandomCode();

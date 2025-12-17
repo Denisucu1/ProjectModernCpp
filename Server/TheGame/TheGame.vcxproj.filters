@@ -25,11 +25,14 @@
     <Filter Include="Source Files\game_logic">
       <UniqueIdentifier>{5eeea3f2-b4f0-4a16-abc6-3222409ddd25}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Routing">
+      <UniqueIdentifier>{dc837c88-8498-4c12-86e0-d3dceaa0f046}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Routing">
+      <UniqueIdentifier>{8133adb9-e14e-4802-b088-cfd5c43cb9c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ApiRoutes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="User.h">
       <Filter>Header Files\db</Filter>
     </ClInclude>
@@ -63,23 +66,23 @@
     <ClInclude Include="Match.h">
       <Filter>Header Files\db</Filter>
     </ClInclude>
-    <ClInclude Include="JsonUtil.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="WebSocketRoutes.h">
+      <Filter>Header Files\Routing</Filter>
     </ClInclude>
-    <ClInclude Include="AuthRoutes.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="JsonUtil.h">
+      <Filter>Header Files\Routing</Filter>
     </ClInclude>
     <ClInclude Include="GameRoutes.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Routing</Filter>
     </ClInclude>
-    <ClInclude Include="WebSocketRoutes.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="AuthRoutes.h">
+      <Filter>Header Files\Routing</Filter>
+    </ClInclude>
+    <ClInclude Include="ApiRoutes.h">
+      <Filter>Header Files\Routing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ApiRoutes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="UserService.cpp">
       <Filter>Source Files\db</Filter>
     </ClCompile>
@@ -107,17 +110,20 @@
     <ClCompile Include="PlayPiles.cpp">
       <Filter>Source Files\game_logic</Filter>
     </ClCompile>
-    <ClCompile Include="JsonUtil.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="WebSocketRoutes.cpp">
+      <Filter>Source Files\Routing</Filter>
     </ClCompile>
-    <ClCompile Include="AuthRoutes.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="JsonUtil.cpp">
+      <Filter>Source Files\Routing</Filter>
     </ClCompile>
     <ClCompile Include="GameRoutes.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Routing</Filter>
     </ClCompile>
-    <ClCompile Include="WebSocketRoutes.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="AuthRoutes.cpp">
+      <Filter>Source Files\Routing</Filter>
+    </ClCompile>
+    <ClCompile Include="ApiRoutes.cpp">
+      <Filter>Source Files\Routing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

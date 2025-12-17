@@ -31,7 +31,6 @@ std::string GameService::CreateRoom(user_id hostId, int maxPlayers)
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
 
-	// Validate player count (tests expect invalid for 1 and 6)
 	if (maxPlayers < 2 || maxPlayers > 5)
 		return "";
 
@@ -69,7 +68,6 @@ bool GameService::JoinRoom(user_id userId, const std::string& roomCode)
 
 	Room& room = itRoom->second;
 
-	// If already in room, do not allow "join" again (tests expect false for host attempting to join)
 	if (room.players.count(userId) || room.isGameStarted)
 	{
 		return false;
@@ -119,8 +117,6 @@ bool GameService::RemovePlayerFromRoom(user_id userId)
 			room.players.erase(userId);
 			if (room.isGameStarted)
 			{
-				//Aici se va notifica jocul despre plecarea jucatorului in timpul jocului
-
 				if (room.players.empty())
 				{
 					m_rooms.erase(roomCode);
@@ -246,7 +242,7 @@ void GameService::sendMessageToUser(user_id userId, const std::string& message)
 
 void GameService::CreateGame(std::list<user_id>& playerIds)
 {
-	// create a unique game id
+
 	std::string newGameId = "game_" + std::to_string(m_game_id_counter_++);
 	std::vector<Player> playersVec;
 	playersVec.reserve(playerIds.size());
@@ -255,10 +251,8 @@ void GameService::CreateGame(std::list<user_id>& playerIds)
 		playersVec.emplace_back(std::to_string(uid), uid);
 	}
 
-	// move vector into Game to avoid copying Players (Player is non-copyable)
 	m_active_games.emplace(newGameId, Game(std::move(playersVec)));
 
-	// map users to game id
 	for (auto uid : playerIds)
 	{
 		m_player_game_map[uid] = newGameId;

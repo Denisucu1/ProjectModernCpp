@@ -1,5 +1,4 @@
-﻿// GameServiceTests.cpp
-#include "gtest/gtest.h"
+﻿#include "gtest/gtest.h"
 #include "GameService.h"
 #include <string>
 #include <optional>

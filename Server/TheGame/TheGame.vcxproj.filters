@@ -72,6 +72,9 @@
     <ClInclude Include="GameRoutes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WebSocketRoutes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ApiRoutes.cpp">
@@ -111,6 +114,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameRoutes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WebSocketRoutes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

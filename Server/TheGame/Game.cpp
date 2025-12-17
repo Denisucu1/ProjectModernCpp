@@ -35,8 +35,7 @@ Game::Game(std::vector<Player> players)
 
 void Game::StartGame()
 {
-	//m_cards.MixPile();
-
+	
 	std::uint8_t cardsPerPlayer = 6;
 	if (m_players.size() == 2) {
 		cardsPerPlayer = 8;
@@ -76,27 +75,6 @@ void Game::GameEndConditions()
 	}
 }
 
-void Game::NextPlayer()
-{
-	Player& currentPlayer = m_players[m_current_player_index_];
-
-	int handLimit = 6;
-	if (m_players.size() == 2) handLimit = 8;
-	else if (m_players.size() == 3) handLimit = 7;
-
-	std::vector<std::uint8_t> hand = currentPlayer.GetDeck();
-
-	while (hand.size() < handLimit && !m_cards.IsEmpty()) {
-		Card c = m_cards.DrawACard();
-		hand.push_back(c.GetValue());
-	}
-
-	currentPlayer.SetDeck(hand);
-
-	GameEndConditions();
-
-	m_current_player_index_ = (m_current_player_index_ + 1) % m_players.size();
-}
 
 bool Game::ProcessTurn(int playerId, const std::vector<PlayerMove>& moves)
 {
@@ -167,4 +145,14 @@ void Game::NextPlayer(int cardsPlayed)
 	GameEndConditions(); 
 
 	m_current_player_index_ = (m_current_player_index_ + 1) % m_players.size();
+}
+
+const std::vector<Player>& Game::GetPlayers() const
+{
+	return m_players;
+}
+
+std::uint8_t Game::GetCurrentPlayerIndex() const
+{
+	return m_current_player_index_;
 }

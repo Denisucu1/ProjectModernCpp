@@ -47,3 +47,7 @@ bool DrawPile::IsEmpty() const
 	return m_drawPile.empty();
 }
 
+size_t DrawPile::GetSize() const
+{
+	return m_drawPile.size();
+}

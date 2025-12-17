@@ -21,13 +21,15 @@ public:
 
 	void GameEndConditions();
 
-	void NextPlayer();
-
 	bool ProcessTurn(int playerId, const std::vector<PlayerMove>& moves);
 
 	std::uint8_t GetMinCardsToPlay() const;
 
 	void NextPlayer(int cardsPlayed);
+
+	const std::vector<Player>& GetPlayers() const;
+
+	std::uint8_t GetCurrentPlayerIndex() const;
 
 private:
 	DrawPile m_cards;

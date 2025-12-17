@@ -66,3 +66,8 @@ bool Player::RemoveCard(std::uint8_t cardValue)
     }
     return false;
 }
+
+int Player::GetId() const
+{
+    return m_id;
+}

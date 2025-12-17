@@ -43,90 +43,119 @@ std::optional<int> MatchService::FindOrCreateMatch(int requestingUserId)
     int lowerScore = std::max(1, roundedUserScore - MAX_SCORE_DIFFERENCE);
     int upperScore = std::min(5, roundedUserScore + MAX_SCORE_DIFFERENCE);
 
-    auto waitingMatches = storage.get_all<Joc>(
-        where(is_equal(&Joc::status, "Waiting for players") and
-            between(&Joc::first_player_score, lowerScore, upperScore))
-    );
+    std::optional<int> matchIdResult = std::nullopt;
 
-    for (auto& match : waitingMatches) {
+    bool shouldStart = false;
+    int matchToStartId = -1;
+    std::vector<int> startUserIds;
 
-        auto matchPlayers = storage.get_all<Jucator>(
-            where(is_equal(&Jucator::game_id, match.id))
-        );
+    try {
+        storage.transaction([&]()-> bool {
 
-        if (matchPlayers.size() >= MAX_PLAYERS)
-            continue;
+            auto waitingMatches = storage.get_all<Joc>(
+                where(is_equal(&Joc::status, "Waiting for players") and
+                    between(&Joc::first_player_score, lowerScore, upperScore))
+            );
 
-        Jucator newPlayer;
-        newPlayer.id = 0;
-        newPlayer.user_id = requestingUserId;
-        newPlayer.game_id = match.id;
-        newPlayer.seat_index = (int)matchPlayers.size() + 1;
-        newPlayer.hand = "";
-        storage.insert(newPlayer);
+            for (auto& match : waitingMatches) {
 
-        if (matchPlayers.size() + 1 >= MIN_PLAYERS_TO_START)
+                auto matchPlayers = storage.get_all<Jucator>(
+                    where(is_equal(&Jucator::game_id, match.id))
+                );
+
+                if (matchPlayers.size() >= MAX_PLAYERS)
+                    continue;
+
+                Jucator newPlayer;
+                newPlayer.id = 0;
+                newPlayer.user_id = requestingUserId;
+                newPlayer.game_id = match.id;
+                newPlayer.seat_index = static_cast<int>(matchPlayers.size()) + 1;
+                newPlayer.hand = "";
+                storage.insert(newPlayer);
+
+                matchIdResult = match.id;
+
+                if (matchPlayers.size() + 1 >= MIN_PLAYERS_TO_START)
+                {
+                    startUserIds.clear();
+                    for (const auto& mp : matchPlayers) startUserIds.push_back(mp.user_id);
+                    startUserIds.push_back(requestingUserId);
+
+                    shouldStart = true;
+                    matchToStartId = match.id;
+                }
+                return true; 
+            }
+
+            Joc newMatch;
+            newMatch.id = 0;
+            newMatch.status = "Waiting for players";
+            newMatch.difficulty = "Normal";
+            newMatch.max_players = MAX_PLAYERS;
+            newMatch.deck_state = "";
+            newMatch.stacks_state = "[1, 1, 100, 100]";
+            newMatch.first_player_score = userScore;
+            newMatch.creation_timestamp = currentTime;
+
+            int newMatchId = storage.insert(newMatch);
+
+            Jucator newPlayer;
+            newPlayer.id = 0;
+            newPlayer.user_id = requestingUserId;
+            newPlayer.game_id = newMatchId;
+            newPlayer.seat_index = 1;
+            newPlayer.hand = "";
+            storage.insert(newPlayer);
+
+            matchIdResult = newMatchId;
+            return true; 
+        });
+
+        if (shouldStart && matchToStartId != -1)
         {
-            std::vector<int> userIds;
-            for (const auto& mp : matchPlayers) userIds.push_back(mp.user_id);
-            userIds.push_back(requestingUserId);
-
-            this->StartGame(match.id, userIds);
+            this->StartGame(matchToStartId, startUserIds);
         }
-        return match.id;
+
+        return matchIdResult;
     }
-
-    Joc newMatch;
-
-    newMatch.id = 0;
-    newMatch.status = "Waiting for players";
-    newMatch.difficulty = "Normal";
-    newMatch.max_players = MAX_PLAYERS;
-    newMatch.deck_state = "";
-    newMatch.stacks_state = "[1, 1, 100, 100]";
-
-    newMatch.first_player_score = userScore;
-    newMatch.creation_timestamp = currentTime;
-
-    int newMatchId = storage.insert(newMatch);
-    
-
-    Jucator newPlayer;
-
-    newPlayer.id = 0;
-    newPlayer.user_id = requestingUserId;
-    newPlayer.game_id = newMatchId;
-    newPlayer.seat_index = 1;
-    newPlayer.hand = "";
-    storage.insert(newPlayer);
-
-    return newMatchId;
+    catch (const std::exception& e) {
+        std::cerr << "Eroare tranzactionala in FindOrCreateMatch: " << e.what() << std::endl;
+        return std::nullopt; 
+    }
 }
 
 void MatchService::StartGame(int matchId, const std::vector<int>& userIds)
 {
     auto& storage = getStorage();
 
-    std::string initialDeckState = "Pachet_Random";
+    try {
+        storage.transaction([&]() -> bool {
+            std::string initialDeckState = "Pachet_Random";
 
-    storage.update_all(
-        set(
-            c(&Joc::status) = "IN_PROGRESS",
-            c(&Joc::deck_state) = initialDeckState 
-        ),
-        where(is_equal(&Joc::id, matchId))
-    );
+            storage.update_all(
+                set(
+                    c(&Joc::status) = "IN_PROGRESS",
+                    c(&Joc::deck_state) = initialDeckState
+                ),
+                where(is_equal(&Joc::id, matchId))
+            );
 
-    int cardsPerPlayer = 5; // Simulare
-    for (int userId : userIds) {
-        std::string playerHand = "[\"C1\", \"H2\", ...]"; 
+            std::string playerHand = "[\"C1\", \"H2\", ...]";
 
-        storage.update_all(
-            set(c(&Jucator::hand) = playerHand),
-            where(is_equal(&Jucator::game_id, matchId) and is_equal(&Jucator::user_id, userId))
-        );
+            for (int userId : userIds) {
+                storage.update_all(
+                    set(c(&Jucator::hand) = playerHand),
+                    where(is_equal(&Jucator::game_id, matchId) and is_equal(&Jucator::user_id, userId))
+                );
+            }
+
+            return true; 
+            });
     }
-
+    catch (const std::exception& e) {
+        std::cerr << "Eroare in StartGame pentru ID " << matchId << ": " << e.what() << std::endl;
+    }
 }
 
 void MatchService::UpdateMatchState(int matchId, const std::string& newStacksState, const std::string& newDeckState, int nextPlayerId)

@@ -1,15 +1,14 @@
 #pragma once
-#include <list>
 #include <string>
 #include <map>
 #include <mutex>
 #include <optional>
 #include <chrono>
 #include "Game.h"
-#include "crow.h"
 #include "Player.h"
 #include <unordered_map>
-#include <algorithm>
+#include "crow.h"
+#include <unordered_set>
 
 using game_id = std::string;
 using user_id = int;
@@ -17,9 +16,8 @@ using user_id = int;
 struct Room {
 	std::string code;
 	user_id hostUserId;
-	std::list<user_id> players;
+	std::unordered_set<user_id> players;
 	bool isGameStarted = false;
-	int maxPlayers = 5;
 };
 
 struct MatchPlayerData {
@@ -44,17 +42,19 @@ class GameService
 public:
 	GameService();
 
-	std::string CreateRoom(user_id hostId, int maxPlayers);
+	std::string GenerateRoomCode();
+	std::string CreateRoom(user_id hostId);
 	bool JoinRoom(user_id userId, const std::string& roomCode);
+	bool RemovePlayerFromRoom(user_id userId);
+	void RemoveConnectionFromRoom(crow::websocket::connection* conn);
 	bool StartGameInRoom(user_id requestorId, const std::string& roomCode);
-
+	std::optional<game_id> FindGame(user_id userId, const std::string& username, int desiredPlayerCount);
 	std::optional<game_id> GetPlayerGameStatus(user_id userId);
 	std::optional<MatchData> GetMatchState(int matchIdInt);
 	void addConnection(user_id userId, crow::websocket::connection* conn);
 	void removeConnection(crow::websocket::connection* conn);
 	void sendMessageToUser(user_id userId, const std::string& message);
 	Game& GetGame(const game_id gameId);
-	void RemovePlayerFromGame(user_id userId);
 
 private:
 
@@ -66,10 +66,10 @@ private:
 	std::unordered_map<std::string, Room> m_rooms;
 	std::unordered_map<user_id, std::string> m_user_room_map;
 
-	std::map<game_id, Game> m_active_games_;
-	std::map<user_id, game_id> m_player_game_map_;
+	std::map<game_id, Game> m_active_games;
+	std::map<user_id, game_id> m_player_game_map;
 
-	std::optional<game_id> CreateGame(std::list<user_id> playerIds);
+	void CreateGame(std::list<user_id>& playerIds);
 
 	MatchData GenerateMatchData(const Game& game);
 	std::string GenerateRandomCode();

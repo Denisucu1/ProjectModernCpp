@@ -1,141 +1,181 @@
-﻿#include "GameService.h"
+#include "GameService.h"
 #include "crow.h"
 #include <iostream>
 #include <utility>
+#include <random>
 
 GameService::GameService()
 {
 
 }
 
-std::string GameService::GenerateRandomCode() 
+std::string GameService::GenerateRoomCode()
 {
-	const std::string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-	std::random_device random_device;
-	std::mt19937 generator(random_device());
-	std::uniform_int_distribution<> distribution(0, characters.size() - 1);
-
-	std::string random_string;
-	for (int i = 0; i < 4; ++i) {
-		random_string += characters[distribution(generator)];
+	std::string roomCode;
+	roomCode.resize(6);
+	static const char alphanum[] =
+		"0123456789"
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<> dis(0, sizeof(alphanum) - 2);
+	for (int i = 0; i < 6; ++i)
+	{
+		roomCode[i] = alphanum[dis(gen)];
 	}
-	return random_string;
+	return roomCode;
 }
 
-std::string GameService::CreateRoom(user_id hostId, int maxPlayers) {
+std::string GameService::CreateRoom(user_id hostId)
+{
 	std::lock_guard<std::mutex> lock(m_mutex);
-
-	if (maxPlayers < 2 || maxPlayers > 5) {
-		std::cerr << "[Room] Invalid maxPlayers count: " << maxPlayers << ". Must be 2-5." << std::endl;
-		return "";
-	}
-
-	if (m_user_room_map.count(hostId) || m_player_game_map_.count(hostId)) {
-		return "";
-	}
-
 	std::string roomCode;
+	if(m_user_room_map.count(hostId))
+	{
+		return "";
+	}
 	do {
-		roomCode = GenerateRandomCode();
+		roomCode = GenerateRoomCode();
 	} while (m_rooms.count(roomCode));
 
 	Room newRoom;
 	newRoom.code = roomCode;
 	newRoom.hostUserId = hostId;
-	newRoom.players.push_back(hostId);
-	newRoom.maxPlayers = maxPlayers;
-
-	m_rooms[roomCode] = newRoom;
+	newRoom.players.insert(hostId);
 	m_user_room_map[hostId] = roomCode;
-
-	std::cout << "[Room] New room created: " << roomCode << " by user " << hostId << std::endl;
+	m_rooms[roomCode] = newRoom;
+	std::cout << "Room created with code: " << roomCode << " by host ID: " << hostId << std::endl;	
 	return roomCode;
 }
 
-bool GameService::JoinRoom(user_id userId, const std::string& roomCode) {
+bool GameService::JoinRoom(user_id userId, const std::string& roomCode)
+{
 	std::lock_guard<std::mutex> lock(m_mutex);
 
-	if (m_user_room_map.count(userId) || m_player_game_map_.count(userId)) {
+	if(m_rooms.find(roomCode) == m_rooms.end())
+	{
+		std::cout << "JoinRoom failed: Room code " << roomCode << " does not exist." << std::endl;
 		return false;
 	}
 
-	if (m_rooms.count(roomCode)) {
-		Room& room = m_rooms.at(roomCode);
+	Room& room = m_rooms[roomCode];
 
-		if (room.isGameStarted || room.players.size() >= room.maxPlayers) {
-			return false;
-		}
-
-		room.players.push_back(userId);
-		m_user_room_map[userId] = roomCode;
-		std::cout << "[Room] User " << userId << " joined room: " << roomCode << std::endl;
-		return true;
+	if (room.players.count(userId) || room.isGameStarted)
+	{
+		return room.players.count(userId);
 	}
-	return false;
+
+	if(room.players.size() >= 5)
+	{
+		std::cout << "JoinRoom failed: Room code " << roomCode << " is full." << std::endl;
+		return false;
+	}
+
+	room.players.insert(userId);
+	m_user_room_map[userId] = roomCode;
+
+	std::cout << "User ID: " << userId << " joined room code: " << roomCode << std::endl;
+
+	crow::json::wvalue updateMsg;
+	updateMsg["type"] = "room_update";
+	updateMsg["roomCode"] = roomCode;
+	updateMsg["players"] = crow::json::wvalue::list();
+
+	int i = 0;
+	for(auto pid : room.players)
+	{
+		updateMsg["players"][i++] = pid;
+	}
+	std::string msgStr = updateMsg.dump();
+	for(auto pid : room.players)
+	{
+		sendMessageToUser(pid, msgStr);
+	}
+
+	return true;
 }
 
-bool GameService::StartGameInRoom(user_id requestorId, const std::string& roomCode) {
-	std::lock_guard<std::mutex> lock(m_mutex);
+bool GameService::RemovePlayerFromRoom(user_id userId)
+{
+	std::lock_guard<std::mutex> lock(m_mutex);	
+	
+	if (m_user_room_map.count(userId)) {
+		std::string roomCode = m_user_room_map[userId];
+		m_user_room_map.erase(userId);
 
-	if (m_rooms.count(roomCode)) {
-		Room& room = m_rooms.at(roomCode);
+		if (m_rooms.count(roomCode))
+		{
+			Room& room = m_rooms[roomCode];
+			room.players.erase(userId);
+			if (room.isGameStarted)
+			{
+				//Aici se va notifica jocul despre plecarea jucatorului in timpul jocului
 
-		if (requestorId != room.hostUserId) {
-			return false;
-		}
-
-		if (room.players.size() < 2) {
-			std::cerr << "[Room] Cannot start game: Requires minimum 2 players." << std::endl;
-			return false;
-		}
-
-		if (room.isGameStarted) {
-			return false;
-		}
-
-		std::optional<game_id> newGameId = CreateGame(room.players);
-
-		if (newGameId.has_value()) {
-			room.isGameStarted = true;
-
-			for (user_id id : room.players) {
-				m_user_room_map.erase(id);
+				if(room.players.empty())
+				{
+					m_rooms.erase(roomCode);
+					std::cout << "Room code: " << roomCode << " deleted as all players left during game." << std::endl;
+					return true;
+				}
 			}
-			m_rooms.erase(roomCode);
-
-			std::cout << "[Room] Game started in room " << roomCode << ". ID: " << newGameId.value() << std::endl;
 			return true;
 		}
 	}
 	return false;
 }
 
-std::optional<game_id> GameService::CreateGame(std::list<user_id> playerIds) {
+void GameService::RemoveConnectionFromRoom(crow::websocket::connection* conn)
+{
+	std::lock_guard<std::mutex> lock(m_mutex);
+	auto it = m_connectionToUser.find(conn);
+	if (it != m_connectionToUser.end())
+	{
+		user_id userId = it->second;
 
-	std::vector<Player> players;
-	for (user_id id : playerIds) {
-		players.emplace_back("Guest" + std::to_string(id), id);
+		m_connectionToUser.erase(it);
+		m_userConnections.erase(userId);
+		RemovePlayerFromRoom(userId);
+		std::cout << "Connection removed and player ID: " << userId << " removed from room." << std::endl;
 	}
+}
 
-	Game newGame(std::move(players));
-
-	std::string gameId = "G" + std::to_string(++m_game_id_counter_);
-
-	m_active_games_.emplace(gameId, std::move(newGame));
-
-	for (user_id id : playerIds) {
-		m_player_game_map_[id] = gameId;
+bool GameService::StartGameInRoom(user_id requestorId, const std::string& roomCode)
+{
+	std::lock_guard<std::mutex> lock(m_mutex);
+	if (m_rooms.find(roomCode) == m_rooms.end())
+	{
+		std::cout << "StartGameInRoom failed: Room code " << roomCode << " does not exist." << std::endl;
+		return false;
 	}
-
-	return gameId;
+	Room& room = m_rooms[roomCode];
+	if (room.hostUserId != requestorId)
+	{
+		std::cout << "StartGameInRoom failed: User ID " << requestorId << " is not the host of room code " << roomCode << "." << std::endl;
+		return false;
+	}
+	if (room.isGameStarted)
+	{
+		std::cout << "StartGameInRoom failed: Game in room code " << roomCode << " has already started." << std::endl;
+		return false;
+	}
+	if (room.players.size() < 2)
+	{
+		std::cout << "StartGameInRoom failed: Not enough players in room code " << roomCode << " to start the game." << std::endl;
+		return false;
+	}
+	room.isGameStarted = true;
+	std::list<user_id> playerIds(room.players.begin(), room.players.end());
+	CreateGame(playerIds);
+	std::cout << "Game started in room code: " << roomCode << " by host ID: " << requestorId << std::endl;
+	return true;
 }
 
 std::optional<game_id> GameService::GetPlayerGameStatus(user_id userId)
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
-	if (m_player_game_map_.contains(userId))
+	if (m_player_game_map.contains(userId))
 	{
-		return m_player_game_map_[userId];
+		return m_player_game_map[userId];
 	}
 
 	return std::nullopt;
@@ -145,7 +185,7 @@ Game& GameService::GetGame(const game_id gameId)
 {
 	try
 	{
-		return m_active_games_.at(gameId);
+		return m_active_games.at(gameId);
 	}
 	catch (const std::out_of_range& e)
 	{
@@ -156,32 +196,7 @@ Game& GameService::GetGame(const game_id gameId)
 
 std::optional<MatchData> GameService::GetMatchState(int matchIdInt)
 {
-	return std::nullopt;
-}
-
-MatchData GameService::GenerateMatchData(const Game& game)
-{
-	MatchData state;
-	return state;
-}
-
-void GameService::RemovePlayerFromGame(user_id userId) 
-{
-	std::lock_guard<std::mutex> lock(m_mutex);
-
-	if (m_player_game_map_.count(userId)) {
-		m_player_game_map_.erase(userId);
-	}
-	if (m_user_room_map.count(userId)) {
-		std::string roomCode = m_user_room_map.at(userId);
-		if (m_rooms.count(roomCode)) {
-			m_rooms.at(roomCode).players.remove(userId);
-			if (m_rooms.at(roomCode).players.empty()) {
-				m_rooms.erase(roomCode);
-			}
-		}
-		m_user_room_map.erase(userId);
-	}
+	return std::optional<MatchData>();
 }
 
 void GameService::addConnection(user_id userId, crow::websocket::connection* conn)
@@ -215,4 +230,22 @@ void GameService::sendMessageToUser(user_id userId, const std::string& message)
 		conn->send_text(message);
 		std::cout << "Sent message to user ID: " << userId << '\n';
 	}
+}
+
+
+void GameService::CreateGame(std::list<user_id>& playerIds)
+{
+}
+
+MatchData GameService::GenerateMatchData(const Game& game)
+{
+	MatchData state;
+	state.match_id = 0;
+	state.status = "In Progress";
+	state.current_turn_player_id = 0;
+	state.deck_count = 0;
+	state.stacks = {};
+	state.players = {};
+
+	return state;
 }

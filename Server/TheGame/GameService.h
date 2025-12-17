@@ -18,11 +18,12 @@ struct Room {
 	user_id hostUserId;
 	std::unordered_set<user_id> players;
 	bool isGameStarted = false;
+	int maxPlayers = 4;
 };
 
 struct MatchPlayerData {
 
-	int id;             
+	int id;
 	int userId;
 	std::vector<int> cards_in_hand;
 };
@@ -43,7 +44,7 @@ public:
 	GameService();
 
 	std::string GenerateRoomCode();
-	std::string CreateRoom(user_id hostId);
+	std::string CreateRoom(user_id hostId, int maxPlayers = 4);
 	bool JoinRoom(user_id userId, const std::string& roomCode);
 	bool RemovePlayerFromRoom(user_id userId);
 	void RemoveConnectionFromRoom(crow::websocket::connection* conn);
@@ -76,4 +77,3 @@ private:
 
 	long long m_game_id_counter_ = 0;
 };
-

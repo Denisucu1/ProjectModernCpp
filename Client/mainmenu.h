@@ -30,6 +30,10 @@ private slots:
     void on_joinGameButton_clicked();
     void on_modeBackButton_clicked();
 
+    void on_confirmJoinButton_clicked();
+    void on_cancelJoinButton_clicked();
+    void onJoinRoomReply(QNetworkReply* reply);
+
 private:
     Ui::MainMenu* ui;
     QString m_username;

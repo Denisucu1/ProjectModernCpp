@@ -21,6 +21,7 @@ MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
             background-color: #1e1e1e;
         }
 
+        /* STILUL TAU ORIGINAL PENTRU BUTOANE - NEATINS */
         QPushButton {
             background-color: #4a4a4a;
             color: white;
@@ -39,23 +40,27 @@ MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
 
         QPushButton#playButton, 
         QPushButton#createGameButton, 
-        QPushButton#joinGameButton {
+        QPushButton#joinGameButton,
+        QPushButton#confirmJoinButton {   /* Am adaugat doar ID-ul nou aici */
             background-color: #4CAF50;
         }
         
         QPushButton#playButton:hover, 
         QPushButton#createGameButton:hover, 
-        QPushButton#joinGameButton:hover {
+        QPushButton#joinGameButton:hover,
+        QPushButton#confirmJoinButton:hover {
             background-color: #45a049;
         }
 
         QPushButton#exitButton,
-        QPushButton#modeBackButton {
+        QPushButton#modeBackButton,
+        QPushButton#cancelJoinButton {    /* Am adaugat doar ID-ul nou aici */
             background-color: #F44336;
         }
         
         QPushButton#exitButton:hover,
-        QPushButton#modeBackButton:hover {
+        QPushButton#modeBackButton:hover,
+        QPushButton#cancelJoinButton:hover {
             background-color: #E53935;
         }
 
@@ -115,7 +120,25 @@ MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
             color: #f5f5f5;
             font-size: 16px;
         }
+
+        /* --- STIL NOU DOAR PENTRU INPUT-UL DE COD --- */
+        QLineEdit#roomCodeInput {
+            background-color: #4a4a4a; 
+            color: white; 
+            border: 2px solid #4CAF50; 
+            border-radius: 10px; 
+            padding: 10px; 
+            font-size: 24px; 
+            font-weight: bold; 
+            min-height: 40px;
+            text-transform: uppercase;
+        }
         
+        QLabel#enterCodeLabel {
+             color: white;
+             font-size: 18px;
+             font-weight: bold;
+        }
     )";
 
     this->setStyleSheet(styleSheet);
@@ -162,6 +185,10 @@ void MainMenu::on_createGameButton_clicked()
 
 void MainMenu::on_joinGameButton_clicked()
 {
+    // Navigare catre pagina 3 (cea noua din Designer)
+    ui->stackedWidget->setCurrentIndex(3);
+    ui->roomCodeInput->clear();
+    ui->roomCodeInput->setFocus();
 }
 
 void MainMenu::on_modeBackButton_clicked()
@@ -214,10 +241,67 @@ void MainMenu::onProfileReply(QNetworkReply* reply)
         ui->gamesPlayedLabel->setText(QString::number(jsonObj["gamesPlayed"].toInt()));
         ui->gamesWonLabel->setText(QString::number(jsonObj["gamesWon"].toInt()));
         ui->cardsAtLossLabel->setText(QString::number(jsonObj["cardsLeftOnLosses"].toInt()));
-
         ui->totalTimeLabel->setText(QString::number(jsonObj["hoursPlayed"].toInt()));
-
         ui->performanceScoreLabel->setText(QString::number(jsonObj["performanceScore"].toDouble(), 'f', 2));
+    }
+
+    reply->deleteLater();
+}
+
+void MainMenu::on_confirmJoinButton_clicked()
+{
+    QString code = ui->roomCodeInput->text().toUpper().trimmed();
+    if (code.length() != 4) {
+        QMessageBox::warning(this, "Input Error", "Room code must be 4 characters.");
+        return;
+    }
+
+    QUrl url("http://localhost:18080/api/room/join");
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QJsonObject json;
+    json["userId"] = m_userId;
+    json["roomCode"] = code;
+
+    QJsonDocument doc(json);
+    QByteArray data = doc.toJson();
+
+    QNetworkReply* reply = m_networkManager->post(request, data);
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+        onJoinRoomReply(reply);
+        });
+
+    ui->confirmJoinButton->setText("Joining...");
+    ui->confirmJoinButton->setEnabled(false);
+}
+
+void MainMenu::on_cancelJoinButton_clicked()
+{
+    // Inapoi la pagina 2 (Create/Join)
+    ui->stackedWidget->setCurrentIndex(2);
+}
+
+void MainMenu::onJoinRoomReply(QNetworkReply* reply)
+{
+    ui->confirmJoinButton->setText("Join Room");
+    ui->confirmJoinButton->setEnabled(true);
+
+    if (reply->error() != QNetworkReply::NoError) {
+        QMessageBox::critical(this, "Join Failed", "Nu m-am putut conecta la camera (Verifica Serverul).");
+        reply->deleteLater();
+        return;
+    }
+
+    QByteArray responseData = reply->readAll();
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
+    QJsonObject jsonObj = jsonDoc.object();
+
+    if (jsonObj.contains("error")) {
+        QMessageBox::warning(this, "Join Failed", jsonObj["error"].toString());
+    }
+    else {
+        QMessageBox::information(this, "Success", "Joined room: " + jsonObj["roomCode"].toString());
     }
 
     reply->deleteLater();

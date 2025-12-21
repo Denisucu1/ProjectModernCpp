@@ -53,3 +53,7 @@ bool PlayPiles::IsMoveValid(StackIndex index, const Card& card) const
 	}
 
 }
+
+const std::array<std::uint8_t, 4>& PlayPiles::GetStacks() const
+{
+}

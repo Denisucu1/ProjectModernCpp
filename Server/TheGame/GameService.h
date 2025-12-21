@@ -56,6 +56,7 @@ public:
 	void removeConnection(crow::websocket::connection* conn);
 	void sendMessageToUser(user_id userId, const std::string& message);
 	Game& GetGame(const game_id gameId);
+	void SyncGameToDb(const game_id& gameId);
 
 private:
 

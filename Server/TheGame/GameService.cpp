@@ -1,8 +1,13 @@
 #include "GameService.h"
+#include "DatabaseManager.h"
+#include "PlayPiles.h"
 #include "crow.h"
 #include <iostream>
 #include <utility>
 #include <random>
+
+#include "SerializationUtil.h"
+
 
 GameService::GameService()
 {
@@ -270,4 +275,40 @@ MatchData GameService::GenerateMatchData(const Game& game)
 	state.players = {};
 
 	return state;
+}
+
+void GameService::SyncGameToDb(const game_id& gameId) 
+{
+	auto& storage = getStorage();
+	Game& game = GetGame(gameId); 
+
+	std::string stacksStr = SerializationUtil::Serialize(game.GetPlayPiles().GetStacks());
+	std::string deckStr = SerializationUtil::Serialize(game.GetDrawPile().GetRemainingCards());
+
+	int numericId = std::stoi(gameId.substr(5));
+
+	try {
+		storage.transaction([&]() -> bool 
+			{
+			storage.update_all(
+				set(c(&Joc::stacks_state) = stacksStr,
+					c(&Joc::deck_state) = deckStr),
+				where(is_equal(&Joc::id, numericId))
+			);
+
+			for (const auto& player : game.GetPlayers()) 
+			{
+				std::string handStr = SerializationUtil::Serialize(player.GetDeck()); //
+				storage.update_all(
+					set(c(&Jucator::hand) = handStr),
+					where(is_equal(&Jucator::game_id, numericId) &&
+						is_equal(&Jucator::user_id, player.GetId()))
+				);
+			}
+			return true;
+			});
+	}
+	catch (const std::exception& e) {
+		std::cerr << "[SyncError] " << e.what() << std::endl;
+	}
 }

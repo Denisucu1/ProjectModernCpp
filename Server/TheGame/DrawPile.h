@@ -20,6 +20,13 @@ public:
 
 	size_t GetSize() const;
 
+	std::vector<std::uint8_t> GetRemainingCards() const {
+		std::vector<std::uint8_t> values;
+		for (const auto& card : m_drawPile) 
+			values.push_back(card.GetValue());
+		return values;
+	}
+
 private:
 
 	std::vector<Card> m_drawPile;

@@ -1,5 +1,6 @@
 #include "Game.h"
 #include <iostream>
+#include "SerializationUtil.h"
 
 Game::Game(std::vector<Player> players) 
 	: m_cards(), 
@@ -79,37 +80,22 @@ void Game::GameEndConditions()
 bool Game::ProcessTurn(int playerId, const std::vector<PlayerMove>& moves)
 {
 	Player& currentPlayer = m_players[m_current_player_index_];
-
 	std::uint8_t minMoves = GetMinCardsToPlay();
 
-	if (moves.size() < minMoves)
-	{
-		std::cerr << "!!! PIERDERE !!! Jucatorul " << playerId
-			<< " nu a putut plasa minimul de " << (int)minMoves << " carti." << std::endl;
+	if (moves.size() < minMoves) 
 		return false;
-	}
 
 	int successfulMoves = 0;
-	std::vector<std::uint8_t> tempHand = currentPlayer.GetDeck();
-
 	for (const auto& move : moves)
 	{
-		Card card(move.card_value);
-
-		if (!m_play_piles_.IsMoveValid(move.stack_index, card))
-		{
-			std::cerr << "Eroare: Mutare invalida. Cartea " << move.card_value << " nu poate fi plasata pe teancul "
-				<< move.stack_index << std::endl;
+		if (!m_play_piles_.IsMoveValid(move.stack_index, Card(move.card_value)))
 			return false;
-		}
 
-		if (currentPlayer.RemoveCard(move.card_value))
-		{
+		if (currentPlayer.RemoveCard(move.card_value)) {
 			m_play_piles_.PlayCardOnStack(move.stack_index, move.card_value);
 			successfulMoves++;
 		}
 		else {
-			std::cerr << "Eroare: Jucatorul " << playerId << " nu are cartea " << move.card_value << std::endl;
 			return false;
 		}
 	}

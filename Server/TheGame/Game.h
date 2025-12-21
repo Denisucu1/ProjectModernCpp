@@ -31,6 +31,10 @@ public:
 
 	std::uint8_t GetCurrentPlayerIndex() const;
 
+	const PlayPiles& GetPlayPiles() const { return m_play_piles_; }
+
+	const DrawPile& GetDrawPile() const { return m_cards; }
+
 private:
 	DrawPile m_cards;
 	std::vector<Player> m_players;

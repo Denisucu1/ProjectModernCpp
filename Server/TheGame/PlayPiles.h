@@ -22,6 +22,7 @@ public:
 
 	bool IsMoveValid(StackIndex index, const Card& card) const;
 
+	const std::array<std::uint8_t, 4>& GetStacks() const;
 
 private:
 	std::array<std::uint8_t, 4> m_stacks; //sa fie de tipul carte

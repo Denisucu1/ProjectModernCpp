@@ -129,7 +129,4 @@
       <Filter>Source Files\Routing</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="server_data.proto" />
-  </ItemGroup>
 </Project>

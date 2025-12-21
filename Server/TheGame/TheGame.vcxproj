@@ -148,7 +148,7 @@
     
     
     
-  </ItemGroup><ItemGroup><CustomBuild Include="server_data.proto"><FileType>Document</FileType><Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(ProjectDir)..\..\vcpkg_installed\x64-windows\tools\protobuf\protoc.exe" -I$(ProjectDir) --cpp_out=$(ProjectDir) $(ProjectDir)server_data.proto</Command><Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)server_data.pb.cc;$(ProjectDir)server_data.pb.h</Outputs></CustomBuild></ItemGroup>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup></Project>

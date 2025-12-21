@@ -32,7 +32,11 @@ private slots:
 
     void on_confirmJoinButton_clicked();
     void on_cancelJoinButton_clicked();
-    void onJoinRoomReply(QNetworkReply* reply);
+
+    void on_startGameButton_clicked();
+    void on_closeLobbyButton_clicked();
+
+    void onSocketMessage(const QString& message);
 
 private:
     Ui::MainMenu* ui;

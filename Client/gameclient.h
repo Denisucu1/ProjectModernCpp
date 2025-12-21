@@ -3,10 +3,7 @@
 
 #include <QObject>
 #include <QWebSocket>
-#include <QJsonObject>
-#include <QJsonDocument>
 #include <QUrl>
-#include <QDebug>
 
 class GameClient : public QObject
 {
@@ -14,11 +11,17 @@ class GameClient : public QObject
 public:
     explicit GameClient(const QUrl& url, int userId, QObject* parent = nullptr);
     void connectToServer();
+    void sendMessage(const QString& message);
+
+signals:
+    void messageReceived(const QString& message);
+    void connected();
+    void disconnected();
 
 private slots:
     void onConnected();
-    void onTextMessageReceived(QString message);
-    void onClosed();
+    void onTextMessageReceived(const QString& message);
+    void onDisconnected();
 
 private:
     QWebSocket m_webSocket;

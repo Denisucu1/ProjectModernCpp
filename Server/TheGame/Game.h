@@ -35,6 +35,8 @@ public:
 
 	const DrawPile& GetDrawPile() const { return m_cards; }
 
+	bool CanPlayerMakeAtLeastOneMove(int playerId);
+
 private:
 	DrawPile m_cards;
 	std::vector<Player> m_players;

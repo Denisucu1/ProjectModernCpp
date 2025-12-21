@@ -57,6 +57,13 @@ public:
 	void sendMessageToUser(user_id userId, const std::string& message);
 	Game& GetGame(const game_id gameId);
 	void SyncGameToDb(const game_id& gameId);
+	enum class MoveResult
+	{
+		Success, 
+		InvalidMove,
+		GameLost
+	};
+	MoveResult ProcessPlayerMove(user_id userId, const std::vector<PlayerMove>& moves);
 
 private:
 

@@ -1,4 +1,4 @@
-#include "GameService.h"
+﻿#include "GameService.h"
 #include "DatabaseManager.h"
 #include "PlayPiles.h"
 #include "crow.h"
@@ -312,3 +312,34 @@ void GameService::SyncGameToDb(const game_id& gameId)
 		std::cerr << "[SyncError] " << e.what() << std::endl;
 	}
 }
+
+GameService::MoveResult GameService::ProcessPlayerMove(user_id userId, const std::vector<PlayerMove>& moves)
+{
+	std::lock_guard<std::mutex> lock(m_mutex);
+
+	if (!m_player_game_map.contains(userId)) 
+		return MoveResult::InvalidMove;
+
+	game_id gId = m_player_game_map[userId];
+	Game& game = m_active_games.at(gId);
+
+	bool success = game.ProcessTurn(userId, moves);
+
+	if (success) {
+		SyncGameToDb(gId);
+		return MoveResult::Success;
+	}
+	else {
+		int numericId = std::stoi(gId.substr(5));
+		auto& storage = getStorage();
+
+		storage.update_all(
+			set(c(&Joc::status) = "LOST"),
+			where(is_equal(&Joc::id, numericId))
+		);
+
+		// TODO: Aici poți apela și UpdateStats pentru a procesa penalizarea scorului
+		return MoveResult::GameLost;
+	}
+}
+

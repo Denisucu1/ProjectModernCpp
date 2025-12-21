@@ -80,27 +80,24 @@ void Game::GameEndConditions()
 bool Game::ProcessTurn(int playerId, const std::vector<PlayerMove>& moves)
 {
 	Player& currentPlayer = m_players[m_current_player_index_];
-	std::uint8_t minMoves = GetMinCardsToPlay();
+	std::uint8_t minMoves = GetMinCardsToPlay(); 
 
-	if (moves.size() < minMoves) 
+	if (moves.size() < minMoves) {
+		std::cout << "Jucator blocat. Joc pierdut!" << std::endl;
 		return false;
-
-	int successfulMoves = 0;
-	for (const auto& move : moves)
-	{
-		if (!m_play_piles_.IsMoveValid(move.stack_index, Card(move.card_value)))
-			return false;
-
-		if (currentPlayer.RemoveCard(move.card_value)) {
-			m_play_piles_.PlayCardOnStack(move.stack_index, move.card_value);
-			successfulMoves++;
-		}
-		else {
-			return false;
-		}
 	}
 
-	NextPlayer(successfulMoves);
+	for (const auto& move : moves) {
+		if (!m_play_piles_.IsMoveValid(move.stack_index, Card(move.card_value))) { 
+			return false;
+		}
+		if (!currentPlayer.RemoveCard(move.card_value)) return false; 
+
+		m_play_piles_.PlayCardOnStack(move.stack_index, move.card_value);
+	}
+
+	NextPlayer(static_cast<int>(moves.size()));
+
 	return true;
 }
 
@@ -141,4 +138,22 @@ const std::vector<Player>& Game::GetPlayers() const
 std::uint8_t Game::GetCurrentPlayerIndex() const
 {
 	return m_current_player_index_;
+}
+
+bool Game::CanPlayerMakeAtLeastOneMove(int playerId)
+{
+
+	const auto& hand = m_players[m_current_player_index_].GetDeck(); 
+
+	for (std::uint8_t cardValue : hand) 
+	{
+		for (int i = 0; i < 4; ++i) 
+		{
+			auto stackIdx = static_cast<PlayPiles::StackIndex>(i);
+			if (m_play_piles_.IsMoveValid(stackIdx, Card(cardValue)))  
+				return true; 
+			
+		}
+	}
+	return false;
 }

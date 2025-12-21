@@ -144,7 +144,7 @@
     <ClCompile Include="main.cpp" /><ClCompile Include="MatchService.cpp" /><ClCompile Include="Player.cpp" /><ClCompile Include="PlayPiles.cpp" /><ClCompile Include="UserService.cpp" /><ClCompile Include="WebSocketRoutes.cpp" /> 
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ApiRoutes.h" /><ClInclude Include="AuthRoutes.h" /><ClInclude Include="Card.h" /><ClInclude Include="DatabaseManager.h" /><ClInclude Include="DrawPile.h" /><ClInclude Include="Game.h" /><ClInclude Include="GameRoutes.h" /><ClInclude Include="GameService.h" /><ClInclude Include="JsonUtil.h" /><ClInclude Include="Match.h" /><ClInclude Include="MatchService.h" /><ClInclude Include="Player.h" /><ClInclude Include="PlayPiles.h" /><ClInclude Include="User.h" /><ClInclude Include="UserService.h" /><ClInclude Include="WebSocketRoutes.h" />
+    <ClInclude Include="ApiRoutes.h" /><ClInclude Include="AuthRoutes.h" /><ClInclude Include="Card.h" /><ClInclude Include="DatabaseManager.h" /><ClInclude Include="DrawPile.h" /><ClInclude Include="Game.h" /><ClInclude Include="GameRoutes.h" /><ClInclude Include="GameService.h" /><ClInclude Include="JsonUtil.h" /><ClInclude Include="Match.h" /><ClInclude Include="MatchService.h" /><ClInclude Include="Player.h" /><ClInclude Include="PlayPiles.h" /><ClInclude Include="SerializationUtil.h" /><ClInclude Include="User.h" /><ClInclude Include="UserService.h" /><ClInclude Include="WebSocketRoutes.h" />
     
     
     

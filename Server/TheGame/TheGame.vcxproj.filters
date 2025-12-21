@@ -81,6 +81,9 @@
     <ClInclude Include="ApiRoutes.h">
       <Filter>Header Files\Routing</Filter>
     </ClInclude>
+    <ClInclude Include="SerializationUtil.h">
+      <Filter>Header Files\game_logic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UserService.cpp">

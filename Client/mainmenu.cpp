@@ -1,6 +1,5 @@
 #include "mainmenu.h"
 #include "ui_mainmenu.h"
-#include "gamewindow.h"
 #include <QApplication>
 #include <QNetworkRequest>
 #include <QJsonObject>
@@ -110,15 +109,16 @@ MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
     this->setStyleSheet(styleSheet);
 
     m_networkManager = new QNetworkAccessManager(this);
-    GameWindow* gamePage = new GameWindow(this);
-    ui->stackedWidget->addWidget(gamePage);
+
+    m_gameWindow = new GameWindow(this);
+    ui->stackedWidget->addWidget(m_gameWindow);
+
     ui->stackedWidget->setCurrentIndex(0);
     ui->usernameLabel->setText(m_username);
 
     QUrl wsUrl("ws://localhost:18080/ws/game");
     m_gameClient = new GameClient(wsUrl, m_userId, this);
 
-    // Conectam semnalul pentru a primi raspunsuri de la server
     connect(m_gameClient, &GameClient::messageReceived, this, &MainMenu::onSocketMessage);
 
     m_gameClient->connectToServer();
@@ -224,9 +224,19 @@ void MainMenu::onSocketMessage(const QString& message)
             ui->generatedCodeLabel->setText(code);
             ui->stackedWidget->setCurrentIndex(4);
         }
+        else if (status == "game_started") {
+            ui->stackedWidget->setCurrentWidget(m_gameWindow);
+        }
         else if (status == "error") {
             QString msg = json["message"].toString();
             QMessageBox::warning(this, "Error", msg);
+        }
+    }
+
+    if (json.contains("type")) {
+        QString type = json["type"].toString();
+        if (type == "game_started") {
+            ui->stackedWidget->setCurrentWidget(m_gameWindow);
         }
     }
 }
@@ -240,6 +250,8 @@ void MainMenu::on_startGameButton_clicked()
 
     QJsonDocument doc(json);
     m_gameClient->sendMessage(doc.toJson(QJsonDocument::Compact));
+
+    ui->stackedWidget->setCurrentWidget(m_gameWindow);
 }
 
 void MainMenu::on_closeLobbyButton_clicked()

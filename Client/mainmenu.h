@@ -6,6 +6,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include "gameclient.h"
+#include "gamewindow.h"
 
 namespace Ui {
     class MainMenu;
@@ -44,6 +45,8 @@ private:
     int m_userId;
     QNetworkAccessManager* m_networkManager;
     GameClient* m_gameClient;
+
+    GameWindow* m_gameWindow;
 };
 
 #endif

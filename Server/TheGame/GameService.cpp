@@ -5,7 +5,7 @@
 #include <iostream>
 #include <utility>
 #include <random>
-
+#include "Game.h"
 #include "SerializationUtil.h"
 
 
@@ -313,6 +313,32 @@ void GameService::SyncGameToDb(const game_id& gameId)
 	}
 }
 
+void GameService::SaveChatMessage(user_id userId, const std::string& message)
+{
+	std::lock_guard<std::mutex> lock(m_mutex);
+
+	if (!m_player_game_map.contains(userId)) return;
+
+	game_id gId = m_player_game_map[userId];
+	int numericMatchId = std::stoi(gId.substr(5));
+
+	try {
+		auto& storage = getStorage();
+
+		Chat chatEntry;
+		chatEntry.player_id = userId;
+		chatEntry.game_id = numericMatchId;
+		chatEntry.message = message;
+
+		storage.insert(chatEntry);
+
+		std::cout << "[Chat] Mesaj salvat pentru meciul " << numericMatchId << " de la user " << userId << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "[ChatError] " << e.what() << std::endl;
+	}
+}
+
 GameService::MoveResult GameService::ProcessPlayerMove(user_id userId, const std::vector<PlayerMove>& moves)
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
@@ -322,23 +348,35 @@ GameService::MoveResult GameService::ProcessPlayerMove(user_id userId, const std
 
 	game_id gId = m_player_game_map[userId];
 	Game& game = m_active_games.at(gId);
+	int numericId = std::stoi(gId.substr(5));
 
 	bool success = game.ProcessTurn(userId, moves);
 
-	if (success) {
+	if (success) 
+	{
+		auto& storage = getStorage();
+
+		Move moveRecord;
+		moveRecord.game_id = numericId;
+		moveRecord.player_id = userId;
+
+		moveRecord.cards_played = SerializationUtil::SerializeMoves(moves);
+
+		storage.insert(moveRecord);
+
+		if (game.CheckGameState() == GameState::Won) {
+			storage.update_all(set(c(&Joc::status) = "WON"), where(is_equal(&Joc::id, numericId)));
+		}
+		else if (!game.CanPlayerMakeAtLeastOneMove(game.GetCurrentPlayerIndex())) {
+			storage.update_all(set(c(&Joc::status) = "LOST"), where(is_equal(&Joc::id, numericId)));
+			return MoveResult::GameLost;
+		}
+
 		SyncGameToDb(gId);
 		return MoveResult::Success;
 	}
 	else {
-		int numericId = std::stoi(gId.substr(5));
-		auto& storage = getStorage();
-
-		storage.update_all(
-			set(c(&Joc::status) = "LOST"),
-			where(is_equal(&Joc::id, numericId))
-		);
-
-		// TODO: Aici poți apela și UpdateStats pentru a procesa penalizarea scorului
+		getStorage().update_all(set(c(&Joc::status) = "LOST"), where(is_equal(&Joc::id, numericId)));
 		return MoveResult::GameLost;
 	}
 }

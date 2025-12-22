@@ -31,25 +31,13 @@ bool PlayPiles::IsMoveValid(StackIndex index, const Card& card) const
 	std::uint8_t topCard = m_stacks[index];
 	std::uint8_t cardValue = card.GetValue();
 
-	if (index == ascend_1 || index == ascend_2)
-	{
-	
-		if (cardValue > topCard) 
+	if (index == ascend_1 || index == ascend_2) {
+		if (cardValue > topCard || cardValue + 10 == topCard) 
 			return true;
-		
-		if (cardValue + 10 == topCard) 
-			return true;
-	
-		return false;
 	}
-	if (index == descend_1 || index == descend_2)
-	{
-		if (cardValue < topCard) 
+	else if (index == descend_1 || index == descend_2) {
+		if (cardValue < topCard || cardValue - 10 == topCard) 
 			return true;
-		if (cardValue - 10 == topCard) 
-			return true;
-
-		return false;
 	}
 
 }

@@ -3,6 +3,13 @@
 #include "Player.h"
 #include "PlayPiles.h"
 
+enum class GameState
+{
+	InProgress,
+	Won,
+	Lost
+};
+
 struct PlayerMove {
 	std::uint8_t card_value;
 	PlayPiles::StackIndex stack_index;
@@ -19,7 +26,7 @@ public:
 
 	void StartGame();
 
-	void GameEndConditions();
+	GameState CheckGameState();
 
 	bool ProcessTurn(int playerId, const std::vector<PlayerMove>& moves);
 
@@ -36,6 +43,7 @@ public:
 	const DrawPile& GetDrawPile() const { return m_cards; }
 
 	bool CanPlayerMakeAtLeastOneMove(int playerId);
+
 
 private:
 	DrawPile m_cards;

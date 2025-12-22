@@ -57,6 +57,7 @@ public:
 	void sendMessageToUser(user_id userId, const std::string& message);
 	Game& GetGame(const game_id gameId);
 	void SyncGameToDb(const game_id& gameId);
+	void SaveChatMessage(user_id userId, const std::string& message);
 	enum class MoveResult
 	{
 		Success, 

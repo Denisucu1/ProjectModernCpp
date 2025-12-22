@@ -61,19 +61,24 @@ void Game::StartGame()
 	m_current_player_index_ = 0;
 }
 
-void Game::GameEndConditions()
+void Game::CheckGameState()
 {
 	bool allHandsEmpty = true;
-	for (const auto& player : m_players) {
-		if (!player.GetDeck().empty()) {
+	for (const auto& player : m_players) 
+	{
+		if (!player.GetDeck().empty()) 
+		{
 			allHandsEmpty = false;
 			break;
 		}
 	}
 
-	if (m_cards.IsEmpty() && allHandsEmpty) {
-		std::cout << "!!! VICTORIE !!! Toate cartile au fost jucate!" << std::endl;
+	if (m_cards.IsEmpty() && allHandsEmpty)
+	{
+		return GameState::Won; 
 	}
+
+	return GameState::InProgress;
 }
 
 
@@ -125,7 +130,7 @@ void Game::NextPlayer(int cardsPlayed)
 	}
 	currentPlayer.SetDeck(hand);
 
-	GameEndConditions(); 
+	CheckGameState(); 
 
 	m_current_player_index_ = (m_current_player_index_ + 1) % m_players.size();
 }

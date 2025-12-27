@@ -8,8 +8,8 @@ class DrawPile
 public:
 	DrawPile();
 
-	DrawPile(DrawPile&& other) noexcept;
-	DrawPile& operator=(DrawPile&& other) noexcept;
+	DrawPile(DrawPile&& other) ;
+	DrawPile& operator=(DrawPile&& other) ;
 
 	DrawPile(const DrawPile& other) = delete;
 	DrawPile& operator=(const DrawPile& other) = delete;
@@ -22,6 +22,7 @@ public:
 
 	std::vector<std::uint8_t> GetRemainingCards() const {
 		std::vector<std::uint8_t> values;
+		values.reserve(m_drawPile.size());
 		for (const auto& card : m_drawPile) 
 			values.push_back(card.GetValue());
 		return values;

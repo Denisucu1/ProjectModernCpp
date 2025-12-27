@@ -17,14 +17,13 @@ public:
 
 	std::uint8_t GetStackValue(StackIndex index) const;
 
-
-	void PlayCardOnStack(StackIndex index, std::uint8_t cardValue);
+	void PlayCardOnStack(StackIndex index, Card card);
 
 	bool IsMoveValid(StackIndex index, const Card& card) const;
 
 	const std::array<std::uint8_t, 4>& GetStacks() const;
 
 private:
-	std::array<std::uint8_t, 4> m_stacks; //sa fie de tipul carte
+	std::array<std::uint8_t, 4> m_stacks; 
 };
 

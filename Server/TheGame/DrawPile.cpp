@@ -32,10 +32,8 @@ DrawPile& DrawPile::operator=(DrawPile&& other)
 
 void DrawPile::MixPile()
 {
-
-	static std::random_device rd;
-	static std::mt19937 g(rd());
-
+	std::random_device rd;
+	std::mt19937 g(rd());
 	std::shuffle(m_drawPile.begin(), m_drawPile.end(), g);
 }
 

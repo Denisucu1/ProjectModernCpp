@@ -44,12 +44,11 @@ public:
 	GameService();
 
 	std::string GenerateRoomCode();
+	void BroadcastToRoom(const std::string& roomCode, const std::string& message);
 	std::string CreateRoom(user_id hostId, int maxPlayers = 4);
 	bool JoinRoom(user_id userId, const std::string& roomCode);
 	bool RemovePlayerFromRoom(user_id userId);
-	void RemoveConnectionFromRoom(crow::websocket::connection* conn);
 	bool StartGameInRoom(user_id requestorId, const std::string& roomCode);
-	std::optional<game_id> FindGame(user_id userId, const std::string& username, int desiredPlayerCount);
 	std::optional<game_id> GetPlayerGameStatus(user_id userId);
 	std::optional<MatchData> GetMatchState(int matchIdInt);
 	void addConnection(user_id userId, crow::websocket::connection* conn);
@@ -71,6 +70,8 @@ private:
 	std::map<user_id, game_id> m_player_game_map;
 
 	void CreateGame(std::list<user_id>& playerIds);
+
+	void BroadcastToRoomInternal(const std::string& roomCode, const std::string& message);
 
 	MatchData GenerateMatchData(const Game& game);
 	std::string GenerateRandomCode();

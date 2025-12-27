@@ -9,6 +9,7 @@ namespace WebSocketRoutes{
             std::cout << "WebSocket connection opened." << std::endl;
                 })
             .onclose([&](crow::websocket::connection& conn, const std::string& reason, uint16_t code) {
+			gameSvc.removeConnection(&conn);
             std::cout << "WebSocket connection closed: " << reason << " (code " << code << ")" << std::endl;
                 })
             .onmessage([&](crow::websocket::connection& conn, const std::string& data, bool isBinary) {
@@ -81,6 +82,7 @@ namespace WebSocketRoutes{
                             resp["status"] = "error";
                             resp["message"] = "Failed to join room";
                         }
+						conn.send_text(resp.dump());
                     }
                 }
                 else if (type == "start_game")

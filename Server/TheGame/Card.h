@@ -3,7 +3,7 @@
 class Card
 {
 public:
-	explicit Card(std::uint8_t value);
+	Card(std::uint8_t value);
 
 	std::uint8_t GetValue() const;
 

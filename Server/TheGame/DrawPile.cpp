@@ -4,22 +4,20 @@
 
 DrawPile::DrawPile()
 {
-	m_drawPile.reserve(98);
-
 	for (std::uint8_t value = 2; value <= 99; value++)
 	{
-		m_drawPile.emplace_back(value);
+		m_drawPile.push_back(Card(value));
 	}
 
 	MixPile();
 }
 
-DrawPile::DrawPile(DrawPile&& other) 
+DrawPile::DrawPile(DrawPile&& other) noexcept
 	: m_drawPile(std::move(other.m_drawPile))
 {
 }
 
-DrawPile& DrawPile::operator=(DrawPile&& other) 
+DrawPile& DrawPile::operator=(DrawPile&& other) noexcept
 {
 	if (this != &other)
 	{

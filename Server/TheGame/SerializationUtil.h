@@ -25,15 +25,26 @@ namespace SerializationUtil
         return oss.str();
     }
 
-    inline std::string SerializeMoves(const std::vector<PlayerMove>& moves)
+    inline std::string SerializeStacks(const std::array<Card, 4>& stacks)
     {
-        if (moves.empty()) 
-            return "[]";
-
         std::ostringstream oss;
         oss << "[";
+        for (size_t i = 0; i < stacks.size(); ++i) 
+        {
+            oss << static_cast<int>(stacks[i].GetValue())
+                << (i == stacks.size() - 1 ? "" : ",");
+        }
+        oss << "]";
+        return oss.str();
+    }
 
-        for (size_t i = 0; i < moves.size(); ++i) {
+    inline std::string SerializeMoves(const std::vector<PlayerMove>& moves) 
+	{
+        if (moves.empty()) return "[]";
+        std::ostringstream oss;
+        oss << "[";
+        for (size_t i = 0; i < moves.size(); ++i) 
+        {
             oss << static_cast<int>(moves[i].card_value) << ":"
                 << static_cast<int>(moves[i].stack_index)
                 << (i == moves.size() - 1 ? "" : ",");

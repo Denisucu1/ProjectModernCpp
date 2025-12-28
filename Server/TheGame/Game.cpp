@@ -93,13 +93,15 @@ bool Game::ProcessTurn(int playerId, const std::vector<PlayerMove>& moves)
 		return false;
 	}
 
-	for (const auto& move : moves) {
-		if (!m_play_piles_.IsMoveValid(move.stack_index, Card(move.card_value))) { 
+	for (const auto& move : moves)
+	{
+		if (!m_play_piles_.IsMoveValid(move.stack_index, Card(move.card_value))) 
 			return false;
-		}
-		if (!currentPlayer.RemoveCard(move.card_value)) return false; 
+		
+		if (!currentPlayer.RemoveCard(move.card_value))
+			return false;
 
-		m_play_piles_.PlayCardOnStack(move.stack_index, move.card_value);
+		m_play_piles_.PlayCardOnStack(move.stack_index, Card(move.card_value));
 	}
 
 	NextPlayer(static_cast<int>(moves.size()));
@@ -153,12 +155,11 @@ bool Game::CanPlayerMakeAtLeastOneMove(int playerId)
 
 	for (std::uint8_t cardValue : hand) 
 	{
-		for (int i = 0; i < 4; ++i) 
+		for (int i = 0; i < 4; ++i)
 		{
 			auto stackIdx = static_cast<PlayPiles::StackIndex>(i);
-			if (m_play_piles_.IsMoveValid(stackIdx, Card(cardValue)))  
-				return true; 
-			
+			if (m_play_piles_.IsMoveValid(stackIdx, Card(cardValue)))
+				return true;
 		}
 	}
 	return false;

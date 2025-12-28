@@ -7,20 +7,20 @@ TEST(PlayPilesTest, InitialValuesAreCorrect)
 {
     PlayPiles piles;
 
-    ASSERT_EQ(1, piles.GetStackValue(PlayPiles::ascend_1)) 
-	<< "Teancul ascendent 1 ar trebui sa inceapa de la 1.";
-    ASSERT_EQ(100, piles.GetStackValue(PlayPiles::descend_1)) 
-	<< "Teancul descendent 1 ar trebui sa inceapa de la 100.";
+    ASSERT_EQ(1, piles.GetStackValue(PlayPiles::ascend_1))
+        << "Teancul ascendent 1 ar trebui sa inceapa de la 1.";
+    ASSERT_EQ(100, piles.GetStackValue(PlayPiles::descend_1))
+        << "Teancul descendent 1 ar trebui sa inceapa de la 100.";
 }
 
 
 TEST(PlayPilesAscending, RegularValidMove) 
 {
     PlayPiles piles;
-    piles.PlayCardOnStack(PlayPiles::ascend_1, 50); 
+    piles.PlayCardOnStack(PlayPiles::ascend_1, Card(50));
     Card card_51(51);
-    ASSERT_TRUE(piles.IsMoveValid(PlayPiles::ascend_1, card_51)) 
-	<< "51 pe 50 (Ascendent) ar trebui sa fie valid.";
+    ASSERT_TRUE(piles.IsMoveValid(PlayPiles::ascend_1, card_51))
+        << "51 pe 50 (Ascendent) ar trebui sa fie valid.";
 }
 
 TEST(PlayPilesAscending, BackwardsTrickValid) 
@@ -88,10 +88,10 @@ TEST(PlayPilesDescending, InvalidTrickValue)
 }
 
 
-TEST(PlayPilesUtils, CardPlacementUpdatesValue) 
+TEST(PlayPilesUtils, CardPlacementUpdatesValue)
 {
     PlayPiles piles;
-    piles.PlayCardOnStack(PlayPiles::ascend_2, 25);
-    ASSERT_EQ(25, piles.GetStackValue(PlayPiles::ascend_2)) 
-	<< "Teancul nu a fost actualizat corect dupa mutare.";
+    piles.PlayCardOnStack(PlayPiles::ascend_2, Card(25));
+    ASSERT_EQ(25, piles.GetStackValue(PlayPiles::ascend_2))
+        << "Teancul nu a fost actualizat corect dupa mutare.";
 }

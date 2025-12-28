@@ -282,7 +282,7 @@ void GameService::SyncGameToDb(const game_id& gameId)
 	auto& storage = getStorage();
 	Game& game = GetGame(gameId); 
 
-	std::string stacksStr = SerializationUtil::Serialize(game.GetPlayPiles().GetStacks());
+	std::string stacksSerialized = SerializationUtil::SerializeStacks(game.GetPlayPiles().GetStacks());
 	std::string deckStr = SerializationUtil::Serialize(game.GetDrawPile().GetRemainingCards());
 
 	int numericId = std::stoi(gameId.substr(5));
@@ -291,7 +291,7 @@ void GameService::SyncGameToDb(const game_id& gameId)
 		storage.transaction([&]() -> bool 
 			{
 			storage.update_all(
-				set(c(&Joc::stacks_state) = stacksStr,
+				set(c(&Joc::stacks_state) = stacksSerialized,
 					c(&Joc::deck_state) = deckStr),
 				where(is_equal(&Joc::id, numericId))
 			);
@@ -343,7 +343,7 @@ GameService::MoveResult GameService::ProcessPlayerMove(user_id userId, const std
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
 
-	if (!m_player_game_map.contains(userId)) 
+	if (!m_player_game_map.contains(userId))
 		return MoveResult::InvalidMove;
 
 	game_id gId = m_player_game_map[userId];
@@ -352,7 +352,7 @@ GameService::MoveResult GameService::ProcessPlayerMove(user_id userId, const std
 
 	bool success = game.ProcessTurn(userId, moves);
 
-	if (success) 
+	if (success)
 	{
 		auto& storage = getStorage();
 

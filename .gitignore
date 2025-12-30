@@ -419,3 +419,7 @@ FodyWeavers.xsd
 
 # Custom additions for temporary/local files
 *.sqlite
+
+#Protobuf generated files
+*.pb.cc
+*.pb.h

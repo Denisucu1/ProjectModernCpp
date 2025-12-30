@@ -81,6 +81,9 @@
     <ClInclude Include="ApiRoutes.h">
       <Filter>Header Files\Routing</Filter>
     </ClInclude>
+    <ClInclude Include="GameProtocol.pb.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UserService.cpp">
@@ -125,8 +128,11 @@
     <ClCompile Include="ApiRoutes.cpp">
       <Filter>Source Files\Routing</Filter>
     </ClCompile>
+    <ClCompile Include="GameProtocol.pb.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="server_data.proto" />
+    <CustomBuild Include="GameProtocol.proto" />
   </ItemGroup>
 </Project>

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <utility>
 #include <random>
+#include "BinaryGameService.h"
 
 GameService::GameService()
 {
@@ -218,6 +219,60 @@ Game& GameService::GetGame(const game_id gameId)
 	{
 		std::cerr << "CRITICAL ERROR: Tried to access non-existent game with ID: " << gameId << std::endl;
 		throw std::runtime_error("Game not found");
+	}
+}
+
+void GameService::sendBinaryToUser(user_id userId, const std::string& binaryData)
+{
+	std::lock_guard<std::mutex> lock(m_connection_mutex);
+	auto it = m_userConnections.find(userId);
+	if(it != m_userConnections.end())
+	{
+		crow::websocket::connection* conn = it->second;
+		conn->send_binary(binaryData);
+		std::cout << "Sent binary data to user ID: " << userId << '\n';
+	}
+}
+
+void GameService::ProcessGameAction(const std::string& binaryData, crow::websocket::connection* conn)
+{
+		std::lock_guard<std::mutex> lock(m_connection_mutex);
+		auto it = m_connectionToUser.find(conn);
+		if (it == m_connectionToUser.end())
+		{
+			std::cout << "ProcessGameAction failed: Connection not associated with any user." << std::endl;
+			return;
+		}
+		user_id userId = it->second;
+		std::lock_guard<std::mutex> lock2(m_mutex);
+		if (m_player_game_map.find(userId) == m_player_game_map.end())
+		{
+			std::cout << "ProcessGameAction failed: User ID " << userId << " is not in any active game." << std::endl;
+			return;
+		}
+		game_id gameId = m_player_game_map[userId];
+		Game& game = m_active_games.at(gameId);
+		auto results = BinaryGameService::ProcessPlayerAction(game, userId, binaryData);
+		if (results.success)
+		{
+			BroadcatGameState(gameId);
+		}
+		else
+		{
+			sendMessageToUser(userId, results.message);
+		}
+}
+
+void GameService::BroadcatGameState(const game_id gameId)
+{
+	if (m_active_games.count(gameId)) return;
+	Game& game = m_active_games.at(gameId);
+
+	auto messages = BinaryGameService::PrepareBroadcastMessages(game);
+
+	for (const auto& [uid, msg] : messages)
+	{
+		sendBinaryToUser(uid, msg);
 	}
 }
 

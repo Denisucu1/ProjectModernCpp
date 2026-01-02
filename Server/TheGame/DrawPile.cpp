@@ -32,8 +32,8 @@ DrawPile& DrawPile::operator=(DrawPile&& other)
 
 void DrawPile::MixPile()
 {
-	std::random_device rd;
-	std::mt19937 g(rd());
+	static std::random_device rd;
+	static std::mt19937 g(rd());
 	std::shuffle(m_drawPile.begin(), m_drawPile.end(), g);
 }
 
@@ -52,4 +52,14 @@ bool DrawPile::IsEmpty() const
 size_t DrawPile::GetSize() const
 {
 	return m_drawPile.size();
+}
+
+std::vector<std::uint8_t> DrawPile::GetRemainingCards() const 
+{
+	std::vector<std::uint8_t> values;
+	values.reserve(m_drawPile.size());
+
+	for (const auto& card : m_drawPile) 
+		values.push_back(card.GetValue());
+	return values;
 }

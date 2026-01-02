@@ -34,107 +34,85 @@ Game::Game(std::vector<Player> players)
  	return *this;
  }
 
-void Game::StartGame()
+ void Game::StartGame() 
 {
-	
-	std::uint8_t cardsPerPlayer = 6;
-	if (m_players.size() == 2) {
-		cardsPerPlayer = 8;
-	}
-	else if (m_players.size() == 3) {
-		cardsPerPlayer = 7;
-	}
+	 std::uint8_t cardsPerPlayer = 6;
+	 size_t numPlayers = m_players.size();
 
-	std::cout << "[Game] Start: " << m_players.size() << " jucatori. Carti per mana: " << cardsPerPlayer << std::endl;
+	 if (numPlayers == 2) 
+		 cardsPerPlayer = 8;
+	 else 
+	 	if (numPlayers == 3) 
+			cardsPerPlayer = 7;
 
-	for (auto& player : m_players) {
-		std::vector<std::uint8_t> currentHand;
+	 std::cout << "[Game] Incepe meciul cu " << numPlayers << " jucatori." << std::endl;
 
-		for (int i = 0; i < cardsPerPlayer; ++i) {
-			if (!m_cards.IsEmpty()) {
-				Card drawnCard = m_cards.DrawACard();
-				currentHand.push_back(drawnCard.GetValue());
-			}
-		}
-		player.SetDeck(currentHand);
-	}
-	m_current_player_index_ = 0;
-}
+	 for (auto& player : m_players) {
+		 std::vector<std::uint8_t> hand;
+		 hand.reserve(cardsPerPlayer); 
+
+		 for (int i = 0; i < cardsPerPlayer; ++i) {
+			 if (!m_cards.IsEmpty()) {
+				 hand.push_back(m_cards.DrawACard().GetValue());
+			 }
+		 }
+		 player.SetDeck(hand); 
+	 }
+ }
 
 GameState Game::CheckGameState()
 {
-		bool allHandsEmpty = true;
-		for (const auto& player : m_players) 
-		{
-			if (!player.GetDeck().empty()) 
-			{
-				allHandsEmpty = false;
-				break;
-			}
+	bool allHandsEmpty = true;
+	for (const auto& player : m_players) {
+		if (!player.GetDeck().empty()) {
+			allHandsEmpty = false;
+			break;
 		}
+	}
 
-		if (m_cards.IsEmpty() && allHandsEmpty) 
-		{
-			std::cout << "!!! VICTORIE !!!" << std::endl;
-			return GameState::Won;
-		}
-
-		return GameState::InProgress;
+	if (m_cards.IsEmpty() && allHandsEmpty) {
+		return GameState::Won;
+	}
+	return GameState::InProgress;
 }
 
 
 bool Game::ProcessTurn(int playerId, const std::vector<PlayerMove>& moves)
 {
 	Player& currentPlayer = m_players[m_current_player_index_];
-	std::uint8_t minMoves = GetMinCardsToPlay(); 
 
-	if (moves.size() < minMoves) {
-		std::cout << "Jucator blocat. Joc pierdut!" << std::endl;
+	if (moves.size() < GetMinCardsToPlay()) 
 		return false;
+
+	for (const auto& move : moves) {
+		if (!m_play_piles_.IsMoveValid(move.stack_index, Card(move.card_value)))
+			return false;
 	}
 
-	for (const auto& move : moves)
-	{
-		if (!m_play_piles_.IsMoveValid(move.stack_index, Card(move.card_value))) 
-			return false;
-		
-		if (!currentPlayer.RemoveCard(move.card_value))
-			return false;
-
+	for (const auto& move : moves) {
+		currentPlayer.RemoveCard(move.card_value); 
 		m_play_piles_.PlayCardOnStack(move.stack_index, Card(move.card_value));
 	}
 
 	NextPlayer(static_cast<int>(moves.size()));
-
 	return true;
 }
 
 std::uint8_t Game::GetMinCardsToPlay() const
 {
-	if (m_cards.IsEmpty())
-		return 1;
-	return 2;
+	return m_cards.IsEmpty() ? 1 : 2;
 }
 
 void Game::NextPlayer(int cardsPlayed)
 {
 	Player& currentPlayer = m_players[m_current_player_index_];
-
 	std::vector<std::uint8_t> hand = currentPlayer.GetDeck();
 
-	for (int i = 0; i < cardsPlayed; ++i) 
-	{
-		if (!m_cards.IsEmpty()) {
-			Card c = m_cards.DrawACard();
-			hand.push_back(c.GetValue());
-		}
-		else 
-			break;
+	for (int i = 0; i < cardsPlayed && !m_cards.IsEmpty(); ++i) {
+		hand.push_back(m_cards.DrawACard().GetValue());
 	}
+
 	currentPlayer.SetDeck(hand);
-
-	CheckGameState(); 
-
 	m_current_player_index_ = (m_current_player_index_ + 1) % m_players.size();
 }
 
@@ -148,17 +126,13 @@ std::uint8_t Game::GetCurrentPlayerIndex() const
 	return m_current_player_index_;
 }
 
-bool Game::CanPlayerMakeAtLeastOneMove(int playerId)
+bool Game::CanPlayerMakeAtLeastOneMove(int playerId) 
 {
-
-	const auto& hand = m_players[m_current_player_index_].GetDeck(); 
-
-	for (std::uint8_t cardValue : hand) 
+	const auto& hand = m_players[m_current_player_index_].GetDeck();
+	for (std::uint8_t val : hand) 
 	{
-		for (int i = 0; i < 4; ++i)
-		{
-			auto stackIdx = static_cast<PlayPiles::StackIndex>(i);
-			if (m_play_piles_.IsMoveValid(stackIdx, Card(cardValue)))
+		for (int i = 0; i < 4; ++i) {
+			if (m_play_piles_.IsMoveValid(static_cast<PlayPiles::StackIndex>(i), Card(val)))
 				return true;
 		}
 	}

@@ -92,9 +92,6 @@
     <ClCompile Include="MatchService.cpp">
       <Filter>Source Files\db</Filter>
     </ClCompile>
-    <ClCompile Include="Card.cpp">
-      <Filter>Source Files\game_logic</Filter>
-    </ClCompile>
     <ClCompile Include="DrawPile.cpp">
       <Filter>Source Files\game_logic</Filter>
     </ClCompile>
@@ -127,6 +124,9 @@
     </ClCompile>
     <ClCompile Include="ApiRoutes.cpp">
       <Filter>Source Files\Routing</Filter>
+    </ClCompile>
+    <ClCompile Include="Card.cpp">
+      <Filter>Source Files\game_logic</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

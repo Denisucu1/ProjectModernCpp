@@ -18,7 +18,7 @@ struct PlayerMove {
 class Game
 {
 public:
-	Game(std::vector<Player> players);
+	explicit Game(std::vector<Player> players);
 
 	Game(Game&& other) noexcept;
 	Game& operator=(Game&& other) noexcept;
@@ -46,6 +46,7 @@ public:
 
 
 private:
+
 	DrawPile m_cards;
 	std::vector<Player> m_players;
 	PlayPiles m_play_piles_;

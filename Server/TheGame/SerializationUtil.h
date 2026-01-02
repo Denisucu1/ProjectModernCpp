@@ -1,53 +1,61 @@
-#pragma once
+﻿#pragma once
 #include <vector>
 #include <string>
-#include <string_view>
 #include <sstream>
-#include <charconv>
-#include "Game.h"
+#include <array>
+#include <cstdint>
+#include <type_traits>
+#include <iterator>
+#include "Card.h"
+#include "Game.h" // Use the single PlayerMove declared in Game.h
 
-namespace SerializationUtil 
-{
+namespace SerializationUtil {
+
+    // Generic serializer for iterable containers.
     template <typename T>
-    inline std::string Serialize(const T& container)
-    {
-
-        if (container.empty()) 
-            return "[]";
+    inline std::string Serialize(const T& container) {
+        auto it_begin = std::begin(container);
+        auto it_end = std::end(container);
+        if (it_begin == it_end) return "[]";
 
         std::ostringstream oss;
         oss << "[";
 
-        for (auto it = container.begin(); it != container.end(); ++it)
-            oss << static_cast<int>(*it) << (std::next(it) == container.end() ? "" : ",");
+        bool first = true;
+        for (auto it = it_begin; it != it_end; ++it) {
+            if (!first) oss << ",";
+            first = false;
 
-        oss << "]";
-        return oss.str();
-    }
-
-    inline std::string SerializeStacks(const std::array<Card, 4>& stacks)
-    {
-        std::ostringstream oss;
-        oss << "[";
-        for (size_t i = 0; i < stacks.size(); ++i) 
-        {
-            oss << static_cast<int>(stacks[i].GetValue())
-                << (i == stacks.size() - 1 ? "" : ",");
+            using Elem = std::decay_t<decltype(*it)>;
+            if constexpr (std::is_same_v<Elem, Card>) {
+                oss << static_cast<int>((*it).GetValue());
+            }
+            else if constexpr (std::is_integral_v<Elem>) {
+                oss << static_cast<int>(*it);
+            }
+            else {
+                oss << *it;
+            }
         }
+
         oss << "]";
         return oss.str();
     }
 
-    inline std::string SerializeMoves(const std::vector<PlayerMove>& moves) 
-	{
+    // Convenience overload for stacks (array of Card). Reuses generic serializer.
+    inline std::string SerializeStacks(const std::array<Card, 4>& stacks) {
+        return Serialize(stacks);
+    }
+
+    // Serialize player moves as "value:stackIndex" tuples.
+    inline std::string SerializeMoves(const std::vector<PlayerMove>& moves) {
         if (moves.empty()) return "[]";
         std::ostringstream oss;
         oss << "[";
-        for (size_t i = 0; i < moves.size(); ++i) 
-        {
-            oss << static_cast<int>(moves[i].card_value) << ":"
-                << static_cast<int>(moves[i].stack_index)
-                << (i == moves.size() - 1 ? "" : ",");
+        for (size_t i = 0; i < moves.size(); ++i) {
+            // card_value is integral; stack_index is an enum (underlying size_t) -> cast to integer
+            oss << static_cast<int>(moves[i].card_value) << ":" << static_cast<size_t>(moves[i].stack_index)
+                << (i + 1 == moves.size() ? "" : ",");
         }
         oss << "]";
         return oss.str();

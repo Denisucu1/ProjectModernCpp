@@ -265,7 +265,7 @@ void GameService::ProcessGameAction(const std::string& binaryData, crow::websock
 
 void GameService::BroadcatGameState(const game_id gameId)
 {
-	if (m_active_games.count(gameId)) return;
+	if (!m_active_games.count(gameId)) return;
 	Game& game = m_active_games.at(gameId);
 
 	auto messages = BinaryGameService::PrepareBroadcastMessages(game);

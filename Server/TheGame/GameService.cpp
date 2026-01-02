@@ -236,34 +236,45 @@ void GameService::sendBinaryToUser(user_id userId, const std::string& binaryData
 
 void GameService::ProcessGameAction(const std::string& binaryData, crow::websocket::connection* conn)
 {
-		std::lock_guard<std::mutex> lock(m_connection_mutex);
+	user_id userId;
+	game_id gameId;
+	bool actionsucces = false;
+	std::string message;
+
+	{
+		std::scoped_lock lock(m_connection_mutex, m_mutex);
+
 		auto it = m_connectionToUser.find(conn);
 		if (it == m_connectionToUser.end())
 		{
 			std::cout << "ProcessGameAction failed: Connection not associated with any user." << std::endl;
 			return;
 		}
-		user_id userId = it->second;
-		std::lock_guard<std::mutex> lock2(m_mutex);
+		userId = it->second;
+
 		if (m_player_game_map.find(userId) == m_player_game_map.end())
 		{
 			std::cout << "ProcessGameAction failed: User ID " << userId << " is not in any active game." << std::endl;
 			return;
 		}
-		game_id gameId = m_player_game_map[userId];
+		gameId = m_player_game_map[userId];
 		Game& game = m_active_games.at(gameId);
+
 		auto results = BinaryGameService::ProcessPlayerAction(game, userId, binaryData);
-		if (results.success)
-		{
-			BroadcatGameState(gameId);
-		}
-		else
-		{
-			sendMessageToUser(userId, results.message);
-		}
+		actionsucces = results.success;
+		message = results.message;
+	} 
+	if (actionsucces)
+	{
+		BroadcastGameState(gameId);
+	}
+	else
+	{
+		sendMessageToUser(userId, message);
+	}
 }
 
-void GameService::BroadcatGameState(const game_id gameId)
+void GameService::BroadcastGameState(const game_id gameId)
 {
 	if (!m_active_games.count(gameId)) return;
 	Game& game = m_active_games.at(gameId);

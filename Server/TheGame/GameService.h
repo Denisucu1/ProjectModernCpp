@@ -57,7 +57,7 @@ public:
 	Game& GetGame(const game_id gameId);
 	void sendBinaryToUser(user_id userId, const std::string& binaryData);
 	void ProcessGameAction(const std::string& binaryData, crow::websocket::connection* conn);
-	void BroadcatGameState(const game_id gameId);
+	void BroadcastGameState(const game_id gameId);
 private:
 
 	std::mutex m_mutex;

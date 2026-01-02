@@ -87,6 +87,6 @@ TEST(PlayPilesUtils, CardPlacementUpdatesValue)
 {
     PlayPiles piles;
     piles.PlayCardOnStack(PlayPiles::ascend_2, Card(25));
-    ASSERT_EQ(25, piles.GetStackValue(PlayPiles::ascend_2))
-        << "Teancul nu a fost actualizat corect dupa mutare.";
+    // GetStackValue returnează uint8_t
+    ASSERT_EQ(static_cast<uint8_t>(25), piles.GetStackValue(PlayPiles::ascend_2));
 }

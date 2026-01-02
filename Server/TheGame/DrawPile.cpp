@@ -24,7 +24,6 @@ DrawPile& DrawPile::operator=(DrawPile&& other)
 	if (this != &other)
 	{
 		m_drawPile = std::move(other.m_drawPile);
-		other.m_drawPile.clear();
 	}
 	return *this;
 }

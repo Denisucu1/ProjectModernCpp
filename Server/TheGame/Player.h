@@ -3,6 +3,7 @@
 #include <string>
 #include <cstdint>
 #include <vector>
+#include <span>
 
 class Player
 {
@@ -18,8 +19,10 @@ public:
     void SetDeck(const std::vector<std::uint8_t>& deck);
     void SetScore(std::uint8_t score);
 
-    std::vector<std::uint8_t> GetDeck() const;
+    std::span<const std::uint8_t> GetDeck() const;
     std::uint8_t GetScore() const;
+
+    std::span<const std::uint8_t> GetDeckView() const;
 
     bool RemoveCard(std::uint8_t cardValue);
 

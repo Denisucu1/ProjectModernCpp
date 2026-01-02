@@ -339,45 +339,27 @@ void GameService::SaveChatMessage(user_id userId, const std::string& message)
 	}
 }
 
-GameService::MoveResult GameService::ProcessPlayerMove(user_id userId, const std::vector<PlayerMove>& moves)
+GameService::MoveResult GameService::ProcessPlayerMove(user_id userId, const std::vector<PlayerMove>& moves) 
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
-
-	if (!m_player_game_map.contains(userId))
+	if (!m_player_game_map.contains(userId)) 
 		return MoveResult::InvalidMove;
 
-	game_id gId = m_player_game_map[userId];
-	Game& game = m_active_games.at(gId);
-	int numericId = std::stoi(gId.substr(5));
+	Game& game = m_active_games.at(m_player_game_map[userId]);
 
-	bool success = game.ProcessTurn(userId, moves);
+	bool allOk = true;
+	for (const auto& move : moves) {
+		if (!game.PlaySingleCard(userId, move.card_value, static_cast<int>(move.stack_index))) {
+			allOk = false;
+			break;
+		}
+	}
 
-	if (success)
+	if (allOk && game.EndCurrentTurn(userId)) 
 	{
-		auto& storage = getStorage();
-
-		Move moveRecord;
-		moveRecord.game_id = numericId;
-		moveRecord.player_id = userId;
-
-		moveRecord.cards_played = SerializationUtil::SerializeMoves(moves);
-
-		storage.insert(moveRecord);
-
-		if (game.CheckGameState() == GameState::Won) {
-			storage.update_all(set(c(&Joc::status) = "WON"), where(is_equal(&Joc::id, numericId)));
-		}
-		else if (!game.CanPlayerMakeAtLeastOneMove(game.GetCurrentPlayerIndex())) {
-			storage.update_all(set(c(&Joc::status) = "LOST"), where(is_equal(&Joc::id, numericId)));
-			return MoveResult::GameLost;
-		}
-
-		SyncGameToDb(gId);
+		SyncGameToDb(m_player_game_map[userId]);
 		return MoveResult::Success;
 	}
-	else {
-		getStorage().update_all(set(c(&Joc::status) = "LOST"), where(is_equal(&Joc::id, numericId)));
-		return MoveResult::GameLost;
-	}
-}
 
+	return MoveResult::InvalidMove;
+}

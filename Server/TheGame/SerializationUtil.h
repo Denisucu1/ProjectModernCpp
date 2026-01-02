@@ -7,11 +7,10 @@
 #include <type_traits>
 #include <iterator>
 #include "Card.h"
-#include "Game.h" // Use the single PlayerMove declared in Game.h
+#include "Game.h" 
 
 namespace SerializationUtil {
 
-    // Generic serializer for iterable containers.
     template <typename T>
     inline std::string Serialize(const T& container) {
         auto it_begin = std::begin(container);
@@ -42,18 +41,15 @@ namespace SerializationUtil {
         return oss.str();
     }
 
-    // Convenience overload for stacks (array of Card). Reuses generic serializer.
     inline std::string SerializeStacks(const std::array<Card, 4>& stacks) {
         return Serialize(stacks);
     }
 
-    // Serialize player moves as "value:stackIndex" tuples.
     inline std::string SerializeMoves(const std::vector<PlayerMove>& moves) {
         if (moves.empty()) return "[]";
         std::ostringstream oss;
         oss << "[";
         for (size_t i = 0; i < moves.size(); ++i) {
-            // card_value is integral; stack_index is an enum (underlying size_t) -> cast to integer
             oss << static_cast<int>(moves[i].card_value) << ":" << static_cast<size_t>(moves[i].stack_index)
                 << (i + 1 == moves.size() ? "" : ",");
         }

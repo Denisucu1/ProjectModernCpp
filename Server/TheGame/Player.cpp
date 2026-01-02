@@ -45,14 +45,18 @@ void Player::SetDeck(const std::vector<std::uint8_t>& deck)
     
 }
 
-std::vector<std::uint8_t> Player::GetDeck() const
-{
-    return std::vector<std::uint8_t>(m_deck.begin(), m_deck.begin() + m_deck_active_size);
+std::span<const std::uint8_t> Player::GetDeck() const {
+    return std::span<const std::uint8_t>(m_deck.data(), m_deck_active_size);
 }
 
 void Player::SetScore(std::uint8_t score) { m_score = score; }
 
 std::uint8_t Player::GetScore() const { return m_score; }
+
+std::span<const std::uint8_t> Player::GetDeckView() const
+{
+    return std::span<const std::uint8_t>(m_deck.data(), m_deck_active_size);
+}
 
 
 bool Player::RemoveCard(std::uint8_t cardValue)

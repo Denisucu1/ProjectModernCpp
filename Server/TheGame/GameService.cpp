@@ -1,8 +1,14 @@
 #include "GameService.h"
+#include "DatabaseManager.h"
+#include "PlayPiles.h"
 #include "crow.h"
 #include <iostream>
 #include <utility>
 #include <random>
+#include "BinaryGameService.h"
+#include "Game.h"
+#include "SerializationUtil.h"
+
 
 GameService::GameService()
 {
@@ -221,6 +227,71 @@ Game& GameService::GetGame(const game_id gameId)
 	}
 }
 
+void GameService::sendBinaryToUser(user_id userId, const std::string& binaryData)
+{
+	std::lock_guard<std::mutex> lock(m_connection_mutex);
+	auto it = m_userConnections.find(userId);
+	if(it != m_userConnections.end())
+	{
+		crow::websocket::connection* conn = it->second;
+		conn->send_binary(binaryData);
+		std::cout << "Sent binary data to user ID: " << userId << '\n';
+	}
+}
+
+void GameService::ProcessGameAction(const std::string& binaryData, crow::websocket::connection* conn)
+{
+	user_id userId;
+	game_id gameId;
+	bool actionsucces = false;
+	std::string message;
+
+	{
+		std::scoped_lock lock(m_connection_mutex, m_mutex);
+
+		auto it = m_connectionToUser.find(conn);
+		if (it == m_connectionToUser.end())
+		{
+			std::cout << "ProcessGameAction failed: Connection not associated with any user." << std::endl;
+			return;
+		}
+		userId = it->second;
+
+		if (m_player_game_map.find(userId) == m_player_game_map.end())
+		{
+			std::cout << "ProcessGameAction failed: User ID " << userId << " is not in any active game." << std::endl;
+			return;
+		}
+		gameId = m_player_game_map[userId];
+		Game& game = m_active_games.at(gameId);
+
+		auto results = BinaryGameService::ProcessPlayerAction(game, userId, binaryData);
+		actionsucces = results.success;
+		message = results.message;
+	} 
+	if (actionsucces)
+	{
+		BroadcastGameState(gameId);
+	}
+	else
+	{
+		sendMessageToUser(userId, message);
+	}
+}
+
+void GameService::BroadcastGameState(const game_id gameId)
+{
+	if (!m_active_games.count(gameId)) return;
+	Game& game = m_active_games.at(gameId);
+
+	auto messages = BinaryGameService::PrepareBroadcastMessages(game);
+
+	for (const auto& [uid, msg] : messages)
+	{
+		sendBinaryToUser(uid, msg);
+	}
+}
+
 std::optional<MatchData> GameService::GetMatchState(int matchIdInt)
 {
 	return std::optional<MatchData>();
@@ -300,4 +371,91 @@ MatchData GameService::GenerateMatchData(const Game& game)
 	state.players = {};
 
 	return state;
+}
+
+void GameService::SyncGameToDb(const game_id& gameId) 
+{
+	auto& storage = getStorage();
+	Game& game = GetGame(gameId); 
+
+	std::string stacksSerialized = SerializationUtil::SerializeStacks(game.GetPlayPiles().GetStacks());
+	std::string deckStr = SerializationUtil::Serialize(game.GetDrawPile().GetRemainingCards());
+
+	int numericId = std::stoi(gameId.substr(5));
+
+	try {
+		storage.transaction([&]() -> bool 
+			{
+			storage.update_all(
+				set(c(&Joc::stacks_state) = stacksSerialized,
+					c(&Joc::deck_state) = deckStr),
+				where(is_equal(&Joc::id, numericId))
+			);
+
+			for (const auto& player : game.GetPlayers()) 
+			{
+				std::string handStr = SerializationUtil::Serialize(player.GetDeck()); //
+				storage.update_all(
+					set(c(&Jucator::hand) = handStr),
+					where(is_equal(&Jucator::game_id, numericId) &&
+						is_equal(&Jucator::user_id, player.GetId()))
+				);
+			}
+			return true;
+			});
+	}
+	catch (const std::exception& e) {
+		std::cerr << "[SyncError] " << e.what() << std::endl;
+	}
+}
+
+void GameService::SaveChatMessage(user_id userId, const std::string& message)
+{
+	std::lock_guard<std::mutex> lock(m_mutex);
+
+	if (!m_player_game_map.contains(userId)) return;
+
+	game_id gId = m_player_game_map[userId];
+	int numericMatchId = std::stoi(gId.substr(5));
+
+	try {
+		auto& storage = getStorage();
+
+		Chat chatEntry;
+		chatEntry.player_id = userId;
+		chatEntry.game_id = numericMatchId;
+		chatEntry.message = message;
+
+		storage.insert(chatEntry);
+
+		std::cout << "[Chat] Mesaj salvat pentru meciul " << numericMatchId << " de la user " << userId << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "[ChatError] " << e.what() << std::endl;
+	}
+}
+
+GameService::MoveResult GameService::ProcessPlayerMove(user_id userId, const std::vector<PlayerMove>& moves) 
+{
+	std::lock_guard<std::mutex> lock(m_mutex);
+	if (!m_player_game_map.contains(userId)) 
+		return MoveResult::InvalidMove;
+
+	Game& game = m_active_games.at(m_player_game_map[userId]);
+
+	bool allOk = true;
+	for (const auto& move : moves) {
+		if (!game.PlaySingleCard(userId, move.card_value, static_cast<int>(move.stack_index))) {
+			allOk = false;
+			break;
+		}
+	}
+
+	if (allOk && game.EndCurrentTurn(userId)) 
+	{
+		SyncGameToDb(m_player_game_map[userId]);
+		return MoveResult::Success;
+	}
+
+	return MoveResult::InvalidMove;
 }

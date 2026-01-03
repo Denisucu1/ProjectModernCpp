@@ -2,6 +2,8 @@
 #include "DatabaseManager.h"
 #include "User.h"
 #include "Match.h"
+#include "SerializationUtil.h"
+#include "DrawPile.h"
 
 #include <iostream>
 #include <algorithm>
@@ -131,30 +133,53 @@ void MatchService::StartGame(int matchId, const std::vector<int>& userIds)
 
     try {
         storage.transaction([&]() -> bool {
-            std::string initialDeckState = "Pachet_Random";
+            DrawPile drawPile;
 
-            storage.update_all(
-                set(
-                    c(&Joc::status) = "IN_PROGRESS",
-                    c(&Joc::deck_state) = initialDeckState
-                ),
-                where(is_equal(&Joc::id, matchId))
-            );
+            int numPlayers = static_cast<int>(userIds.size());
+            int cardsPerPlayer = 6; 
+            if (numPlayers == 2) 
+                cardsPerPlayer = 8;
+            else 
+            	if (numPlayers == 3) 
+                    cardsPerPlayer = 7;
 
-            std::string playerHand = "[\"C1\", \"H2\", ...]";
+            for (int userId : userIds) 
+            {
+                std::vector<std::uint8_t> hand;
+                for (int i = 0; i < cardsPerPlayer; ++i) {
+                    if (!drawPile.IsEmpty()) {
+                        hand.push_back(drawPile.DrawACard().GetValue());
+                    }
+                }
 
-            for (int userId : userIds) {
+                std::string serializedHand = SerializationUtil::Serialize(hand);
+
                 storage.update_all(
-                    set(c(&Jucator::hand) = playerHand),
+                    set(c(&Jucator::hand) = serializedHand),
                     where(is_equal(&Jucator::game_id, matchId) and is_equal(&Jucator::user_id, userId))
                 );
             }
 
-            return true; 
+            std::vector<std::uint8_t> remainingDeck;
+            while (!drawPile.IsEmpty()) {
+                remainingDeck.push_back(drawPile.DrawACard().GetValue());
+            }
+            std::string serializedDeck = SerializationUtil::Serialize(remainingDeck);
+
+            storage.update_all(
+                set(
+                    c(&Joc::status) = "IN_PROGRESS",
+                    c(&Joc::deck_state) = serializedDeck
+                ),
+                where(is_equal(&Joc::id, matchId))
+            );
+
+            return true;
             });
+        std::cout << "[MatchService] Meciul " << matchId << " a pornit cu date reale." << std::endl;
     }
     catch (const std::exception& e) {
-        std::cerr << "Eroare in StartGame pentru ID " << matchId << ": " << e.what() << std::endl;
+        std::cerr << "Eroare critica în StartGame: " << e.what() << std::endl;
     }
 }
 

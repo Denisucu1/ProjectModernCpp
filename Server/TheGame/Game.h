@@ -2,39 +2,38 @@
 #include "DrawPile.h"
 #include "Player.h"
 #include "PlayPiles.h"
+#include <span>
+
+enum class GameState { InProgress, Won, Lost };
 
 struct PlayerMove {
-	std::uint8_t card_value;
-	PlayPiles::StackIndex stack_index;
+    std::uint8_t card_value;
+    PlayPiles::StackIndex stack_index;
 };
 
-class Game
-{
+class Game {
 public:
-	Game(std::vector<Player> players);
+    explicit Game(std::vector<Player> players);
 
-	Game(Game&& other) noexcept;
-	Game& operator=(Game&& other) noexcept;
+    bool PlaySingleCard(int userId, std::uint8_t cardValue, int stackIndex);
+    bool EndCurrentTurn(int userId);
 
+    GameState CheckGameState() const;
+    bool CanPlayerMakeAtLeastOneMove(int playerIndex) const;
 
-	void StartGame();
-
-	void GameEndConditions();
-
-	bool ProcessTurn(int playerId, const std::vector<PlayerMove>& moves);
-
-	std::uint8_t GetMinCardsToPlay() const;
-
-	void NextPlayer(int cardsPlayed);
-
-	const std::vector<Player>& GetPlayers() const;
-
-	std::uint8_t GetCurrentPlayerIndex() const;
+    const PlayPiles& GetPlayPiles() const { return m_play_piles_; }
+    const DrawPile& GetDrawPile() const { return m_cards; }
+    size_t GetDeckSize() const { return m_cards.GetSize(); }
+    std::uint8_t GetMinCardsToPlay() const { return m_cards.IsEmpty() ? 1 : 2; }
+    const std::vector<Player>& GetPlayers() const { return m_players; }
 
 private:
-	DrawPile m_cards;
-	std::vector<Player> m_players;
-	PlayPiles m_play_piles_;
-	std::uint8_t m_current_player_index_ : 3;
-};
+    DrawPile m_cards;
+    std::vector<Player> m_players;
+    PlayPiles m_play_piles_;
+    std::uint8_t m_current_player_index = 0;
+    int m_cardsPlayedThisTurn = 0;
 
+    void StartGame();
+    void NextPlayer(int cardsPlayed);
+};

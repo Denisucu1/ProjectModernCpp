@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-package myproject;
-
-message EmptyMessage {
-  int32 placeholder = 1;
-}

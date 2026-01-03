@@ -31,6 +31,9 @@
     <Filter Include="Source Files\Routing">
       <UniqueIdentifier>{8133adb9-e14e-4802-b088-cfd5c43cb9c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GameProtocol">
+      <UniqueIdentifier>{b872d551-14ae-4917-89a5-52ca3155d7c8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="User.h">
@@ -81,6 +84,15 @@
     <ClInclude Include="ApiRoutes.h">
       <Filter>Header Files\Routing</Filter>
     </ClInclude>
+    <ClInclude Include="BinaryGameService.h">
+      <Filter>Header Files\game_logic</Filter>
+    </ClInclude>
+    <ClInclude Include="GameProtocol.pb.h">
+      <Filter>Source Files\GameProtocol</Filter>
+    </ClInclude>
+    <ClInclude Include="SerializationUtil.h">
+      <Filter>Header Files\game_logic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UserService.cpp">
@@ -88,9 +100,6 @@
     </ClCompile>
     <ClCompile Include="MatchService.cpp">
       <Filter>Source Files\db</Filter>
-    </ClCompile>
-    <ClCompile Include="Card.cpp">
-      <Filter>Source Files\game_logic</Filter>
     </ClCompile>
     <ClCompile Include="DrawPile.cpp">
       <Filter>Source Files\game_logic</Filter>
@@ -125,8 +134,19 @@
     <ClCompile Include="ApiRoutes.cpp">
       <Filter>Source Files\Routing</Filter>
     </ClCompile>
+    <ClCompile Include="BinaryGameService.cpp">
+      <Filter>Source Files\game_logic</Filter>
+    </ClCompile>
+    <ClCompile Include="GameProtocol.pb.cc">
+      <Filter>Source Files\GameProtocol</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="server_data.proto" />
+    <CustomBuild Include="GameProtocol.proto">
+      <Filter>Source Files\GameProtocol</Filter>
+    </CustomBuild>
+    <ClCompile Include="Card.cpp">
+      <Filter>Source Files\game_logic</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

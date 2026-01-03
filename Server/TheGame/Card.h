@@ -1,13 +1,15 @@
 #pragma once
 #include <cstdint>
+
 class Card
 {
 public:
-	Card(std::uint8_t value);
+    Card();
 
-	std::uint8_t GetValue() const;
+    explicit Card(std::uint8_t value);
+
+    std::uint8_t GetValue() const;
 
 private:
-	std::uint8_t m_value : 7;
+    std::uint8_t m_value : 7;
 };
-

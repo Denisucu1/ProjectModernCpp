@@ -423,3 +423,6 @@ FodyWeavers.xsd
 #Protobuf generated files
 *.pb.cc
 *.pb.h
+
+# vcpkg manifest mode generated folder
+vcpkg_installed/

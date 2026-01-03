@@ -426,3 +426,4 @@ FodyWeavers.xsd
 
 # vcpkg manifest mode generated folder
 vcpkg_installed/
+/vcpkg_installed

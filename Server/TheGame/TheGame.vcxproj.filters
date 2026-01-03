@@ -90,6 +90,9 @@
     <ClInclude Include="GameProtocol.pb.h">
       <Filter>Source Files\GameProtocol</Filter>
     </ClInclude>
+    <ClInclude Include="SerializationUtil.h">
+      <Filter>Header Files\game_logic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UserService.cpp">
@@ -97,9 +100,6 @@
     </ClCompile>
     <ClCompile Include="MatchService.cpp">
       <Filter>Source Files\db</Filter>
-    </ClCompile>
-    <ClCompile Include="Card.cpp">
-      <Filter>Source Files\game_logic</Filter>
     </ClCompile>
     <ClCompile Include="DrawPile.cpp">
       <Filter>Source Files\game_logic</Filter>
@@ -145,5 +145,8 @@
     <CustomBuild Include="GameProtocol.proto">
       <Filter>Source Files\GameProtocol</Filter>
     </CustomBuild>
+    <ClCompile Include="Card.cpp">
+      <Filter>Source Files\game_logic</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

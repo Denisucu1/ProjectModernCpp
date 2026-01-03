@@ -4,25 +4,26 @@
 
 DrawPile::DrawPile()
 {
+	m_drawPile.reserve(98);
+
 	for (std::uint8_t value = 2; value <= 99; value++)
 	{
-		m_drawPile.push_back(Card(value));
+		m_drawPile.emplace_back(value);
 	}
 
 	MixPile();
 }
 
-DrawPile::DrawPile(DrawPile&& other) noexcept
+DrawPile::DrawPile(DrawPile&& other) 
 	: m_drawPile(std::move(other.m_drawPile))
 {
 }
 
-DrawPile& DrawPile::operator=(DrawPile&& other) noexcept
+DrawPile& DrawPile::operator=(DrawPile&& other) 
 {
 	if (this != &other)
 	{
 		m_drawPile = std::move(other.m_drawPile);
-		other.m_drawPile.clear();
 	}
 	return *this;
 }
@@ -30,8 +31,8 @@ DrawPile& DrawPile::operator=(DrawPile&& other) noexcept
 
 void DrawPile::MixPile()
 {
-	std::random_device rd;
-	std::mt19937 g(rd());
+	static std::random_device rd;
+	static std::mt19937 g(rd());
 	std::shuffle(m_drawPile.begin(), m_drawPile.end(), g);
 }
 
@@ -50,4 +51,14 @@ bool DrawPile::IsEmpty() const
 size_t DrawPile::GetSize() const
 {
 	return m_drawPile.size();
+}
+
+std::vector<std::uint8_t> DrawPile::GetRemainingCards() const 
+{
+	std::vector<std::uint8_t> values;
+	values.reserve(m_drawPile.size());
+
+	for (const auto& card : m_drawPile) 
+		values.push_back(card.GetValue());
+	return values;
 }

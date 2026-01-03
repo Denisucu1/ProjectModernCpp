@@ -1,35 +1,39 @@
 #pragma once
-#include <vector>
+#include <array>
 #include <string>
+#include <cstdint>
+#include <vector>
+#include <span>
 
 class Player
 {
 public:
-	Player(std::string name, int id);
+    Player(std::string name, int id);
 
-	Player(Player&& other) noexcept;
-	Player& operator=(Player&& other) noexcept;
+    Player(Player&& other);
+    Player& operator=(Player&& other);
 
-	Player(const Player& other) = delete;
-	Player& operator=(const Player& other) = delete;
+    Player(const Player& other) = delete;
+    Player& operator=(const Player& other) = delete;
 
-	void SetDeck(std::vector<std::uint8_t> deck);
+    void SetDeck(const std::vector<std::uint8_t>& deck);
+    void SetScore(std::uint8_t score);
 
-	void SetScore(std::uint8_t score);
+    std::span<const std::uint8_t> GetDeck() const;
+    std::uint8_t GetScore() const;
 
-	std::vector<std::uint8_t> GetDeck() const;
+    std::span<const std::uint8_t> GetDeckView() const;
 
-	std::uint8_t GetScore() const;
+    bool RemoveCard(std::uint8_t cardValue);
 
-	bool RemoveCard(std::uint8_t cardValue);
-
-	int GetId() const;
+    int GetId() const;
 
 private:
 
-	std::string m_name;
-	std::vector<std::uint8_t> m_deck;
-	std::uint8_t m_score;
-	int m_id;
+    std::string m_name;
+    std::array<std::uint8_t, 8> m_deck;
 
+    std::uint8_t m_deck_active_size; 
+    std::uint8_t m_score;
+    int m_id;
 };

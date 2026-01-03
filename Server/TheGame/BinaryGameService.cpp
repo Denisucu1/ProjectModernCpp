@@ -45,9 +45,9 @@ std::vector<std::pair<int, std::string>> BinaryGameService::PrepareBroadcastMess
 	myproject::GameState* stateProto = msgWrapper.mutable_state();
 
 	const auto& players = game.GetPlayers();
-	int currentIdx = game.GetCurrentPlayerIndex();
+	/*int currentIdx = game.GetCurrentPlayerIndex();
 	if(currentIdx >= 0 && currentIdx < players.size())
-		stateProto->set_user_id(players[currentIdx].GetId());
+		stateProto->set_user_id(players[currentIdx].GetId());*/
 
 	//const auto& piles = game.GetPlayerPiles();
 	//for (int i = 0; i < 4; i++)

@@ -151,7 +151,7 @@
     
     
     
-  </ItemGroup><ItemGroup><CustomBuild Include="GameProtocol.proto"><FileType>Document</FileType><Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(ProjectDir)..\..\vcpkg_installed\x64-windows\tools\protobuf\protoc.exe" -I$(ProjectDir) --cpp_out=$(ProjectDir) $(ProjectDir)GameProtocol.proto</Command><Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)GameProtocol.pb.cc;$(ProjectDir)GameProtocol.pb.h</Outputs></CustomBuild></ItemGroup>
+  </ItemGroup><ItemGroup><CustomBuild Include="GameProtocol.proto"><FileType>Document</FileType><Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(ProjectDir)..\..\vcpkg_installed\x64-windows\x64-windows\tools\protobuf\protoc.exe" -I "$(ProjectDir)\" --cpp_out="$(ProjectDir)\" "$(ProjectDir)GameProtocol.proto"</Command><Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)GameProtocol.pb.cc;$(ProjectDir)GameProtocol.pb.h</Outputs></CustomBuild></ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup></Project>

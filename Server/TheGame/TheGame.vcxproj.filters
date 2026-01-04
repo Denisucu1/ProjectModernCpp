@@ -90,9 +90,6 @@
     <ClInclude Include="GameProtocol.pb.h">
       <Filter>Source Files\GameProtocol</Filter>
     </ClInclude>
-    <ClInclude Include="SerializationUtil.h">
-      <Filter>Header Files\game_logic</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UserService.cpp">

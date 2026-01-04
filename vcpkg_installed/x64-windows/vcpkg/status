@@ -2,14 +2,14 @@ Package: vcpkg-cmake-config
 Version: 2024-05-23
 Architecture: x64-windows
 Multi-Arch: same
-Abi: f536d4605c73c466b9c52c4405f17f6a4fb5ff2de8ea1afa7afa3e5b68e7aab7
+Abi: 611a627ac7393d6c4333c7cad872b6ef27539a8e8e255633e46c5704e4157a16
 Status: install ok installed
 
 Package: vcpkg-cmake
-Version: 2024-04-23
+Version: 2025-08-07
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 3b27439921cfa7f52be59752c92576c6e1bd7f495c566cedefdf6c01c4359dcf
+Abi: b9167d4283c818051165147fca198f447063fb472e5955987c0375c81fba287f
 Status: install ok installed
 
 Package: asio
@@ -17,7 +17,7 @@ Version: 1.32.0
 Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: cdd6927b899d1c69cd2a02c5e01e4bc5bbca98d94fef4f0cdcb7e39e09f1bf07
+Abi: 87c360ad9ed1d31052a54a1a7cc88545f30b7f4d2244e6276971c315acc076d8
 Description: Asio is a cross-platform C++ library for network and low-level I/O programming that provides developers with a consistent asynchronous model using a modern C++ approach.
 Status: install ok installed
 
@@ -26,7 +26,7 @@ Version: 1.3.0
 Depends: asio, vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: ecfe247a21185d2777fe7fdd563093fb477e28e7a82048c1f4100aaee47f21ef
+Abi: 9f7ffa8747b3fae82c978a8d2facf86ce3e3ab84b633b1bb478a5b4c13d8c2ad
 Description: Very fast and easy to use C++ micro web framework
 Status: install ok installed
 
@@ -36,7 +36,7 @@ Port-Version: 1
 Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 9d0dab1d0815d4cfbdf287fd94e1628e603292e3ef719981ce5ecc962264851c
+Abi: d86a2cc5a787fab4020046fe19b10d942d62c0ba4c5a90c6ba7a2b269edb511d
 Description: Abseil is an open-source collection of C++ library code designed to augment the C++ standard library. The Abseil library code is collected from Google's own C++ code base, has been extensively tested and used in production, and is the same code we depend on in our daily coding lives.
     In some cases, Abseil provides pieces missing from the C++ standard; in others, Abseil provides alternatives to the standard for special needs we've found through usage in the Google code base. We denote those cases clearly within the library code we provide you.
     Abseil is not meant to be a competitor to the standard library; we've just found that many of these utilities serve a purpose within our code base, and we now want to provide those resources to the C++ community as a whole.
@@ -47,26 +47,26 @@ Version: 5.29.5
 Depends: abseil, vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 558b2f16749479d0696b429db910fe0cab29288752cb8c1736eaec3fc66896ad
+Abi: c50b524963415775db677fe09d6db38caa9a7d14c972e7bc7b9de4beaacdb4d9
 Description: Fast UTF-8 validation with Range algorithm (NEON+SSE4+AVX2)
 Status: install ok installed
 
 Package: protobuf
 Version: 5.29.5
 Port-Version: 2
-Depends: abseil, utf8-range, vcpkg-cmake, vcpkg-cmake-config
+Depends: abseil, protobuf, utf8-range, vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 3ec4b7f87ab32a4f04118da395554187669c9bf731e90d886802f51995204b31
+Abi: 580009a562377c91a4a387afc0d7d67b8083500cf073e36d19630204105849e1
 Description: Google's language-neutral, platform-neutral, extensible mechanism for serializing structured data.
 Status: install ok installed
 
 Package: sqlite3
-Version: 3.51.0
+Version: 3.50.4
 Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 28535ecda0bbff3f01b1af368ee89fad24d60397eed1dc65615291cfcf62aead
+Abi: d8fcd120a9ab1ea911f079dbea7c9de9edbcb6a61c0ac222a44e3b417ff3525b
 Description: SQLite is a software library that implements a self-contained, serverless, zero-configuration, transactional SQL database engine.
 Default-Features: json1
 Status: install ok installed
@@ -83,7 +83,7 @@ Version: 1.9.1
 Depends: sqlite3, vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 683b51c0f8f22ecff1af3e50e519f144f6f679cd6c6f6516e299eac5b5af36fb
+Abi: ae5e05cd44a11f8124f4db37b8b283ba390a8c517ebf0c3262e9006ea094b9da
 Description: SQLite ORM light header only library for modern C++
 Status: install ok installed
 

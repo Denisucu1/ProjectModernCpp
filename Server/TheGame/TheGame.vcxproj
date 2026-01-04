@@ -115,13 +115,13 @@
       <PreprocessorDefinitions>_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\Proiect la MC\ProjectModernCpp\vcpkg_installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\vcpkg_installed\x64-windows\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>sqlite3.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\Proiect la MC\ProjectModernCpp\vcpkg_installed\x64-windows\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sqlite3.lib;libprotobufd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\vcpkg_installed\x64-windows\x64-windows\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -151,7 +151,7 @@
     
     
     
-  </ItemGroup><ItemGroup><CustomBuild Include="GameProtocol.proto"><FileType>Document</FileType><Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(ProjectDir)..\..\vcpkg_installed\x64-windows\x64-windows\tools\protobuf\protoc.exe" -I "$(ProjectDir)\" --cpp_out="$(ProjectDir)\" "$(ProjectDir)GameProtocol.proto"</Command><Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)GameProtocol.pb.cc;$(ProjectDir)GameProtocol.pb.h</Outputs></CustomBuild></ItemGroup>
+  </ItemGroup><ItemGroup><CustomBuild Include="GameProtocol.proto"><FileType>Document</FileType><Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(ProjectDir)..\..\vcpkg_installed\x64-windows\x64-windows\tools\protobuf\protoc.exe" -I "$(ProjectDir)\" --cpp_out="$(ProjectDir)\" "$(ProjectDir)GameProtocol.proto"</Command><Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)GameProtocol.pb.cc;$(ProjectDir)GameProtocol.pb.h</Outputs><ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild></CustomBuild></ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup></Project>

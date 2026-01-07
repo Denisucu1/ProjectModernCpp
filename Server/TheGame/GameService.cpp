@@ -1,4 +1,4 @@
-#include "GameService.h"
+﻿#include "GameService.h"
 #include "DatabaseManager.h"
 #include "PlayPiles.h"
 #include "crow.h"
@@ -84,51 +84,48 @@ std::string GameService::CreateRoom(user_id hostId, int maxPlayers)
 
 bool GameService::JoinRoom(user_id userId, const std::string& roomCode)
 {
-	std::lock_guard<std::mutex> lock(m_mutex);
+	std::string serializedMsg;
+	std::vector<user_id> otherPlayers;
 
-	if (m_user_room_map.count(userId)) {
-		std::cout << "[Lobby] Join failed: User " << userId << " already in room " << m_user_room_map[userId] << std::endl;
-		return false;
-	}
-
-	auto itRoom = m_rooms.find(roomCode);
-	if (itRoom == m_rooms.end())
 	{
-		std::cout << "JoinRoom failed: Room code " << roomCode << " does not exist." << std::endl;
-		return false;
+		std::lock_guard<std::mutex> lock(m_mutex);
+
+		if (m_user_room_map.count(userId)) return false;
+
+		auto itRoom = m_rooms.find(roomCode);
+		if (itRoom == m_rooms.end()) return false;
+
+		Room& room = itRoom->second;
+		if (room.players.count(userId) || room.isGameStarted || (int)room.players.size() >= room.maxPlayers)
+		{
+			return false;
+		}
+
+		room.players.insert(userId);
+		m_user_room_map[userId] = roomCode;
+
+		crow::json::wvalue updateMsg;
+		updateMsg["type"] = "room_update";
+		updateMsg["roomCode"] = roomCode;
+
+		int idx = 0;
+		for (auto pid : room.players) {
+			updateMsg["players"][idx++] = pid;
+			if (pid != userId) {
+				otherPlayers.push_back(pid);
+			}
+		}
+		serializedMsg = updateMsg.dump();
+
+		std::cout << "[Lobby] User " << userId << " joined " << roomCode << ". Notifying " << otherPlayers.size() << " players." << std::endl;
+	}
+	for (auto pid : otherPlayers) {
+		sendMessageToUser(pid, serializedMsg);
 	}
 
-	Room& room = itRoom->second;
-
-	if (room.players.count(userId) || room.isGameStarted)
-	{
-		return false;
-	}
-
-	if (static_cast<int>(room.players.size()) >= room.maxPlayers)
-	{
-		std::cout << "JoinRoom failed: Room code " << roomCode << " is full." << std::endl;
-		return false;
-	}
-
-	crow::json::wvalue updateMsg;
-	updateMsg["type"] = "room_update";
-	updateMsg["roomCode"] = roomCode;
-
-	int idx = 0;
-	for (auto pid : room.players) {
-		updateMsg["players"][idx++] = pid;
-	}
-
-	updateMsg["players"][idx++] = userId;
-
-	BroadcastToRoomInternal(roomCode, updateMsg.dump());
-
-	room.players.insert(userId);
-	m_user_room_map[userId] = roomCode;
-	std::cout << "User ID: " << userId << " joined room code: " << roomCode << std::endl;
 	return true;
 }
+
 
 bool GameService::RemovePlayerFromRoom(user_id userId)
 {
@@ -199,6 +196,10 @@ bool GameService::StartGameInRoom(user_id requestorId, const std::string& roomCo
 	startMsg["type"] = "game_started";
 	startMsg["roomCode"] = roomCode;
 	BroadcastToRoomInternal(roomCode, startMsg.dump());
+
+	game_id  gameId= m_player_game_map[requestorId];
+	BroadcastGameState(gameId);
+
 	std::cout << "Game started in room code: " << roomCode << " by host ID: " << requestorId << std::endl;
 	return true;
 }

@@ -14,7 +14,10 @@ namespace WebSocketRoutes{
                 })
             .onmessage([&](crow::websocket::connection& conn, const std::string& data, bool isBinary) {
             if (isBinary)
-                return; //aici se vor face mesajele din timpul meciului cu protocol binar folosind protobuf
+            {
+                gameSvc.ProcessGameAction(data, &conn);
+                return;
+            }
             try {
                 auto msg = crow::json::load(data);
                 if (!msg || !msg.has("type")) {

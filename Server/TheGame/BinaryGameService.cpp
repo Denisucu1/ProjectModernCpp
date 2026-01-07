@@ -12,27 +12,27 @@ BinaryGameService::ActionResult BinaryGameService::ProcessPlayerAction(Game& gam
 	}
 	const myproject::PlayerAction& action = msg.action();
 
-	//if(action.action_type() != myproject::PlayerAction::PLAY_CARD) {
-	//	if(game.PlaySingleCard(userId, action.card_id(), action.stack_index())) 
-	//	{
-	//		return { true, "", false };
-	//	} 
-	//	else 
-	//	{
-	//		return { false, "Invalid move", false };
-	//	}
-	//}
-	//else if (action.action_type() == myproject::PlayerAction_ActionType_END_TURN)
-	//{
-	//	if (game.EndCurrentTurn(userId))
-	//	{
-	//		return { true, "", true };
-	//	}
-	//	else
-	//	{
-	//		return { false, "Cannot end turn now", false };
-	//	}
-	//}
+	if(action.action_type() == myproject::PlayerAction::PLAY_CARD) {
+		if(game.PlaySingleCard(userId, action.card_id(), action.stack_index())) 
+		{
+			return { true, "", false };
+		} 
+		else 
+		{
+			return { false, "Invalid move", false };
+		}
+	}
+	else if (action.action_type() == myproject::PlayerAction_ActionType_END_TURN)
+	{
+		if (game.EndCurrentTurn(userId))
+		{
+			return { true, "", true };
+		}
+		else
+		{
+			return { false, "Cannot end turn now", false };
+		}
+	}
 	return { false, "Unknown Action", false };
 }
 
@@ -45,15 +45,15 @@ std::vector<std::pair<int, std::string>> BinaryGameService::PrepareBroadcastMess
 	myproject::GameState* stateProto = msgWrapper.mutable_state();
 
 	const auto& players = game.GetPlayers();
-	/*int currentIdx = game.GetCurrentPlayerIndex();
+	int currentIdx = game.GetCurrentPlayerIndex();
 	if(currentIdx >= 0 && currentIdx < players.size())
-		stateProto->set_user_id(players[currentIdx].GetId());*/
+		stateProto->set_user_id(players[currentIdx].GetId());
 
-	//const auto& piles = game.GetPlayerPiles();
-	//for (int i = 0; i < 4; i++)
-	//{
-	//	stateProto->add_stack_tops(piles.GetStackValue(static_cast<PlayPiles::StackIndex>(i)));
-	//}
+	const auto& piles = game.GetPlayPiles();
+	for (int i = 0; i < 4; i++)
+	{
+	stateProto->add_stack_tops(piles.GetStackValue(static_cast<PlayPiles::StackIndex>(i)));
+	}
 
 	for (const auto& p : players)
 	{

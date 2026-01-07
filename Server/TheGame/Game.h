@@ -20,6 +20,7 @@ public:
 
     GameState CheckGameState() const;
     bool CanPlayerMakeAtLeastOneMove(int playerIndex) const;
+	int GetCurrentPlayerIndex() const { return m_current_player_index; }
 
     const PlayPiles& GetPlayPiles() const { return m_play_piles_; }
     const DrawPile& GetDrawPile() const { return m_cards; }

@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "Card.h"
-
+#include <tuple>
 #include <random>
 
 class CustomMode
@@ -16,7 +16,6 @@ public:
 
 private:
 	std::vector<std::uint8_t> events;
-
-	Card neutralPile;
+	std::tuple<Card, Card, Card> neutralPile;
 };
 

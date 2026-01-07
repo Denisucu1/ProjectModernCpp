@@ -70,6 +70,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -102,14 +105,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\include;D:\Proiect la MC\ProjectModernCpp\Server\TheGame;D:\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest;D:\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\src;D:\Proiect la MC\ProjectModernCpp\vcpkg_installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\include;D:\Proiect la MC\ProjectModernCpp\Server\TheGame;D:\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest;D:\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\src;D:\Proiect la MC\ProjectModernCpp\vcpkg_installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Card.obj;PlayPiles.obj;Player.obj;DrawPile.obj;Game.obj;GameService.obj;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\Proiect la MC\ProjectModernCpp\Server\TheGame\x64\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Card.obj;PlayPiles.obj;Player.obj;DrawPile.obj;Game.obj;GameService.obj;BinaryGameService.obj;GameProtocol.pb.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)|x64\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

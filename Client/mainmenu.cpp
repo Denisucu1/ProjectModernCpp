@@ -48,44 +48,47 @@ MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
 
     m_networkManager = new QNetworkAccessManager(this);
 
-    // 1. Inițializăm GameWindow
+    // 1. Inițializăm GameWindow și salvăm indexul paginii
     GameWindow* gamePage = new GameWindow(this);
     m_gamePageIndex = ui->stackedWidget->addWidget(gamePage);
 
     ui->stackedWidget->setCurrentIndex(0);
     ui->usernameLabel->setText(m_username);
 
-    // 2. WebSocket
+    // 2. WebSocket Configuration
     QUrl wsUrl("ws://localhost:18080/ws/game");
     m_gameClient = new GameClient(wsUrl, m_userId, this);
 
+    // --- LOGICA DE LOGIN AUTOMAT (CRITICĂ PENTRU SERVER) ---
+    // Când WebSocket-ul s-a conectat, trimitem imediat pachetul de login
+    connect(m_gameClient, &GameClient::connected, this, [this]() {
+        QJsonObject loginReq;
+        loginReq["type"] = "login";
+        loginReq["userId"] = m_userId;
+        m_gameClient->sendMessage(QJsonDocument(loginReq).toJson(QJsonDocument::Compact));
+        qDebug() << "!!! CLIENT: S-a trimis login pentru userId:" << m_userId;
+        });
+
+    // Conectăm semnalele pentru mesaje text și binare
     connect(m_gameClient, &GameClient::messageReceived, this, &MainMenu::onSocketMessage);
     connect(m_gameClient, &GameClient::binaryMessageReceived, this, &MainMenu::onGameBinaryMessage);
 
     // 3. TRIMITERE MUTARE (Serializare Protobuf)
     connect(gamePage, &GameWindow::playerMoved, this, [this](int cardValue, int stackIndex) {
-
-        // Construim mesajul folosind clasele generate de Protobuf
         myproject::GameMessage msg;
         msg.set_type(myproject::GameMessage::ACTION);
 
         auto* action = msg.mutable_action();
-
         if (cardValue == 0) {
-            // Cod pentru End Turn (verifică enum-ul din .pb.h tău)
             action->set_action_type(myproject::PlayerAction::END_TURN);
         }
         else {
-            // Mutare normală
             action->set_action_type(myproject::PlayerAction::PLAY_CARD);
             action->set_card_id(cardValue);
             action->set_stack_index(stackIndex);
         }
 
-        // Serializăm în string binar
         std::string binaryString = msg.SerializeAsString();
-
-        // Trimitem la server
         m_gameClient->sendBinaryMessage(QByteArray::fromStdString(binaryString));
         });
 
@@ -184,32 +187,40 @@ void MainMenu::onSocketMessage(const QString& message)
     }
 }
 
-// --- RECEPȚIE MESAJE BINARE (Gameplay - Protobuf) ---
 void MainMenu::onGameBinaryMessage(const QByteArray& data)
 {
+    // LOG DE DEBUG: Vedem dacă datele chiar ajung în această funcție
+    qDebug() << "!!! [CLIENT] Mesaj binar primit! Dimensiune:" << data.size();
+
+    // 1. SCHIMBARE PAGINĂ (Aici se bloca vizual)
+    // Dacă suntem la Lobby (index 4) și primim date de joc, forțăm trecerea la GameWindow
     if (ui->stackedWidget->currentIndex() == 4) {
+        qDebug() << "!!! [CLIENT] Schimb pagina de la Lobby la Joc (Index:" << m_gamePageIndex << ")";
         ui->stackedWidget->setCurrentIndex(m_gamePageIndex);
     }
 
+    // 2. PARSARE PROTOBUF
     myproject::GameMessage msg;
-    if (!msg.ParseFromArray(data.constData(), data.size())) return;
+    if (!msg.ParseFromArray(data.constData(), data.size())) {
+        qDebug() << "!!! [CLIENT] Eroare: Nu s-a putut parsa pachetul Protobuf!";
+        return;
+    }
 
+    // 3. PROCESARE UPDATE STARE
     if (msg.type() == myproject::GameMessage::STATE_UPDATE && msg.has_state()) {
         const auto& state = msg.state();
+        qDebug() << "!!! [CLIENT] Update stare primit pentru rândul user-ului:" << state.user_id();
 
-        // A. Actualizăm Teancurile
+        // A. Actualizăm Teancurile de pe masă
         std::vector<int> piles;
         for (int val : state.stack_tops()) {
             piles.push_back(val);
         }
 
-        // B. Găsim mâna jucătorului curent (Noi)
+        // B. Găsim mâna noastră (folosind m_userId-ul cu care ne-am logat)
         std::vector<int> hand;
-        int currentTurnUserId = state.user_id(); // ID-ul jucătorului care trebuie să mute
-
         for (const auto& playerInfo : state.players()) {
             if (playerInfo.user_id() == m_userId) {
-                // Acesta sunt eu, îmi iau cărțile
                 for (int cardVal : playerInfo.your_cards()) {
                     hand.push_back(cardVal);
                 }
@@ -217,18 +228,19 @@ void MainMenu::onGameBinaryMessage(const QByteArray& data)
             }
         }
 
-        // C. Actualizăm UI-ul GameWindow
+        qDebug() << "!!! [CLIENT] Cărți în mână identificate pentru mine:" << hand.size();
+
+        // C. ACTUALIZARE GRAFICĂ (GameWindow)
         if (QWidget* w = ui->stackedWidget->widget(m_gamePageIndex)) {
             if (GameWindow* gw = qobject_cast<GameWindow*>(w)) {
                 gw->updateTable(piles);
                 gw->updateHand(hand);
 
-                // Mesaj de stare
-                if (currentTurnUserId == m_userId) {
+                if (state.user_id() == m_userId) {
                     gw->setStatusMessage("Este rândul tău!");
                 }
                 else {
-                    gw->setStatusMessage(QString("Așteaptă rândul jucătorului %1").arg(currentTurnUserId));
+                    gw->setStatusMessage(QString("Așteaptă jucătorul %1").arg(state.user_id()));
                 }
             }
         }

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "WebSocketRoutes.h"
 
 namespace WebSocketRoutes{
@@ -66,26 +66,35 @@ namespace WebSocketRoutes{
                     }
                     conn.send_text(resp.dump());
                 }
-                else if (type == "join_room")
-                {
-                    if (msg.has("roomCode") && msg.has("userId"))
-                    {
+                else if (type == "join_room") {
+                    if (msg.has("roomCode") && msg.has("userId")) {
+                        int userId = msg["userId"].i();
                         std::string roomCode = msg["roomCode"].s();
                         std::transform(roomCode.begin(), roomCode.end(), roomCode.begin(), ::toupper);
-                        bool succes = gameSvc.JoinRoom(msg["userId"].i(), roomCode);
+
+                        bool succes = gameSvc.JoinRoom(userId, roomCode, userSvc);
 
                         crow::json::wvalue resp;
-                        if (succes)
-                        {
+                        if (succes) {
                             resp["status"] = "joined_room";
                             resp["roomCode"] = roomCode;
+
+                            auto playerIds = gameSvc.GetPlayersInRoom(roomCode);
+                            int i = 0;
+                            for (auto pid : playerIds) {
+                                auto userOpt = userSvc.GetUserById(pid);
+                                if (userOpt) {
+                                    resp["players"][i]["userId"] = pid;
+                                    resp["players"][i]["username"] = userOpt->username;
+                                    i++;
+                                }
+                            }
                         }
-                        else
-                        {
+                        else {
                             resp["status"] = "error";
-                            resp["message"] = "Failed to join room";
+                            resp["message"] = "Nu s-a putut intra în cameră";
                         }
-						conn.send_text(resp.dump());
+                        conn.send_text(resp.dump());
                     }
                 }
                 else if (type == "start_game")

@@ -146,6 +146,21 @@ std::optional<Profile> UserService::GetProfileById(int userId)
     }
 }
 
+std::optional<User> UserService::GetUserById(int id)
+{
+    auto& storage = getStorage();
+    try {
+        auto users = storage.get_all<User>(where(is_equal(&User::id, id)));
+        if (users.empty()) {
+            return std::nullopt;
+        }
+        return users.front();
+    }
+    catch (...) {
+        return std::nullopt;
+	}
+}
+
 std::optional<std::string> UserService::GenerateAndStoreToken(int userId)
 {
     auto& storage = getStorage();

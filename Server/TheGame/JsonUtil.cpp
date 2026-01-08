@@ -19,7 +19,6 @@ namespace JsonUtil {
             // match[2] este valoarea (ex: aaa)
             data[match[1].str()] = match[2].str();
         }
-
         return data;
     }
 }

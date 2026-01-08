@@ -186,41 +186,24 @@ bool GameService::RemovePlayerFromRoom(user_id userId)
 
 bool GameService::StartGameInRoom(user_id requestorId, const std::string& roomCode)
 {
-	std::lock_guard<std::mutex> lock(m_mutex);
-	auto itRoom = m_rooms.find(roomCode);
-	if (itRoom == m_rooms.end())
+	std::string gameId;
 	{
-		std::cout << "StartGameInRoom failed: Room code " << roomCode << " does not exist." << std::endl;
-		return false;
-	}
-	Room& room = itRoom->second;
-	if (room.hostUserId != requestorId)
-	{
-		std::cout << "StartGameInRoom failed: User ID " << requestorId << " is not the host of room code " << roomCode << "." << std::endl;
-		return false;
-	}
-	if (room.isGameStarted)
-	{
-		std::cout << "StartGameInRoom failed: Game in room code " << roomCode << " has already started." << std::endl;
-		return false;
-	}
-	if (room.players.size() < 2)
-	{
-		std::cout << "StartGameInRoom failed: Not enough players in room code " << roomCode << " to start the game." << std::endl;
-		return false;
-	}
-	room.isGameStarted = true;
-	std::list<user_id> playerIds(room.players.begin(), room.players.end());
-	CreateGame(playerIds);
-	crow::json::wvalue startMsg;
-	startMsg["type"] = "game_started";
-	startMsg["roomCode"] = roomCode;
-	BroadcastToRoomInternal(roomCode, startMsg.dump());
+		std::lock_guard<std::mutex> lock(m_mutex);
+		auto itRoom = m_rooms.find(roomCode);
+		if (itRoom == m_rooms.end() || itRoom->second.hostUserId != requestorId || itRoom->second.isGameStarted)
+			return false;
 
-	game_id  gameId= m_player_game_map[requestorId];
+		Room& room = itRoom->second;
+		room.isGameStarted = true;
+		std::list<user_id> playerIds(room.players.begin(), room.players.end());
+		CreateGame(playerIds);
+
+		gameId = m_player_game_map[requestorId];
+	}
+
 	BroadcastGameState(gameId);
+	std::cout << "Game started in room code: " << roomCode << " with game ID: " << gameId << std::endl;
 
-	std::cout << "Game started in room code: " << roomCode << " by host ID: " << requestorId << std::endl;
 	return true;
 }
 

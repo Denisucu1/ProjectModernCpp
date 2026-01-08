@@ -20,4 +20,3 @@ private:
 	std::vector<std::uint8_t> events;
 	Card neutralPile;
 };
-

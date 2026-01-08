@@ -14,8 +14,10 @@ public:
 
 	std::vector<Card> AddedRandomCardsInDrawPile();
 
+	void SetNeutralPile(Card newCard);
+
 private:
 	std::vector<std::uint8_t> events;
-	std::tuple<Card, Card, Card> neutralPile;
+	Card neutralPile;
 };
 

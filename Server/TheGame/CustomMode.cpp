@@ -1,12 +1,12 @@
 #include "CustomMode.h"
 
-CustomMode::CustomMode() : neutralPile{0,1,100}
+CustomMode::CustomMode() : neutralPile{ 0 }
 {
 }
 
 Card CustomMode::GetNeutralPile() const
 {
-	return std::get<0>(neutralPile);
+	return neutralPile;
 }
 
 std::vector<Card> CustomMode::AddedRandomCardsInDrawPile()
@@ -30,4 +30,9 @@ std::vector<Card> CustomMode::AddedRandomCardsInDrawPile()
 	}
 
 	return newCards;
+}
+
+void CustomMode::SetNeutralPile(Card newCard)
+{
+	neutralPile = newCard;
 }

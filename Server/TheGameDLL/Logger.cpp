@@ -4,7 +4,7 @@
 #include <chrono>
 #include <iomanip>
 #include <sstream>
-
+#include <Windows.h>
 
 std::string Logger::GetTimestamp() {
     auto acum = std::chrono::system_clock::now();
@@ -32,11 +32,15 @@ std::string Logger::LevelToString(Level nivel) {
 void Logger::Log(const std::string& mesaj, Level nivel) {
     std::lock_guard<std::mutex> lock(logMutex);
 
-    std::ofstream file("app_log.txt", std::ios::app);
+    std::string formatat = "[" + GetTimestamp() + "] [" + LevelToString(nivel) + "] " + mesaj + "\n";
+
+    std::ofstream file("thegame_log.txt", std::ios::app);
     if (file.is_open()) {
-        file << "[" << GetTimestamp() << "] "
-            << "[" << LevelToString(nivel) << "] "
-            << mesaj << std::endl;
+        file << formatat;
         file.close();
     }
+
+    OutputDebugStringA(formatat.c_str());
+
+    printf("%s", formatat.c_str());
 }

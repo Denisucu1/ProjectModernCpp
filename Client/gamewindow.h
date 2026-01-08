@@ -1,13 +1,14 @@
-#ifndef GAMEWINDOW_H
+﻿#ifndef GAMEWINDOW_H
 #define GAMEWINDOW_H
 
 #include <QWidget>
-#include "customcard.h"
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QGridLayout>
+#include <QPushButton>
+#include <QLabel>
 #include <vector>
-
-namespace Ui {
-    class GameWindow;
-}
+#include "customcard.h"
 
 class GameWindow : public QWidget
 {
@@ -17,16 +18,29 @@ public:
     explicit GameWindow(QWidget* parent = nullptr);
     ~GameWindow();
 
+    void updateHand(const std::vector<int>& cardValues);
+
+private slots:
+    void onCardClicked(CustomCard* card);
+    void onEndTurnClicked();
+
 private:
-    Ui::GameWindow* ui;
 
-    CustomCard* m_ascendingPile1;
-    CustomCard* m_ascendingPile2;
-    CustomCard* m_descendingPile1;
-    CustomCard* m_descendingPile2;
-    CustomCard* m_drawPile;
+    CustomCard* m_pileAsc1;  
+    CustomCard* m_pileAsc2;  
+    CustomCard* m_pileDesc1; 
+    CustomCard* m_pileDesc2; 
+    CustomCard* m_drawPile;  
 
-    std::vector<CustomCard*> m_handCards;
+    QWidget* m_handContainer;
+    QHBoxLayout* m_handLayout;
+
+    QLabel* m_statusLabel;
+    QPushButton* m_endTurnButton;
+
+    CustomCard* m_selectedCardInHand;
+
+    void setupUI();
 };
 
-#endif
+#endif 

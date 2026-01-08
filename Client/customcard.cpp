@@ -1,90 +1,79 @@
-#include "customcard.h"
+﻿#include "customcard.h"
 #include <QPainter>
-#include <QBrush>
-#include <QPen>
-#include <QFont>
-#include <QMouseEvent>
+#include <QStyleOption>
 
 CustomCard::CustomCard(QWidget* parent)
-    : QWidget(parent), m_value(0), m_isFaceDown(false)
+    : QWidget(parent), m_value(0), m_faceDown(false), m_selected(false), m_type(HAND_CARD)
 {
-    setFixedSize(80, 120);
+    this->setFixedSize(80, 110); 
+    this->setCursor(Qt::PointingHandCursor);
 }
 
-void CustomCard::setValue(std::uint8_t value)
-{
+void CustomCard::setValue(int value) {
     m_value = value;
-    m_isFaceDown = false;
+    update(); 
+}
+
+void CustomCard::setType(Type type) {
+    m_type = type;
     update();
 }
 
-void CustomCard::setFaceDown(bool faceDown)
-{
-    m_isFaceDown = faceDown;
+void CustomCard::setFaceDown(bool faceDown) {
+    m_faceDown = faceDown;
     update();
 }
 
-std::uint8_t CustomCard::getValue() const
-{
-    return m_value;
+void CustomCard::setSelected(bool selected) {
+    m_selected = selected;
+    update();
 }
 
-void CustomCard::paintEvent(QPaintEvent* event)
-{
+void CustomCard::mousePressEvent(QMouseEvent* event) {
+    if (event->button() == Qt::LeftButton) {
+        emit cardClicked(this);
+    }
+}
+
+void CustomCard::paintEvent(QPaintEvent* event) {
+    Q_UNUSED(event);
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    QRect cardRect = this->rect().adjusted(1, 1, -1, -1);
-    QColor borderColor(100, 100, 100);
+    QRect rect = this->rect().adjusted(2, 2, -2, -2);
+    QBrush background = (m_faceDown) ? QBrush(QColor("#4a4a4a")) : QBrush(Qt::white);
 
-    if (m_isFaceDown)
-    {
-        QColor color1(30, 30, 30);
-        QColor color2(250, 250, 245);
+    painter.setBrush(background);
 
-        painter.setPen(Qt::NoPen);
+    QPen pen;
+    pen.setWidth(m_selected ? 3 : 2);
+    pen.setColor(m_selected ? Qt::yellow : Qt::black);
+    painter.setPen(pen);
 
-        int tileSize = 10;
-        for (int y = 0; y < cardRect.height(); y += tileSize) {
-            for (int x = 0; x < cardRect.width(); x += tileSize) {
-                QRect tile(x, y, tileSize, tileSize);
-                if ((x / tileSize + y / tileSize) % 2 == 0) {
-                    painter.setBrush(color1);
-                }
-                else {
-                    painter.setBrush(color2);
-                }
-                painter.drawRect(tile);
-            }
-        }
+    painter.drawRoundedRect(rect, 10, 10);
 
-        painter.setBrush(Qt::NoBrush);
-        painter.setPen(QPen(borderColor, 2));
-        painter.drawRoundedRect(cardRect, 10, 10);
-    }
-    else
-    {
-        QColor backgroundColor(250, 250, 245);
-        QColor textColor(30, 30, 30);
-
-        painter.setBrush(backgroundColor);
-        painter.setPen(QPen(borderColor, 2));
-        painter.drawRoundedRect(cardRect, 10, 10);
-
+    if (!m_faceDown) {
+        painter.setPen(Qt::black);
         QFont font = painter.font();
-        font.setPointSize(24);
+        font.setPixelSize(24);
         font.setBold(true);
         painter.setFont(font);
-        painter.setPen(textColor);
 
-        painter.drawText(cardRect, Qt::AlignCenter, QString::number(m_value));
+        painter.drawText(rect, Qt::AlignCenter, QString::number(m_value));
+
+        font.setPixelSize(10);
+        painter.setFont(font);
+        if (m_type == ASCENDING) {
+            painter.setPen(QColor("darkgreen"));
+            painter.drawText(rect.adjusted(0, 5, 0, 0), Qt::AlignTop | Qt::AlignHCenter, "1 -> 100");
+        }
+        else if (m_type == DESCENDING) {
+            painter.setPen(QColor("darkred"));
+            painter.drawText(rect.adjusted(0, 5, 0, 0), Qt::AlignTop | Qt::AlignHCenter, "100 -> 1");
+        }
     }
-}
-
-void CustomCard::mousePressEvent(QMouseEvent* event)
-{
-    if (event->button() == Qt::LeftButton)
-    {
-        emit clicked(m_value);
+    else {
+        painter.setPen(Qt::white);
+        painter.drawText(rect, Qt::AlignCenter, "The Game");
     }
 }

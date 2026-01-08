@@ -44,6 +44,7 @@ private:
     int m_userId;
     QNetworkAccessManager* m_networkManager;
     GameClient* m_gameClient;
+    int m_gamePageIndex;
 };
 
 #endif

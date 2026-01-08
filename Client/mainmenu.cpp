@@ -1,6 +1,7 @@
 ﻿#include "mainmenu.h"
 #include "ui_mainmenu.h"
 #include "gamewindow.h"
+#include "gameclient.h"
 #include <QApplication>
 #include <QNetworkRequest>
 #include <QJsonObject>
@@ -113,7 +114,7 @@ MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
 
     m_networkManager = new QNetworkAccessManager(this);
     GameWindow* gamePage = new GameWindow(this);
-    ui->stackedWidget->addWidget(gamePage);
+    m_gamePageIndex = ui->stackedWidget->addWidget(gamePage);
     ui->stackedWidget->setCurrentIndex(0);
     ui->usernameLabel->setText(m_username);
 
@@ -245,6 +246,11 @@ void MainMenu::onSocketMessage(const QString& message)
         return;
     }
 
+    if (type == "game_started") {
+        ui->stackedWidget->setCurrentIndex(m_gamePageIndex);
+        return;
+    }
+
     if (json.contains("status")) {
         QString status = json["status"].toString();
 
@@ -271,6 +277,7 @@ void MainMenu::onSocketMessage(const QString& message)
         }
     }
 }
+
 void MainMenu::on_startGameButton_clicked()
 {
     QJsonObject json;

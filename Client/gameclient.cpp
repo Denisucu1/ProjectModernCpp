@@ -47,3 +47,13 @@ void GameClient::onTextMessageReceived(const QString& message)
     qDebug() << "Message received:" << message;
     emit messageReceived(message);
 }
+
+void GameClient::sendBinaryMessage(const QByteArray& data) {
+    if (m_webSocket.isValid()) {
+        m_webSocket.sendBinaryMessage(data);
+    }
+}
+
+void GameClient::onBinaryMessageReceived(const QByteArray& message) {
+    emit binaryMessageReceived(message);
+}

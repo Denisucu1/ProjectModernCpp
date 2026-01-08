@@ -2,14 +2,11 @@
 #define MAINMENU_H
 
 #include <QWidget>
-#include <QString>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
-#include "gameclient.h"
 
-namespace Ui {
-    class MainMenu;
-}
+class GameClient;
+namespace Ui { class MainMenu; }
 
 class MainMenu : public QWidget
 {
@@ -21,22 +18,21 @@ public:
 
 private slots:
     void on_playButton_clicked();
-    void on_profileButton_clicked();
+    void on_createGameButton_clicked();
+    void on_joinGameButton_clicked();
+    void on_confirmJoinButton_clicked();
+    void on_cancelJoinButton_clicked();
     void on_exitButton_clicked();
     void on_backButton_clicked();
     void on_lobbyBackButton_clicked();
-    void onProfileReply(QNetworkReply* reply);
-    void on_createGameButton_clicked();
-    void on_joinGameButton_clicked();
     void on_modeBackButton_clicked();
-
-    void on_confirmJoinButton_clicked();
-    void on_cancelJoinButton_clicked();
-
     void on_startGameButton_clicked();
     void on_closeLobbyButton_clicked();
+    void on_profileButton_clicked();
 
     void onSocketMessage(const QString& message);
+    void onGameBinaryMessage(const QByteArray& data);
+    void onProfileReply(QNetworkReply* reply);
 
 private:
     Ui::MainMenu* ui;
@@ -47,4 +43,4 @@ private:
     int m_gamePageIndex;
 };
 
-#endif
+#endif // MAINMENU_H

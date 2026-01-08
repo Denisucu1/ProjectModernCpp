@@ -12,16 +12,19 @@ public:
     explicit GameClient(const QUrl& url, int userId, QObject* parent = nullptr);
     void connectToServer();
     void sendMessage(const QString& message);
+    void sendBinaryMessage(const QByteArray& data);
 
 signals:
-    void messageReceived(const QString& message);
     void connected();
     void disconnected();
+    void messageReceived(const QString& message);
+    void binaryMessageReceived(const QByteArray& message);
 
 private slots:
     void onConnected();
-    void onTextMessageReceived(const QString& message);
     void onDisconnected();
+    void onTextMessageReceived(const QString& message);
+    void onBinaryMessageReceived(const QByteArray& message);
 
 private:
     QWebSocket m_webSocket;
@@ -29,4 +32,4 @@ private:
     int m_userId;
 };
 
-#endif
+#endif // GAMECLIENT_H

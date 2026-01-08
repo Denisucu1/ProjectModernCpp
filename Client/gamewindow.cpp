@@ -147,6 +147,19 @@ void GameWindow::onCardClicked(CustomCard* card)
     }
 }
 
+void GameWindow::updateTable(const std::vector<int>& pilesTopCards) {
+    if (pilesTopCards.size() >= 4) {
+        m_pileDesc1->setValue(pilesTopCards[0]);
+        m_pileDesc2->setValue(pilesTopCards[1]);
+        m_pileAsc1->setValue(pilesTopCards[2]);
+        m_pileAsc2->setValue(pilesTopCards[3]);
+    }
+}
+
+void GameWindow::setStatusMessage(const QString& message) {
+    m_statusLabel->setText(message);
+}
+
 void GameWindow::onEndTurnClicked()
 {
     QMessageBox::information(this, "Info", "Ai apăsat End Turn (urmează implementarea rețelei)");

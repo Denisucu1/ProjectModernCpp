@@ -19,28 +19,30 @@ public:
     ~GameWindow();
 
     void updateHand(const std::vector<int>& cardValues);
+    void updateTable(const std::vector<int>& pilesTopCards);
+    void setStatusMessage(const QString& message);
+
+signals:
+    void playerMoved(int cardValue, int stackIndex);
 
 private slots:
     void onCardClicked(CustomCard* card);
     void onEndTurnClicked();
 
 private:
-
-    CustomCard* m_pileAsc1;  
-    CustomCard* m_pileAsc2;  
-    CustomCard* m_pileDesc1; 
-    CustomCard* m_pileDesc2; 
-    CustomCard* m_drawPile;  
+    CustomCard* m_pileDesc1;
+    CustomCard* m_pileDesc2;
+    CustomCard* m_pileAsc1;
+    CustomCard* m_pileAsc2;
+    CustomCard* m_drawPile;
 
     QWidget* m_handContainer;
     QHBoxLayout* m_handLayout;
-
     QLabel* m_statusLabel;
     QPushButton* m_endTurnButton;
-
     CustomCard* m_selectedCardInHand;
 
     void setupUI();
 };
 
-#endif 
+#endif // GAMEWINDOW_H

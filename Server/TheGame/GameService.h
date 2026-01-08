@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include "crow.h"
 #include <unordered_set>
+#include "UserService.h"
 
 using game_id = std::string;
 using user_id = int;
@@ -46,7 +47,8 @@ public:
 	std::string GenerateRoomCode();
 	void BroadcastToRoom(const std::string& roomCode, const std::string& message);
 	std::string CreateRoom(user_id hostId, int maxPlayers = 4);
-	bool JoinRoom(user_id userId, const std::string& roomCode);
+	bool JoinRoom(user_id userId, const std::string& roomCode, UserService& userSvc);
+	std::vector<user_id> GetPlayersInRoom(const std::string& roomCode);
 	bool RemovePlayerFromRoom(user_id userId);
 	bool StartGameInRoom(user_id requestorId, const std::string& roomCode);
 	std::optional<game_id> GetPlayerGameStatus(user_id userId);

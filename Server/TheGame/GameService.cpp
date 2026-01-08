@@ -82,7 +82,7 @@ std::string GameService::CreateRoom(user_id hostId, int maxPlayers)
 	return roomCode;
 }
 
-bool GameService::JoinRoom(user_id userId, const std::string& roomCode)
+bool GameService::JoinRoom(user_id userId, const std::string& roomCode, UserService& userSvc)
 {
 	std::string serializedMsg;
 	std::vector<user_id> otherPlayers;
@@ -110,15 +110,20 @@ bool GameService::JoinRoom(user_id userId, const std::string& roomCode)
 
 		int idx = 0;
 		for (auto pid : room.players) {
-			updateMsg["players"][idx++] = pid;
+			auto userOpt = userSvc.GetUserById(pid);
+			if (userOpt) {
+				updateMsg["players"][idx]["userId"] = pid;
+				updateMsg["players"][idx]["username"] = userOpt->username;
+				idx++;
+			}
+
 			if (pid != userId) {
 				otherPlayers.push_back(pid);
 			}
 		}
 		serializedMsg = updateMsg.dump();
-
-		std::cout << "[Lobby] User " << userId << " joined " << roomCode << ". Notifying " << otherPlayers.size() << " players." << std::endl;
 	}
+
 	for (auto pid : otherPlayers) {
 		sendMessageToUser(pid, serializedMsg);
 	}
@@ -126,7 +131,22 @@ bool GameService::JoinRoom(user_id userId, const std::string& roomCode)
 	return true;
 }
 
+std::vector<user_id> GameService::GetPlayersInRoom(const std::string& roomCode)
+{
+	std::lock_guard<std::mutex> lock(m_mutex);
+	auto it = m_rooms.find(roomCode);
+	if (it == m_rooms.end())
+	{
+		return {};
+	}
 
+	std::vector<user_id> playerList;
+	for (auto pid : it->second.players)
+	{
+		playerList.push_back(pid);
+	}
+	return playerList;
+}
 bool GameService::RemovePlayerFromRoom(user_id userId)
 {
 	std::lock_guard<std::mutex> lock(m_mutex);

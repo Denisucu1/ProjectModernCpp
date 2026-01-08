@@ -29,4 +29,4 @@ private:
     Ui::MainWindow *ui;
     QNetworkAccessManager *m_networkManager;
 };
-#endif // MAINWINDOW_H
+#endif

@@ -1,4 +1,4 @@
-#include "mainmenu.h"
+﻿#include "mainmenu.h"
 #include "ui_mainmenu.h"
 #include "gamewindow.h"
 #include <QApplication>
@@ -6,6 +6,8 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QMessageBox>
+#include <QJsonArray>
+#include <QListWidgetItem>
 
 MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
     QWidget(parent),
@@ -201,16 +203,65 @@ void MainMenu::on_cancelJoinButton_clicked()
 
 void MainMenu::onSocketMessage(const QString& message)
 {
+    // 1. Parsare JSON
     QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
     if (doc.isNull() || !doc.isObject()) return;
 
     QJsonObject json = doc.object();
 
+    // Reactivăm butoanele
     ui->createGameButton->setEnabled(true);
     ui->createGameButton->setText("Create Game");
     ui->confirmJoinButton->setEnabled(true);
     ui->confirmJoinButton->setText("Join Room");
 
+    QString type = json["type"].toString();
+
+    // ------------------------------------------------------------------
+    // LOGICĂ COMUNĂ PENTRU ACTUALIZAREA LISTEI (funcție lambda locală)
+    // Serverul trimite acum: [{"userId": 1, "username": "Ana"}, ...]
+    // ------------------------------------------------------------------
+    auto updatePlayerList = [&](const QJsonArray& playersArray) {
+        ui->lobbyPlayersList->clear();
+
+        for (const QJsonValue& value : playersArray) {
+            // ACUM CITIM UN OBIECT, NU DOAR UN INT!
+            QJsonObject playerObj = value.toObject();
+
+            int playerId = playerObj["userId"].toInt();
+            QString playerName = playerObj["username"].toString();
+
+            // Dacă numele e gol (fallback), folosim ID-ul
+            if (playerName.isEmpty()) {
+                playerName = QString("Jucător %1").arg(playerId);
+            }
+
+            QString itemText = QString("%1 (ID: %2)").arg(playerName).arg(playerId);
+
+            // Evidențiem user-ul curent
+            if (playerId == m_userId) {
+                itemText += " (Tu)";
+                // Opțional: colorează textul sau pune bold
+            }
+
+            QListWidgetItem* item = new QListWidgetItem(itemText);
+            ui->lobbyPlayersList->addItem(item);
+        }
+        };
+
+    // ---------------------------------------------------------
+    // CAZUL 1: Mesaj de actualizare (BROADCAST - când intră/ies alții)
+    // ---------------------------------------------------------
+    if (type == "room_update") {
+        if (json.contains("players") && json["players"].isArray()) {
+            updatePlayerList(json["players"].toArray());
+        }
+        return;
+    }
+
+    // ---------------------------------------------------------
+    // CAZUL 2: Răspuns direct la acțiunile tale
+    // ---------------------------------------------------------
     if (json.contains("status")) {
         QString status = json["status"].toString();
 
@@ -218,19 +269,29 @@ void MainMenu::onSocketMessage(const QString& message)
             QString code = json["roomCode"].toString();
             ui->generatedCodeLabel->setText(code);
             ui->stackedWidget->setCurrentIndex(4);
+
+            // La creare ești singur. Serverul NU trimite lista în "room_created" (vezi WebSocketRoutes.cpp)
+            // Așa că ne adăugăm manual.
+            ui->lobbyPlayersList->clear();
+            ui->lobbyPlayersList->addItem(new QListWidgetItem(QString("%1 (ID: %2) (Tu)").arg(m_username).arg(m_userId)));
         }
         else if (status == "joined_room") {
             QString code = json["roomCode"].toString();
             ui->generatedCodeLabel->setText(code);
             ui->stackedWidget->setCurrentIndex(4);
+
+            // AICI E SCHIMBAREA MAJORĂ:
+            // Colegul tău a adăugat lista "players" direct în răspunsul de "joined_room"!
+            if (json.contains("players") && json["players"].isArray()) {
+                updatePlayerList(json["players"].toArray());
+            }
         }
         else if (status == "error") {
             QString msg = json["message"].toString();
-            QMessageBox::warning(this, "Error", msg);
+            QMessageBox::warning(this, "Eroare", msg);
         }
     }
 }
-
 void MainMenu::on_startGameButton_clicked()
 {
     QJsonObject json;

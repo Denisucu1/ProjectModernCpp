@@ -12,7 +12,7 @@ class LOGGER_API Logger {
 public:
     enum class Level { Info, Warning, Error };
 
-    static void Log(const std::string& mesaj, Level nivel = Level::Info);
+    static void Log(const std::string& message, Level level = Level::Info);
 
     static void Info(const std::string& m) { Log(m, Level::Info); }
     static void Warn(const std::string& m) { Log(m, Level::Warning); }
@@ -20,6 +20,6 @@ public:
 
 private:
     static std::string GetTimestamp();
-    static std::string LevelToString(Level nivel);
+    static std::string LevelToString(Level level);
     static std::mutex logMutex;
 };

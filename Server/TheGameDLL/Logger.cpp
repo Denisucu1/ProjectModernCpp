@@ -7,12 +7,12 @@
 #include <Windows.h>
 
 std::string Logger::GetTimestamp() {
-    auto acum = std::chrono::system_clock::now();
-    auto timp_t = std::chrono::system_clock::to_time_t(acum);
-    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(acum.time_since_epoch()) % 1000;
+    auto now = std::chrono::system_clock::now();
+    auto time_t = std::chrono::system_clock::to_time_t(now);
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
 
     std::tm bt;
-    localtime_s(&bt, &timp_t);
+    localtime_s(&bt, &time_t);
 
     std::ostringstream oss;
     oss << std::put_time(&bt, "%Y-%m-%d %H:%M:%S");
@@ -20,8 +20,8 @@ std::string Logger::GetTimestamp() {
     return oss.str();
 }
 
-std::string Logger::LevelToString(Level nivel) {
-    switch (nivel) {
+std::string Logger::LevelToString(Level level) {
+    switch (level) {
     case Level::Info:    return "INFO";
     case Level::Warning: return "WARN";
     case Level::Error:   return "ERR ";

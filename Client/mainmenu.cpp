@@ -4,19 +4,16 @@
 #include "gameclient.h"
 #include <QApplication>
 #include <QNetworkRequest>
+#include <QNetworkReply>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QMessageBox>
 #include <QJsonArray>
 #include <QListWidgetItem>
 #include <QVBoxLayout>
-
-// --- INCLUDE CRITIC PENTRU PROTOBUF ---
-// Asigură-te că acest fișier există în proiectul tău Client!
-// Numele poate varia în funcție de cum a fost generat (ex: game.pb.h sau messages.pb.h)
+#include <QSpacerItem>
+#include <QDebug>
 #include "GameProtocol.pb.h"
-
-// --------------------------------------
 
 MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
     QWidget(parent),
@@ -26,81 +23,110 @@ MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
 {
     ui->setupUi(this);
 
-    // FIX LAYOUT: Umplem ecranul
-    if (!this->layout()) {
-        QVBoxLayout* layout = new QVBoxLayout(this);
+    for (int i = 0; i < ui->stackedWidget->count(); ++i) {
+        QWidget* page = ui->stackedWidget->widget(i);
+        
+        QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(page->layout());
+        if (!layout) {
+            layout = new QVBoxLayout(page);
+        }
+
         layout->setContentsMargins(0, 0, 0, 0);
-        layout->addWidget(ui->stackedWidget);
-        this->setLayout(layout);
+        layout->setSpacing(15); 
+        layout->setAlignment(Qt::AlignCenter);
+
+        layout->insertStretch(0, 1);     
+        layout->addStretch(1);        
     }
 
-    // Stilizare CSS
+    if (!this->layout()) {
+        QVBoxLayout* mainLayout = new QVBoxLayout(this);
+        mainLayout->addStretch(1);
+        mainLayout->addWidget(ui->stackedWidget, 0, Qt::AlignCenter);
+        mainLayout->addStretch(1);
+        this->setLayout(mainLayout);
+    }
+
     QString styleSheet = R"(
         QWidget#MainMenu { background-color: #1e1e1e; }
-        QPushButton { background-color: #4a4a4a; color: white; border-radius: 6px; padding: 8px; font-weight: bold; }
-        QPushButton:hover { background-color: #616161; }
-        QPushButton#playButton, QPushButton#createGameButton, QPushButton#joinGameButton, QPushButton#confirmJoinButton, QPushButton#startGameButton { background-color: #4CAF50; }
-        QPushButton#exitButton, QPushButton#backButton { background-color: #F44336; }
-        QLineEdit { padding: 5px; border-radius: 4px; }
-        QLabel { color: white; }
+        
+        QPushButton { 
+            background-color: #4a4a4a; 
+            color: white; 
+            border-radius: 20px;   
+            font-weight: bold; 
+            font-size: 15px;
+            
+            min-width: 200px; 
+            max-width: 200px; 
+            min-height: 50px; 
+            max-height: 50px;
+            
+            border: none;
+        }
+        
+        QPushButton:hover { background-color: #5a5a5a; }
+        
+        QPushButton#playButton, QPushButton#createGameButton, 
+        QPushButton#joinGameButton, QPushButton#confirmJoinButton, 
+        QPushButton#startGameButton { background-color: #4CAF50; }
+        
+        QPushButton#exitButton, QPushButton#backButton, 
+        QPushButton#cancelJoinButton, QPushButton#lobbyBackButton, 
+        QPushButton#modeBackButton, QPushButton#closeLobbyButton { background-color: #D32F2F; }
+        
+        QLineEdit { 
+            padding: 8px; 
+            border-radius: 10px; 
+            background-color: #2b2b2b; 
+            color: white; 
+            border: 1px solid #4CAF50; 
+            min-width: 200px;
+            max-width: 200px;
+            min-height: 40px;
+        }
+        
+        QListWidget { background-color: #2b2b2b; color: white; border-radius: 10px; border: 1px solid #4a4a4a; }
+        QLabel { color: white; font-size: 14px; }
     )";
     this->setStyleSheet(styleSheet);
 
     m_networkManager = new QNetworkAccessManager(this);
-
-    // 1. Inițializăm GameWindow și salvăm indexul paginii
     GameWindow* gamePage = new GameWindow(this);
     m_gamePageIndex = ui->stackedWidget->addWidget(gamePage);
 
     ui->stackedWidget->setCurrentIndex(0);
     ui->usernameLabel->setText(m_username);
 
-    // 2. WebSocket Configuration
     QUrl wsUrl("ws://localhost:18080/ws/game");
     m_gameClient = new GameClient(wsUrl, m_userId, this);
 
-    // --- LOGICA DE LOGIN AUTOMAT (CRITICĂ PENTRU SERVER) ---
-    // Când WebSocket-ul s-a conectat, trimitem imediat pachetul de login
     connect(m_gameClient, &GameClient::connected, this, [this]() {
-        QJsonObject loginReq;
-        loginReq["type"] = "login";
-        loginReq["userId"] = m_userId;
-        m_gameClient->sendMessage(QJsonDocument(loginReq).toJson(QJsonDocument::Compact));
-        qDebug() << "!!! CLIENT: S-a trimis login pentru userId:" << m_userId;
-        });
+        QJsonObject login;
+        login["type"] = "login"; login["userId"] = m_userId;
+        m_gameClient->sendMessage(QJsonDocument(login).toJson(QJsonDocument::Compact));
+    });
 
-    // Conectăm semnalele pentru mesaje text și binare
     connect(m_gameClient, &GameClient::messageReceived, this, &MainMenu::onSocketMessage);
     connect(m_gameClient, &GameClient::binaryMessageReceived, this, &MainMenu::onGameBinaryMessage);
 
-    // 3. TRIMITERE MUTARE (Serializare Protobuf)
     connect(gamePage, &GameWindow::playerMoved, this, [this](int cardValue, int stackIndex) {
         myproject::GameMessage msg;
         msg.set_type(myproject::GameMessage::ACTION);
-
         auto* action = msg.mutable_action();
-        if (cardValue == 0) {
-            action->set_action_type(myproject::PlayerAction::END_TURN);
-        }
+        if (cardValue == 0) action->set_action_type(myproject::PlayerAction::END_TURN);
         else {
             action->set_action_type(myproject::PlayerAction::PLAY_CARD);
-            action->set_card_id(cardValue);
-            action->set_stack_index(stackIndex);
+            action->set_card_id(cardValue); action->set_stack_index(stackIndex);
         }
-
-        std::string binaryString = msg.SerializeAsString();
-        m_gameClient->sendBinaryMessage(QByteArray::fromStdString(binaryString));
-        });
+        m_gameClient->sendBinaryMessage(QByteArray::fromStdString(msg.SerializeAsString()));
+    });
 
     m_gameClient->connectToServer();
 }
 
-MainMenu::~MainMenu()
-{
-    delete ui;
-}
+MainMenu::~MainMenu() { delete ui; }
 
-// --- BUTOANE ---
 void MainMenu::on_playButton_clicked() { ui->stackedWidget->setCurrentIndex(2); }
 void MainMenu::on_exitButton_clicked() { QApplication::quit(); }
 void MainMenu::on_backButton_clicked() { ui->stackedWidget->setCurrentIndex(0); }
@@ -110,39 +136,40 @@ void MainMenu::on_cancelJoinButton_clicked() { ui->stackedWidget->setCurrentInde
 
 void MainMenu::on_createGameButton_clicked() {
     QJsonObject json; json["type"] = "create_room"; json["userId"] = m_userId;
-    QJsonDocument doc(json); m_gameClient->sendMessage(doc.toJson(QJsonDocument::Compact));
+    m_gameClient->sendMessage(QJsonDocument(json).toJson(QJsonDocument::Compact));
     ui->createGameButton->setEnabled(false);
 }
 
 void MainMenu::on_joinGameButton_clicked() {
     ui->stackedWidget->setCurrentIndex(3);
-    ui->roomCodeInput->clear(); ui->roomCodeInput->setFocus();
+    ui->roomCodeInput->clear(); 
 }
 
 void MainMenu::on_confirmJoinButton_clicked() {
     QString code = ui->roomCodeInput->text().toUpper().trimmed();
     if (code.length() != 4) return;
     QJsonObject json; json["type"] = "join_room"; json["userId"] = m_userId; json["roomCode"] = code;
-    QJsonDocument doc(json); m_gameClient->sendMessage(doc.toJson(QJsonDocument::Compact));
-    ui->confirmJoinButton->setEnabled(false);
+    m_gameClient->sendMessage(QJsonDocument(json).toJson(QJsonDocument::Compact));
 }
 
 void MainMenu::on_startGameButton_clicked() {
-    // Trimitem JSON, dar serverul va răspunde cu BINAR dacă reușește
-    QJsonObject json; json["type"] = "start_game"; json["userId"] = m_userId; json["roomCode"] = ui->generatedCodeLabel->text();
-    QJsonDocument doc(json); m_gameClient->sendMessage(doc.toJson(QJsonDocument::Compact));
+    QJsonObject json; 
+    json["type"] = "start_game"; json["userId"] = m_userId; 
+    json["roomCode"] = ui->generatedCodeLabel->text();
+    m_gameClient->sendMessage(QJsonDocument(json).toJson(QJsonDocument::Compact));
 }
 
 void MainMenu::on_closeLobbyButton_clicked() {
     QJsonObject json; json["type"] = "leave_room"; json["userId"] = m_userId;
-    QJsonDocument doc(json); m_gameClient->sendMessage(doc.toJson(QJsonDocument::Compact));
+    m_gameClient->sendMessage(QJsonDocument(json).toJson(QJsonDocument::Compact));
     ui->stackedWidget->setCurrentIndex(2);
 }
 
 void MainMenu::on_profileButton_clicked() {
     ui->stackedWidget->setCurrentIndex(1);
     QNetworkRequest req(QUrl(QString("http://localhost:18080/api/profile/%1").arg(m_userId)));
-    connect(m_networkManager->get(req), &QNetworkReply::finished, this, [this, reply = m_networkManager->get(req)]() { onProfileReply(reply); });
+    QNetworkReply* reply = m_networkManager->get(req);
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() { onProfileReply(reply); });
 }
 
 void MainMenu::onProfileReply(QNetworkReply* reply) {
@@ -154,95 +181,43 @@ void MainMenu::onProfileReply(QNetworkReply* reply) {
     reply->deleteLater();
 }
 
-// --- RECEPȚIE MESAJE TEXT (Lobby) ---
-void MainMenu::onSocketMessage(const QString& message)
-{
+void MainMenu::onSocketMessage(const QString& message) {
     QJsonObject json = QJsonDocument::fromJson(message.toUtf8()).object();
     ui->createGameButton->setEnabled(true);
-    ui->confirmJoinButton->setEnabled(true);
-
     if (json.contains("players")) {
         ui->lobbyPlayersList->clear();
         for (const auto& val : json["players"].toArray()) {
             QJsonObject p = val.toObject();
-            QString name = p["username"].toString();
-            if (name.isEmpty()) name = "Player " + QString::number(p["userId"].toInt());
-            QString text = name + " (ID: " + QString::number(p["userId"].toInt()) + ")";
-            if (p["userId"].toInt() == m_userId) text += " (Tu)";
-            ui->lobbyPlayersList->addItem(new QListWidgetItem(text));
+            ui->lobbyPlayersList->addItem(p["username"].toString() + " (ID: " + QString::number(p["userId"].toInt()) + ")");
         }
     }
-
     if (json.contains("status")) {
         QString status = json["status"].toString();
         if (status == "room_created" || status == "joined_room") {
             ui->generatedCodeLabel->setText(json["roomCode"].toString());
             ui->stackedWidget->setCurrentIndex(4);
-            // Dacă e host și tocmai a creat camera, se adaugă pe sine în listă
-            if (status == "room_created") {
-                ui->lobbyPlayersList->clear();
-                ui->lobbyPlayersList->addItem(new QListWidgetItem(QString("%1 (ID: %2) (Tu)").arg(m_username).arg(m_userId)));
-            }
         }
     }
 }
 
-void MainMenu::onGameBinaryMessage(const QByteArray& data)
-{
-    // LOG DE DEBUG: Vedem dacă datele chiar ajung în această funcție
-    qDebug() << "!!! [CLIENT] Mesaj binar primit! Dimensiune:" << data.size();
-
-    // 1. SCHIMBARE PAGINĂ (Aici se bloca vizual)
-    // Dacă suntem la Lobby (index 4) și primim date de joc, forțăm trecerea la GameWindow
-    if (ui->stackedWidget->currentIndex() == 4) {
-        qDebug() << "!!! [CLIENT] Schimb pagina de la Lobby la Joc (Index:" << m_gamePageIndex << ")";
-        ui->stackedWidget->setCurrentIndex(m_gamePageIndex);
-    }
-
-    // 2. PARSARE PROTOBUF
+void MainMenu::onGameBinaryMessage(const QByteArray& data) {
+    if (ui->stackedWidget->currentIndex() == 4) ui->stackedWidget->setCurrentIndex(m_gamePageIndex);
     myproject::GameMessage msg;
-    if (!msg.ParseFromArray(data.constData(), data.size())) {
-        qDebug() << "!!! [CLIENT] Eroare: Nu s-a putut parsa pachetul Protobuf!";
-        return;
-    }
-
-    // 3. PROCESARE UPDATE STARE
+    if (!msg.ParseFromArray(data.constData(), data.size())) return;
     if (msg.type() == myproject::GameMessage::STATE_UPDATE && msg.has_state()) {
         const auto& state = msg.state();
-        qDebug() << "!!! [CLIENT] Update stare primit pentru rândul user-ului:" << state.user_id();
-
-        // A. Actualizăm Teancurile de pe masă
         std::vector<int> piles;
-        for (int val : state.stack_tops()) {
-            piles.push_back(val);
-        }
-
-        // B. Găsim mâna noastră (folosind m_userId-ul cu care ne-am logat)
+        for (int val : state.stack_tops()) piles.push_back(val);
         std::vector<int> hand;
-        for (const auto& playerInfo : state.players()) {
-            if (playerInfo.user_id() == m_userId) {
-                for (int cardVal : playerInfo.your_cards()) {
-                    hand.push_back(cardVal);
-                }
+        for (const auto& p : state.players()) {
+            if (p.user_id() == m_userId) {
+                for (int card : p.your_cards()) hand.push_back(card);
                 break;
             }
         }
-
-        qDebug() << "!!! [CLIENT] Cărți în mână identificate pentru mine:" << hand.size();
-
-        // C. ACTUALIZARE GRAFICĂ (GameWindow)
-        if (QWidget* w = ui->stackedWidget->widget(m_gamePageIndex)) {
-            if (GameWindow* gw = qobject_cast<GameWindow*>(w)) {
-                gw->updateTable(piles);
-                gw->updateHand(hand);
-
-                if (state.user_id() == m_userId) {
-                    gw->setStatusMessage("Este rândul tău!");
-                }
-                else {
-                    gw->setStatusMessage(QString("Așteaptă jucătorul %1").arg(state.user_id()));
-                }
-            }
+        if (GameWindow* gw = qobject_cast<GameWindow*>(ui->stackedWidget->widget(m_gamePageIndex))) {
+            gw->updateTable(piles); gw->updateHand(hand);
+            gw->setStatusMessage(state.user_id() == m_userId ? "Rândul tău!" : "Așteaptă...");
         }
     }
 }

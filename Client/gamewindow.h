@@ -45,4 +45,4 @@ private:
     void setupUI();
 };
 
-#endif // GAMEWINDOW_H
+#endif

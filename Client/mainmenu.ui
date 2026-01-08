@@ -268,7 +268,7 @@
     <widget class="QPushButton" name="modeBackButton">
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>120</x>
        <y>320</y>
        <width>80</width>
        <height>31</height>
@@ -296,8 +296,8 @@
     <widget class="QLineEdit" name="roomCodeInput">
      <property name="geometry">
       <rect>
-       <x>80</x>
-       <y>230</y>
+       <x>150</x>
+       <y>200</y>
        <width>113</width>
        <height>21</height>
       </rect>
@@ -309,8 +309,8 @@
     <widget class="QPushButton" name="confirmJoinButton">
      <property name="geometry">
       <rect>
-       <x>230</x>
-       <y>230</y>
+       <x>150</x>
+       <y>290</y>
        <width>101</width>
        <height>21</height>
       </rect>
@@ -322,8 +322,8 @@
     <widget class="QPushButton" name="cancelJoinButton">
      <property name="geometry">
       <rect>
-       <x>160</x>
-       <y>310</y>
+       <x>150</x>
+       <y>360</y>
        <width>80</width>
        <height>21</height>
       </rect>

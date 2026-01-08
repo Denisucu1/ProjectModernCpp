@@ -43,4 +43,4 @@ private:
     int m_gamePageIndex;
 };
 
-#endif // MAINMENU_H
+#endif

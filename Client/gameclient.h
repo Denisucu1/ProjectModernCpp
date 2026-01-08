@@ -32,4 +32,4 @@ private:
     int m_userId;
 };
 
-#endif // GAMECLIENT_H
+#endif

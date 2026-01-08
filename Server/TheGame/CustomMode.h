@@ -16,6 +16,8 @@ public:
 
 	void SetNeutralPile(Card newCard);
 
+	void ChooseRandomEvents();
+
 private:
 	std::vector<std::uint8_t> events;
 	Card neutralPile;

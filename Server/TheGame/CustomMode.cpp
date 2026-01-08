@@ -1,6 +1,7 @@
 #include "CustomMode.h"
+#include <print>
 
-CustomMode::CustomMode() : neutralPile{ 0 }
+CustomMode::CustomMode() : neutralPile{ 0 }, events{ 0,1 }
 {
 }
 
@@ -35,4 +36,26 @@ std::vector<Card> CustomMode::AddedRandomCardsInDrawPile()
 void CustomMode::SetNeutralPile(Card newCard)
 {
 	neutralPile = newCard;
+}
+
+void CustomMode::ChooseRandomEvents()
+{
+	static std::random_device rd;
+	static std::mt19937 gen(rd());
+
+	std::uniform_int_distribution<size_t> distrib(0, events.size() - 1);
+
+	size_t numberEvent = distrib(gen);
+
+	switch (numberEvent)
+	{
+	case 1:
+		AddedRandomCardsInDrawPile();
+		break;
+	case 2:
+		std::println("Fiecare jucator poate scapa de o carte nedorita!");
+		break;
+	default:
+		break;
+	}
 }

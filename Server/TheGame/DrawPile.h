@@ -6,7 +6,11 @@
 class DrawPile
 {
 public:
-	DrawPile();
+
+	static constexpr size_t TOTAL_CARDS = 98;
+	static constexpr std::uint8_t CARD_START_VALUE = 2;
+
+	DrawPile();	
 
 	DrawPile(DrawPile&& other) ;
 	DrawPile& operator=(DrawPile&& other) ;

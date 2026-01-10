@@ -4,11 +4,9 @@
 
 DrawPile::DrawPile()
 {
-	m_drawPile.reserve(98);
-
-	for (std::uint8_t value = 2; value <= 99; value++)
-	{
-		m_drawPile.emplace_back(value);
+	m_drawPile.reserve(TOTAL_CARDS);
+	for (std::uint8_t i = 0; i < TOTAL_CARDS; ++i) {
+		m_drawPile.emplace_back(CARD_START_VALUE + i);
 	}
 
 	MixPile();

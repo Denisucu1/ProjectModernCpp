@@ -199,6 +199,8 @@ bool GameService::StartGameInRoom(user_id requestorId, const std::string& roomCo
 		CreateGame(playerIds);
 
 		gameId = m_player_game_map[requestorId];
+
+		SyncGameToDb(gameId);
 	}
 
 	BroadcastGameState(gameId);
@@ -254,28 +256,28 @@ void GameService::ProcessGameAction(const std::string& binaryData, crow::websock
 		std::scoped_lock lock(m_connection_mutex, m_mutex);
 
 		auto it = m_connectionToUser.find(conn);
-		if (it == m_connectionToUser.end())
-		{
-			std::cout << "ProcessGameAction failed: Connection not associated with any user." << std::endl;
-			return;
-		}
+		if (it == m_connectionToUser.end()) return;
 		userId = it->second;
 
-		if (m_player_game_map.find(userId) == m_player_game_map.end())
-		{
-			std::cout << "ProcessGameAction failed: User ID " << userId << " is not in any active game." << std::endl;
-			return;
-		}
+		if (!m_player_game_map.contains(userId)) return;
 		gameId = m_player_game_map[userId];
 		Game& game = m_active_games.at(gameId);
 
 		auto results = BinaryGameService::ProcessPlayerAction(game, userId, binaryData);
 		actionsucces = results.success;
 		message = results.message;
-	} 
+	}
+
 	if (actionsucces)
 	{
+		SyncGameToDb(gameId);
+
 		BroadcastGameState(gameId);
+
+		auto& game = GetGame(gameId);
+		if (game.CheckGameState() != GameState::InProgress) {
+			std::cout << "Game " << gameId << " has finished!" << std::endl;
+		}
 	}
 	else
 	{

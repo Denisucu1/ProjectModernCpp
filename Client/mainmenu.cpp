@@ -117,7 +117,8 @@ MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
         if (cardValue == 0) action->set_action_type(myproject::PlayerAction::END_TURN);
         else {
             action->set_action_type(myproject::PlayerAction::PLAY_CARD);
-            action->set_card_id(cardValue); action->set_stack_index(stackIndex);
+            action->set_card_value(cardValue);
+            action->set_stack_index(stackIndex);
         }
         m_gameClient->sendBinaryMessage(QByteArray::fromStdString(msg.SerializeAsString()));
     });
@@ -217,7 +218,7 @@ void MainMenu::onGameBinaryMessage(const QByteArray& data) {
         }
         if (GameWindow* gw = qobject_cast<GameWindow*>(ui->stackedWidget->widget(m_gamePageIndex))) {
             gw->updateTable(piles); gw->updateHand(hand);
-            gw->setStatusMessage(state.user_id() == m_userId ? "Rândul tău!" : "Așteaptă...");
+            gw->setStatusMessage(state.current_player_id() == m_userId ? "Rândul tău!" : "Așteaptă...");
         }
     }
 }

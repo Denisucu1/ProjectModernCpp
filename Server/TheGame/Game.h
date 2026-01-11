@@ -35,6 +35,7 @@ private:
     std::uint8_t m_current_player_index = 0;
     int m_cardsPlayedThisTurn = 0;
 
+	void refillPlayerHand(Player& player);
     void StartGame();
     void NextPlayer(int cardsPlayed);
 };

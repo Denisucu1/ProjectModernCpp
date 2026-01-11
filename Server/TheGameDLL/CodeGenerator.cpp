@@ -1,7 +1,9 @@
+#include "pch.h"
 #include <string>
 #include <random>
+#include "CodeGenerator.h"
 
-std::string GenerateRoomCode()
+extern "C" __declspec(dllexport) std::string GenerateRoomCode()
 {
     std::string roomCode;
     const int CODE_LEN = 4;
@@ -13,7 +15,6 @@ std::string GenerateRoomCode()
     std::mt19937 gen(rd());
 
     int limita_maxima = static_cast<int>(sizeof(alphanum)) - 2;
-
     std::uniform_int_distribution<int> dis(0, limita_maxima);
 
     for (int i = 0; i < CODE_LEN; ++i)

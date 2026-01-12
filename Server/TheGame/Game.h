@@ -20,6 +20,7 @@ public:
 
     GameState CheckGameState() const;
     bool CanPlayerMakeAtLeastOneMove(int playerIndex) const;
+	int GetCurrentPlayerIndex() const { return m_current_player_index; }
 
     const PlayPiles& GetPlayPiles() const { return m_play_piles_; }
     const DrawPile& GetDrawPile() const { return m_cards; }
@@ -34,6 +35,7 @@ private:
     std::uint8_t m_current_player_index = 0;
     int m_cardsPlayedThisTurn = 0;
 
+	void refillPlayerHand(Player& player);
     void StartGame();
     void NextPlayer(int cardsPlayed);
 };

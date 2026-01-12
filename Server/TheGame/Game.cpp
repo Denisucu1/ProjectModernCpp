@@ -1,10 +1,21 @@
-#include "Game.h"
+﻿#include "Game.h"
 #include <algorithm>
 
 Game::Game(std::vector<Player> players)
     : m_players(std::move(players)), m_cards(), m_play_piles_(), m_current_player_index(0)
 {
     StartGame();
+}
+
+void Game::refillPlayerHand(Player& player)
+{
+    int cardsNeeded = (m_players.size() == 2) ? 8 : (m_players.size() == 3 ? 7 : 6);
+    auto deckSpan = player.GetDeck();
+    std::vector<std::uint8_t> currentHand(deckSpan.begin(), deckSpan.end());
+    while (currentHand.size() < cardsNeeded && !m_cards.IsEmpty()) {
+        currentHand.push_back(m_cards.DrawACard().GetValue());
+    }
+	player.SetDeck(currentHand);
 }
 
 void Game::StartGame()
@@ -22,16 +33,6 @@ void Game::StartGame()
 
 void Game::NextPlayer(int cardsPlayed)
 {
-    Player& currentPlayer = m_players[m_current_player_index];
-
-    std::vector<std::uint8_t> currentHand;
-    auto deckSpan = currentPlayer.GetDeck();
-    currentHand.assign(deckSpan.begin(), deckSpan.end());
-
-    for (int i = 0; i < cardsPlayed && !m_cards.IsEmpty(); ++i) 
-        currentHand.push_back(m_cards.DrawACard().GetValue());
-
-    currentPlayer.SetDeck(currentHand);
     m_current_player_index = (m_current_player_index + 1) % m_players.size();
 }
 
@@ -76,18 +77,26 @@ bool Game::EndCurrentTurn(int userId)
         return false;
     if (m_cardsPlayedThisTurn < GetMinCardsToPlay())
         return false;
+    
+	refillPlayerHand(m_players[m_current_player_index]);
 
     NextPlayer(m_cardsPlayedThisTurn);
     m_cardsPlayedThisTurn = 0;
     return true;
 }
 
-GameState Game::CheckGameState() const
-{
+GameState Game::CheckGameState() const {
     bool handsEmpty = std::all_of(m_players.begin(), m_players.end(),
         [](const Player& p) { return p.GetDeck().empty(); });
 
     if (m_cards.IsEmpty() && handsEmpty)
         return GameState::Won;
+
+    if (!CanPlayerMakeAtLeastOneMove(m_current_player_index)) {
+        if (m_cardsPlayedThisTurn < GetMinCardsToPlay()) {
+            return GameState::Lost;
+        }
+    }
+
     return GameState::InProgress;
 }

@@ -27,4 +27,4 @@ private:
 };
 
 
-#endif // PROFILEWINDOW_H
+#endif

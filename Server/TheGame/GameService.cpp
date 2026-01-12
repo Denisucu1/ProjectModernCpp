@@ -1,4 +1,4 @@
-#include "GameService.h"
+﻿#include "GameService.h"
 #include "DatabaseManager.h"
 #include "PlayPiles.h"
 #include "crow.h"
@@ -82,54 +82,71 @@ std::string GameService::CreateRoom(user_id hostId, int maxPlayers)
 	return roomCode;
 }
 
-bool GameService::JoinRoom(user_id userId, const std::string& roomCode)
+bool GameService::JoinRoom(user_id userId, const std::string& roomCode, UserService& userSvc)
 {
-	std::lock_guard<std::mutex> lock(m_mutex);
+	std::string serializedMsg;
+	std::vector<user_id> otherPlayers;
 
-	if (m_user_room_map.count(userId)) {
-		std::cout << "[Lobby] Join failed: User " << userId << " already in room " << m_user_room_map[userId] << std::endl;
-		return false;
-	}
-
-	auto itRoom = m_rooms.find(roomCode);
-	if (itRoom == m_rooms.end())
 	{
-		std::cout << "JoinRoom failed: Room code " << roomCode << " does not exist." << std::endl;
-		return false;
+		std::lock_guard<std::mutex> lock(m_mutex);
+
+		if (m_user_room_map.count(userId)) return false;
+
+		auto itRoom = m_rooms.find(roomCode);
+		if (itRoom == m_rooms.end()) return false;
+
+		Room& room = itRoom->second;
+		if (room.players.count(userId) || room.isGameStarted || (int)room.players.size() >= room.maxPlayers)
+		{
+			return false;
+		}
+
+		room.players.insert(userId);
+		m_user_room_map[userId] = roomCode;
+
+		crow::json::wvalue updateMsg;
+		updateMsg["type"] = "room_update";
+		updateMsg["roomCode"] = roomCode;
+
+		int idx = 0;
+		for (auto pid : room.players) {
+			auto userOpt = userSvc.GetUserById(pid);
+			if (userOpt) {
+				updateMsg["players"][idx]["userId"] = pid;
+				updateMsg["players"][idx]["username"] = userOpt->username;
+				idx++;
+			}
+
+			if (pid != userId) {
+				otherPlayers.push_back(pid);
+			}
+		}
+		serializedMsg = updateMsg.dump();
 	}
 
-	Room& room = itRoom->second;
-
-	if (room.players.count(userId) || room.isGameStarted)
-	{
-		return false;
+	for (auto pid : otherPlayers) {
+		sendMessageToUser(pid, serializedMsg);
 	}
 
-	if (static_cast<int>(room.players.size()) >= room.maxPlayers)
-	{
-		std::cout << "JoinRoom failed: Room code " << roomCode << " is full." << std::endl;
-		return false;
-	}
-
-	crow::json::wvalue updateMsg;
-	updateMsg["type"] = "room_update";
-	updateMsg["roomCode"] = roomCode;
-
-	int idx = 0;
-	for (auto pid : room.players) {
-		updateMsg["players"][idx++] = pid;
-	}
-
-	updateMsg["players"][idx++] = userId;
-
-	BroadcastToRoomInternal(roomCode, updateMsg.dump());
-
-	room.players.insert(userId);
-	m_user_room_map[userId] = roomCode;
-	std::cout << "User ID: " << userId << " joined room code: " << roomCode << std::endl;
 	return true;
 }
 
+std::vector<user_id> GameService::GetPlayersInRoom(const std::string& roomCode)
+{
+	std::lock_guard<std::mutex> lock(m_mutex);
+	auto it = m_rooms.find(roomCode);
+	if (it == m_rooms.end())
+	{
+		return {};
+	}
+
+	std::vector<user_id> playerList;
+	for (auto pid : it->second.players)
+	{
+		playerList.push_back(pid);
+	}
+	return playerList;
+}
 bool GameService::RemovePlayerFromRoom(user_id userId)
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
@@ -169,37 +186,26 @@ bool GameService::RemovePlayerFromRoom(user_id userId)
 
 bool GameService::StartGameInRoom(user_id requestorId, const std::string& roomCode)
 {
-	std::lock_guard<std::mutex> lock(m_mutex);
-	auto itRoom = m_rooms.find(roomCode);
-	if (itRoom == m_rooms.end())
+	std::string gameId;
 	{
-		std::cout << "StartGameInRoom failed: Room code " << roomCode << " does not exist." << std::endl;
-		return false;
+		std::lock_guard<std::mutex> lock(m_mutex);
+		auto itRoom = m_rooms.find(roomCode);
+		if (itRoom == m_rooms.end() || itRoom->second.hostUserId != requestorId || itRoom->second.isGameStarted)
+			return false;
+
+		Room& room = itRoom->second;
+		room.isGameStarted = true;
+		std::list<user_id> playerIds(room.players.begin(), room.players.end());
+		CreateGame(playerIds);
+
+		gameId = m_player_game_map[requestorId];
+
+		SyncGameToDb(gameId);
 	}
-	Room& room = itRoom->second;
-	if (room.hostUserId != requestorId)
-	{
-		std::cout << "StartGameInRoom failed: User ID " << requestorId << " is not the host of room code " << roomCode << "." << std::endl;
-		return false;
-	}
-	if (room.isGameStarted)
-	{
-		std::cout << "StartGameInRoom failed: Game in room code " << roomCode << " has already started." << std::endl;
-		return false;
-	}
-	if (room.players.size() < 2)
-	{
-		std::cout << "StartGameInRoom failed: Not enough players in room code " << roomCode << " to start the game." << std::endl;
-		return false;
-	}
-	room.isGameStarted = true;
-	std::list<user_id> playerIds(room.players.begin(), room.players.end());
-	CreateGame(playerIds);
-	crow::json::wvalue startMsg;
-	startMsg["type"] = "game_started";
-	startMsg["roomCode"] = roomCode;
-	BroadcastToRoomInternal(roomCode, startMsg.dump());
-	std::cout << "Game started in room code: " << roomCode << " by host ID: " << requestorId << std::endl;
+
+	BroadcastGameState(gameId);
+	std::cout << "Game started in room code: " << roomCode << " with game ID: " << gameId << std::endl;
+
 	return true;
 }
 
@@ -250,28 +256,28 @@ void GameService::ProcessGameAction(const std::string& binaryData, crow::websock
 		std::scoped_lock lock(m_connection_mutex, m_mutex);
 
 		auto it = m_connectionToUser.find(conn);
-		if (it == m_connectionToUser.end())
-		{
-			std::cout << "ProcessGameAction failed: Connection not associated with any user." << std::endl;
-			return;
-		}
+		if (it == m_connectionToUser.end()) return;
 		userId = it->second;
 
-		if (m_player_game_map.find(userId) == m_player_game_map.end())
-		{
-			std::cout << "ProcessGameAction failed: User ID " << userId << " is not in any active game." << std::endl;
-			return;
-		}
+		if (!m_player_game_map.contains(userId)) return;
 		gameId = m_player_game_map[userId];
 		Game& game = m_active_games.at(gameId);
 
 		auto results = BinaryGameService::ProcessPlayerAction(game, userId, binaryData);
 		actionsucces = results.success;
 		message = results.message;
-	} 
+	}
+
 	if (actionsucces)
 	{
+		SyncGameToDb(gameId);
+
 		BroadcastGameState(gameId);
+
+		auto& game = GetGame(gameId);
+		if (game.CheckGameState() != GameState::InProgress) {
+			std::cout << "Game " << gameId << " has finished!" << std::endl;
+		}
 	}
 	else
 	{

@@ -38,7 +38,7 @@
     <cursorShape>ArrowCursor</cursorShape>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="menuPage">
     <widget class="QPushButton" name="playButton">
@@ -268,7 +268,7 @@
     <widget class="QPushButton" name="modeBackButton">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>160</x>
        <y>320</y>
        <width>80</width>
        <height>31</height>
@@ -296,10 +296,10 @@
     <widget class="QLineEdit" name="roomCodeInput">
      <property name="geometry">
       <rect>
-       <x>150</x>
-       <y>200</y>
+       <x>50</x>
+       <y>230</y>
        <width>113</width>
-       <height>21</height>
+       <height>41</height>
       </rect>
      </property>
      <property name="maxLength">
@@ -309,8 +309,8 @@
     <widget class="QPushButton" name="confirmJoinButton">
      <property name="geometry">
       <rect>
-       <x>150</x>
-       <y>290</y>
+       <x>240</x>
+       <y>240</y>
        <width>101</width>
        <height>21</height>
       </rect>
@@ -323,7 +323,7 @@
      <property name="geometry">
       <rect>
        <x>150</x>
-       <y>360</y>
+       <y>310</y>
        <width>80</width>
        <height>21</height>
       </rect>

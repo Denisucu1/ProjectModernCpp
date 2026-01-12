@@ -1,79 +1,49 @@
-﻿#include "customcard.h"
+﻿#include "CustomCard.h"
 #include <QPainter>
-#include <QStyleOption>
+#include <QPen>
+#include <QMouseEvent>
 
-CustomCard::CustomCard(QWidget* parent)
-    : QWidget(parent), m_value(0), m_faceDown(false), m_selected(false), m_type(HAND_CARD)
-{
-    this->setFixedSize(80, 110); 
-    this->setCursor(Qt::PointingHandCursor);
+CustomCard::CustomCard(QWidget* parent) : QWidget(parent),
+m_value(0), m_type(HAND_CARD), m_selected(false), m_faceDown(false) {
+    setFixedSize(80, 120);
 }
 
-void CustomCard::setValue(int value) {
-    m_value = value;
-    update(); 
-}
-
-void CustomCard::setType(Type type) {
-    m_type = type;
-    update();
-}
-
-void CustomCard::setFaceDown(bool faceDown) {
-    m_faceDown = faceDown;
-    update();
-}
-
-void CustomCard::setSelected(bool selected) {
-    m_selected = selected;
-    update();
-}
-
-void CustomCard::mousePressEvent(QMouseEvent* event) {
-    if (event->button() == Qt::LeftButton) {
-        emit cardClicked(this);
-    }
-}
+void CustomCard::setValue(int value) { m_value = value; update(); }
+int CustomCard::getValue() const { return m_value; }
+void CustomCard::setType(CardType type) { m_type = type; update(); }
+CustomCard::CardType CustomCard::getType() const { return m_type; }
+void CustomCard::setSelected(bool selected) { m_selected = selected; update(); }
+void CustomCard::setFaceDown(bool faceDown) { m_faceDown = faceDown; update(); }
 
 void CustomCard::paintEvent(QPaintEvent* event) {
-    Q_UNUSED(event);
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
-
     QRect rect = this->rect().adjusted(2, 2, -2, -2);
-    QBrush background = (m_faceDown) ? QBrush(QColor("#4a4a4a")) : QBrush(Qt::white);
 
-    painter.setBrush(background);
+    QColor bgColor = m_faceDown ? QColor("#1A237E") : Qt::white;
+    if (m_selected) bgColor = QColor("#FFF176");
 
-    QPen pen;
-    pen.setWidth(m_selected ? 3 : 2);
-    pen.setColor(m_selected ? Qt::yellow : Qt::black);
-    painter.setPen(pen);
-
+    painter.setBrush(bgColor);
+    painter.setPen(QPen(Qt::black, 2));
     painter.drawRoundedRect(rect, 10, 10);
 
     if (!m_faceDown) {
+        painter.setFont(QFont("Arial", 18, QFont::Bold));
         painter.setPen(Qt::black);
-        QFont font = painter.font();
-        font.setPixelSize(24);
-        font.setBold(true);
-        painter.setFont(font);
-
         painter.drawText(rect, Qt::AlignCenter, QString::number(m_value));
 
-        font.setPixelSize(10);
-        painter.setFont(font);
-        if (m_type == ASCENDING) {
-            painter.setPen(QColor("darkgreen"));
-            painter.drawText(rect.adjusted(0, 5, 0, 0), Qt::AlignTop | Qt::AlignHCenter, "1 -> 100");
+        painter.setFont(QFont("Arial", 9, QFont::Bold));
+        if (m_type == DESCENDING) {
+            painter.setPen(Qt::red);
+            painter.drawText(rect.adjusted(5, 5, -5, -5), Qt::AlignTop | Qt::AlignLeft, "▼ 100-1");
         }
-        else if (m_type == DESCENDING) {
-            painter.setPen(QColor("darkred"));
-            painter.drawText(rect.adjusted(0, 5, 0, 0), Qt::AlignTop | Qt::AlignHCenter, "100 -> 1");
+        else if (m_type == ASCENDING) {
+            painter.setPen(QColor("#2E7D32"));
+            painter.drawText(rect.adjusted(5, 5, -5, -5), Qt::AlignTop | Qt::AlignLeft, "▲ 1-100");
         }
     }
-    else {
-        painter.setPen(Qt::white);
-        painter.drawText(rect, Qt::AlignCenter, "The Game");
-    }
+}
+
+void CustomCard::mousePressEvent(QMouseEvent* event) {
+    if (event->button() == Qt::LeftButton) emit cardClicked(this);
 }

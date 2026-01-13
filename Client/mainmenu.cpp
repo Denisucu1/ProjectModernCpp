@@ -19,6 +19,7 @@ MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
     QWidget(parent), ui(new Ui::MainMenu), m_username(username), m_userId(userId)
 {
     ui->setupUi(this);
+    ui->roomCodeInput->setInputMask(">AAAA;");
 
     QString styleSheet = R"(
         QWidget#MainMenu { background-color: #1e1e1e; }

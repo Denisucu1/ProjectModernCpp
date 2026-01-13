@@ -199,19 +199,16 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainmenu.cpp" />
     <ClCompile Include="mainwindow.cpp" />
-    <ClCompile Include="profilewindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="gamewindow.h" />
     <QtMoc Include="mainmenu.h" />
     <QtMoc Include="mainwindow.h" />
-    <QtMoc Include="profilewindow.h" />
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="gamewindow.ui" />
     <QtUic Include="mainmenu.ui" />
     <QtUic Include="mainwindow.ui" />
-    <QtUic Include="profilewindow.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="customcard.h" />

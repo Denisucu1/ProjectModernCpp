@@ -13,7 +13,7 @@ void GameWindow::setupUI() {
     mainLayout->setContentsMargins(20, 20, 20, 20);
 
     QHBoxLayout* topBar = new QHBoxLayout();
-    m_statusLabel = new QLabel("Așteptare rând...", this);
+    m_statusLabel = new QLabel("Waiting for turn...", this);
     m_statusLabel->setStyleSheet("color: white; font-size: 20px; font-weight: bold;");
     m_endTurnButton = new QPushButton("End Turn", this);
     m_endTurnButton->setStyleSheet("QPushButton { background-color: #d32f2f; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold; }");

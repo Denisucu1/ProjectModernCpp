@@ -181,6 +181,16 @@ MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
 void MainMenu::onSocketMessage(const QString& message) {
     QJsonObject json = QJsonDocument::fromJson(message.toUtf8()).object();
 
+    if (json["type"].toString() == "room_closed") {
+        QString reason = json["reason"].toString();
+        QMessageBox::warning(this, "Room Closed", reason);
+
+        ui->stackedWidget->setCurrentIndex(0);
+        ui->lobbyPlayersList->clear();
+        ui->roomCodeInput->clear();
+        return;
+    }
+
     if (json.contains("players")) {
         ui->lobbyPlayersList->clear();
         QJsonArray players = json["players"].toArray();

@@ -25,17 +25,13 @@ MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
             font-weight: bold; font-size: 14px; min-width: 180px; max-width: 180px; min-height: 45px; border: none;
         }
         QPushButton:hover { background-color: #5a5a5a; }
-        
         QPushButton#playButton, QPushButton#createGameButton, 
         QPushButton#joinGameButton, QPushButton#confirmJoinButton, 
         QPushButton#startGameButton { background-color: #4CAF50; }
-        
         QPushButton#exitButton, QPushButton#backButton, 
         QPushButton#cancelJoinButton, QPushButton#lobbyBackButton, 
         QPushButton#modeBackButton, QPushButton#closeLobbyButton { background-color: #D32F2F; }
-        
         QPushButton#profileButton { background-color: #5C6BC0; }
-
         QLineEdit { padding: 8px; border-radius: 10px; background-color: #2b2b2b; color: white; border: 1px solid #4CAF50; min-width: 180px; }
         QListWidget { background-color: #2b2b2b; color: white; border-radius: 10px; border: 1px solid #4a4a4a; }
         QLabel { color: white; }
@@ -56,15 +52,12 @@ MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
         if (page->layout()) delete page->layout();
         QVBoxLayout* layout = new QVBoxLayout(page);
         layout->addStretch();
-        for (QWidget* w : widgets) {
-            layout->addWidget(w, 0, Qt::AlignCenter);
-        }
+        for (QWidget* w : widgets) { layout->addWidget(w, 0, Qt::AlignCenter); }
         layout->addStretch();
         layout->setSpacing(20);
         };
 
     centerPage(ui->menuPage, { ui->playButton, ui->profileButton, ui->exitButton });
-
     centerPage(ui->page, { ui->createGameButton, ui->joinGameButton, ui->modeBackButton });
 
     if (ui->lobbyPage->layout()) delete ui->lobbyPage->layout();
@@ -122,28 +115,8 @@ MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
     m_gameClient->connectToServer();
 }
 
-void MainMenu::on_profileButton_clicked() {
-    ui->stackedWidget->setCurrentIndex(1);
-    QNetworkRequest req(QUrl(QString("http://localhost:18080/api/profile/%1").arg(m_userId)));
-    QNetworkReply* reply = m_networkManager->get(req);
-    connect(reply, &QNetworkReply::finished, this, [this, reply]() { onProfileReply(reply); });
-}
-
-void MainMenu::onProfileReply(QNetworkReply* reply) {
-    if (reply->error() == QNetworkReply::NoError) {
-        QJsonObject json = QJsonDocument::fromJson(reply->readAll()).object();
-        ui->gamesPlayedLabel->setText(QString::number(json["gamesPlayed"].toInt()));
-        ui->gamesWonLabel->setText(QString::number(json["gamesWon"].toInt()));
-        ui->totalTimeLabel->setText(QString::number(json["hoursPlayed"].toInt()));
-        ui->cardsAtLossLabel->setText(QString::number(json["cardsLeftOnLosses"].toInt()));
-        ui->performanceScoreLabel->setText(QString::number(json["performanceScore"].toDouble(), 'f', 2));
-    }
-    reply->deleteLater();
-}
-
 void MainMenu::onSocketMessage(const QString& message) {
     QJsonObject json = QJsonDocument::fromJson(message.toUtf8()).object();
-
     if (json.contains("players")) {
         ui->lobbyPlayersList->clear();
         QJsonArray players = json["players"].toArray();
@@ -153,17 +126,12 @@ void MainMenu::onSocketMessage(const QString& message) {
             ui->lobbyPlayersList->addItem(text);
         }
     }
-
     if (json.contains("status")) {
         QString status = json["status"].toString();
-
         if (status == "room_created") {
             ui->generatedCodeLabel->setText(json["roomCode"].toString());
-
             ui->lobbyPlayersList->clear();
-            QString hostText = m_username + " (ID: " + QString::number(m_userId) + ")";
-            ui->lobbyPlayersList->addItem(hostText);
-
+            ui->lobbyPlayersList->addItem(m_username + " (ID: " + QString::number(m_userId) + ")");
             ui->stackedWidget->setCurrentIndex(4);
         }
         else if (status == "joined_room") {
@@ -171,6 +139,15 @@ void MainMenu::onSocketMessage(const QString& message) {
             ui->stackedWidget->setCurrentIndex(4);
         }
     }
+}
+
+void MainMenu::on_closeLobbyButton_clicked() {
+    QJsonObject leaveMsg;
+    leaveMsg["type"] = "leave_room";
+    leaveMsg["userId"] = m_userId;
+    m_gameClient->sendMessage(QJsonDocument(leaveMsg).toJson(QJsonDocument::Compact));
+    ui->stackedWidget->setCurrentIndex(2);
+    ui->lobbyPlayersList->clear();
 }
 
 void MainMenu::onGameBinaryMessage(const QByteArray& data) {
@@ -202,12 +179,31 @@ void MainMenu::onGameBinaryMessage(const QByteArray& data) {
     }
 }
 
+void MainMenu::on_profileButton_clicked() {
+    ui->stackedWidget->setCurrentIndex(1);
+    QNetworkRequest req(QUrl(QString("http://localhost:18080/api/profile/%1").arg(m_userId)));
+    QNetworkReply* reply = m_networkManager->get(req);
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() { onProfileReply(reply); });
+}
+
+void MainMenu::onProfileReply(QNetworkReply* reply) {
+    if (reply->error() == QNetworkReply::NoError) {
+        QJsonObject json = QJsonDocument::fromJson(reply->readAll()).object();
+        ui->gamesPlayedLabel->setText(QString::number(json["gamesPlayed"].toInt()));
+        ui->gamesWonLabel->setText(QString::number(json["gamesWon"].toInt()));
+        ui->totalTimeLabel->setText(QString::number(json["hoursPlayed"].toInt()));
+        ui->cardsAtLossLabel->setText(QString::number(json["cardsLeftOnLosses"].toInt()));
+        ui->performanceScoreLabel->setText(QString::number(json["performanceScore"].toDouble(), 'f', 2));
+    }
+    reply->deleteLater();
+}
+
 void MainMenu::on_playButton_clicked() { ui->stackedWidget->setCurrentIndex(2); }
 void MainMenu::on_exitButton_clicked() { QApplication::quit(); }
 void MainMenu::on_backButton_clicked() { ui->stackedWidget->setCurrentIndex(0); }
-void MainMenu::on_lobbyBackButton_clicked() { ui->stackedWidget->setCurrentIndex(0); }
 void MainMenu::on_modeBackButton_clicked() { ui->stackedWidget->setCurrentIndex(0); }
 void MainMenu::on_cancelJoinButton_clicked() { ui->stackedWidget->setCurrentIndex(2); }
+void MainMenu::on_lobbyBackButton_clicked() { ui->stackedWidget->setCurrentIndex(0); }
 void MainMenu::on_createGameButton_clicked() {
     QJsonObject json; json["type"] = "create_room"; json["userId"] = m_userId;
     m_gameClient->sendMessage(QJsonDocument(json).toJson(QJsonDocument::Compact));
@@ -223,5 +219,4 @@ void MainMenu::on_startGameButton_clicked() {
     QJsonObject json; json["type"] = "start_game"; json["userId"] = m_userId; json["roomCode"] = ui->generatedCodeLabel->text();
     m_gameClient->sendMessage(QJsonDocument(json).toJson(QJsonDocument::Compact));
 }
-void MainMenu::on_closeLobbyButton_clicked() { ui->stackedWidget->setCurrentIndex(2); }
 MainMenu::~MainMenu() { delete ui; }

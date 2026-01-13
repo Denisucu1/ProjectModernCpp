@@ -305,7 +305,15 @@ void GameService::ProcessGameAction(const std::string& binaryData, crow::websock
 			std::cout << "Game " << gameId << " has finished!" << std::endl;
 			std::string roomCode = m_user_room_map[userId];
 			user_id hostId = m_rooms[roomCode].hostUserId;
-			RemovePlayerFromRoom(hostId);
+				std::cout << "Game " << gameId << " has finished!" << std::endl;
+				for (auto& p : game.GetPlayers())
+				{
+					user_id pid = p.GetId();
+					if (pid != hostId)
+					RemovePlayerFromRoom(pid);
+					m_player_game_map.erase(pid);
+				}
+				RemovePlayerFromRoom(hostId);
 			m_active_games.erase(gameId);
 		}
 	}

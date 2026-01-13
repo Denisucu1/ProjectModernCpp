@@ -26,7 +26,7 @@ MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
     ui->confirmJoinButton->setFixedWidth(300);
     ui->cancelJoinButton->setFixedWidth(300);
 
-    ui->roomCodeInput->setInputMask(">AAAA;");
+    ui->roomCodeInput->setInputMask(">NNNN;");
 
     QString styleSheet = R"(
         QWidget#MainMenu { background-color: #1e1e1e; }

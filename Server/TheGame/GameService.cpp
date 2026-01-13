@@ -261,11 +261,17 @@ void GameService::ProcessGameAction(const std::string& binaryData, crow::websock
 
 		if (!m_player_game_map.contains(userId)) return;
 		gameId = m_player_game_map[userId];
-		Game& game = m_active_games.at(gameId);
+		Game& game = GetGame(gameId);
 
-		auto results = BinaryGameService::ProcessPlayerAction(game, userId, binaryData);
-		actionsucces = results.success;
-		message = results.message;
+		if (game.CheckGameState() == GameState::InProgress) {
+			auto results = BinaryGameService::ProcessPlayerAction(game, userId, binaryData);
+			actionsucces = results.success;
+			message = results.message;
+		}
+		else
+		{
+			actionsucces = true;
+		}
 	}
 
 	if (actionsucces)

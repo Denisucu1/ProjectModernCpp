@@ -107,11 +107,11 @@ MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
         statsGrid->addWidget(valueLabel, row, 1, Qt::AlignRight);
         };
 
-    addStyledStat("Jocuri Jucate", ui->gamesPlayedLabel, 0);
-    addStyledStat("Jocuri Castigate", ui->gamesWonLabel, 1);
-    addStyledStat("Carti la infrangeri", ui->cardsAtLossLabel, 2);
-    addStyledStat("Timp total (min)", ui->totalTimeLabel, 3);
-    addStyledStat("Scor Performanta", ui->performanceScoreLabel, 4);
+    addStyledStat("Games Played", ui->gamesPlayedLabel, 0);
+    addStyledStat("Games Won", ui->gamesWonLabel, 1);
+    addStyledStat("Cards at Loss", ui->cardsAtLossLabel, 2);
+    addStyledStat("Total Time (min)", ui->totalTimeLabel, 3);
+    addStyledStat("Performance Score", ui->performanceScoreLabel, 4);
 
     cardLayout->addLayout(statsGrid);
 
@@ -154,7 +154,6 @@ MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
     m_gamePageIndex = ui->stackedWidget->addWidget(gamePage);
 
     ui->stackedWidget->setCurrentIndex(0);
-    ui->usernameLabel->setText(m_username);
 
     m_gameClient = new GameClient(QUrl("ws://localhost:18080/ws/game"), m_userId, this);
     connect(m_gameClient, &GameClient::connected, this, [this]() {
@@ -198,7 +197,7 @@ void MainMenu::onSocketMessage(const QString& message) {
         if (status == "room_created") {
             ui->generatedCodeLabel->setText(json["roomCode"].toString());
             ui->lobbyPlayersList->clear();
-            ui->lobbyPlayersList->addItem(m_username + " (ID: " + QString::number(m_userId) + ")"); // Fix listă Host
+            ui->lobbyPlayersList->addItem(m_username + " (ID: " + QString::number(m_userId) + ")"); 
             ui->stackedWidget->setCurrentIndex(4);
         }
         else if (status == "joined_room") {
@@ -227,7 +226,7 @@ void MainMenu::onGameBinaryMessage(const QByteArray& data) {
     if (!msg.ParseFromArray(data.constData(), data.size())) return;
 
     if (msg.type() == myproject::GameMessage_Type_GAME_OVER) {
-        QMessageBox::information(this, "Final", msg.state().game_status() == 1 ? "Victorie!" : "Infrangere!");
+        QMessageBox::information(this, "Game Over", msg.state().game_status() == 1 ? "Victory!" : "Defeat!");
         ui->stackedWidget->setCurrentIndex(0);
         return;
     }

@@ -93,7 +93,7 @@ void GameWindow::setInteractionEnabled(bool enabled) {
     m_pileDesc1->setEnabled(enabled); m_pileDesc2->setEnabled(enabled);
     m_pileAsc1->setEnabled(enabled); m_pileAsc2->setEnabled(enabled);
     m_handContainer->setEnabled(enabled);
-    m_statusLabel->setText(enabled ? "Rândul tău!" : "Așteaptă rândul adversarului...");
+    m_statusLabel->setText(enabled ? "Your turn" : "Opponent's turn");
 }
 
 void GameWindow::onCardClicked(CustomCard* card) {

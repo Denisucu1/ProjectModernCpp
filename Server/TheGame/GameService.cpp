@@ -158,6 +158,25 @@ bool GameService::RemovePlayerFromRoom(user_id userId)
 		if (m_rooms.count(roomCode))
 		{
 			Room& room = m_rooms[roomCode];
+			if (room.hostUserId == userId)
+			{
+				std::cout << "Host user ID: " << userId << " is leaving room code: " << roomCode << ". Closing room." << std::endl;
+
+				for (auto pid : room.players) {
+					if (pid != userId) {
+						crow::json::wvalue msg;
+						msg["type"] = "room_closed";
+						msg["reason"] = "Host has left the lobby";
+						sendMessageToUser(pid, msg.dump());
+					}
+					m_user_room_map.erase(pid);
+					m_player_game_map.erase(pid);
+					std::cout << "User ID: " << pid << " removed from room code: " << roomCode << std::endl;
+				}
+				m_rooms.erase(roomCode);
+				std::cout << "Room code: " << roomCode << " deleted." << std::endl;
+				return true;
+			}
 			room.players.erase(userId);
 			std::cout << "User ID: " << userId << " removed from room code: " << roomCode << std::endl;
 			if (room.players.empty())
@@ -284,12 +303,9 @@ void GameService::ProcessGameAction(const std::string& binaryData, crow::websock
 		if (game.CheckGameState() != GameState::InProgress) {
 			int finalScore = game.CheckGameState() == GameState::Won ? 5 : 1;
 			std::cout << "Game " << gameId << " has finished!" << std::endl;
-			for (auto& p : game.GetPlayers())
-			{
-				user_id pid = p.GetId();
-				RemovePlayerFromRoom(pid);
-				m_player_game_map.erase(pid);
-			}
+			std::string roomCode = m_user_room_map[userId];
+			user_id hostId = m_rooms[roomCode].hostUserId;
+			RemovePlayerFromRoom(hostId);
 			m_active_games.erase(gameId);
 		}
 	}

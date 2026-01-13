@@ -147,7 +147,6 @@ MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
     lobbyWaitLayout->addWidget(ui->closeLobbyButton, 0, Qt::AlignCenter);
     lobbyWaitLayout->addStretch();
 
-    ui->lobbyBackButton->hide();
 
     m_networkManager = new QNetworkAccessManager(this);
     GameWindow* gamePage = new GameWindow(this);
@@ -214,10 +213,6 @@ void MainMenu::on_closeLobbyButton_clicked() {
     m_gameClient->sendMessage(QJsonDocument(leaveMsg).toJson(QJsonDocument::Compact));
     ui->stackedWidget->setCurrentIndex(2);
     ui->lobbyPlayersList->clear();
-}
-
-void MainMenu::on_lobbyBackButton_clicked() {
-    ui->stackedWidget->setCurrentIndex(0);
 }
 
 void MainMenu::onGameBinaryMessage(const QByteArray& data) {

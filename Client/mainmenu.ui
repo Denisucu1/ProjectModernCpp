@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>893</width>
-    <height>569</height>
+    <width>1029</width>
+    <height>738</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -185,19 +185,6 @@
     </widget>
    </widget>
    <widget class="QWidget" name="lobbyPage">
-    <widget class="QPushButton" name="lobbyBackButton">
-     <property name="geometry">
-      <rect>
-       <x>400</x>
-       <y>330</y>
-       <width>80</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Inapoi</string>
-     </property>
-    </widget>
     <widget class="QLineEdit" name="roomCodeInput">
      <property name="geometry">
       <rect>

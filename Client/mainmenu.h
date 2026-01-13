@@ -18,7 +18,6 @@ private slots:
     void on_playButton_clicked();
     void on_exitButton_clicked();
     void on_backButton_clicked();
-    void on_lobbyBackButton_clicked();
     void on_modeBackButton_clicked();
     void on_cancelJoinButton_clicked();
     void on_createGameButton_clicked();

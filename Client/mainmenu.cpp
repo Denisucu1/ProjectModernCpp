@@ -59,7 +59,7 @@ MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
         for (QWidget* w : widgets) {
             layout->addWidget(w, 0, Qt::AlignCenter);
         }
-        layout->addStretch(); 
+        layout->addStretch();
         layout->setSpacing(20);
         };
 
@@ -88,7 +88,7 @@ MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
     lobbyWaitLayout->addWidget(ui->closeLobbyButton, 0, Qt::AlignCenter);
     lobbyWaitLayout->addStretch();
 
-    ui->lobbyBackButton->hide(); 
+    ui->lobbyBackButton->hide();
 
     m_networkManager = new QNetworkAccessManager(this);
     GameWindow* gamePage = new GameWindow(this);
@@ -143,6 +143,7 @@ void MainMenu::onProfileReply(QNetworkReply* reply) {
 
 void MainMenu::onSocketMessage(const QString& message) {
     QJsonObject json = QJsonDocument::fromJson(message.toUtf8()).object();
+
     if (json.contains("players")) {
         ui->lobbyPlayersList->clear();
         QJsonArray players = json["players"].toArray();
@@ -152,9 +153,20 @@ void MainMenu::onSocketMessage(const QString& message) {
             ui->lobbyPlayersList->addItem(text);
         }
     }
+
     if (json.contains("status")) {
         QString status = json["status"].toString();
-        if (status == "room_created" || status == "joined_room") {
+
+        if (status == "room_created") {
+            ui->generatedCodeLabel->setText(json["roomCode"].toString());
+
+            ui->lobbyPlayersList->clear();
+            QString hostText = m_username + " (ID: " + QString::number(m_userId) + ")";
+            ui->lobbyPlayersList->addItem(hostText);
+
+            ui->stackedWidget->setCurrentIndex(4);
+        }
+        else if (status == "joined_room") {
             ui->generatedCodeLabel->setText(json["roomCode"].toString());
             ui->stackedWidget->setCurrentIndex(4);
         }

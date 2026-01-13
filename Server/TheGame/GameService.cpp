@@ -158,6 +158,25 @@ bool GameService::RemovePlayerFromRoom(user_id userId)
 		if (m_rooms.count(roomCode))
 		{
 			Room& room = m_rooms[roomCode];
+			if (room.hostUserId == userId)
+			{
+				std::cout << "Host user ID: " << userId << " is leaving room code: " << roomCode << ". Closing room." << std::endl;
+
+				for (auto pid : room.players) {
+					if (pid != userId) {
+						crow::json::wvalue msg;
+						msg["type"] = "room_closed";
+						msg["reason"] = "Host has left the lobby";
+						sendMessageToUser(pid, msg.dump());
+					}
+					m_user_room_map.erase(pid);
+					m_player_game_map.erase(pid);
+					std::cout << "User ID: " << pid << " removed from room code: " << roomCode << std::endl;
+				}
+				m_rooms.erase(roomCode);
+				std::cout << "Room code: " << roomCode << " deleted." << std::endl;
+				return true;
+			}
 			room.players.erase(userId);
 			std::cout << "User ID: " << userId << " removed from room code: " << roomCode << std::endl;
 			if (room.players.empty())
@@ -261,11 +280,17 @@ void GameService::ProcessGameAction(const std::string& binaryData, crow::websock
 
 		if (!m_player_game_map.contains(userId)) return;
 		gameId = m_player_game_map[userId];
-		Game& game = m_active_games.at(gameId);
+		Game& game = GetGame(gameId);
 
-		auto results = BinaryGameService::ProcessPlayerAction(game, userId, binaryData);
-		actionsucces = results.success;
-		message = results.message;
+		if (game.CheckGameState() == GameState::InProgress) {
+			auto results = BinaryGameService::ProcessPlayerAction(game, userId, binaryData);
+			actionsucces = results.success;
+			message = results.message;
+		}
+		else
+		{
+			actionsucces = true;
+		}
 	}
 
 	if (actionsucces)
@@ -276,7 +301,20 @@ void GameService::ProcessGameAction(const std::string& binaryData, crow::websock
 
 		auto& game = GetGame(gameId);
 		if (game.CheckGameState() != GameState::InProgress) {
+			int finalScore = game.CheckGameState() == GameState::Won ? 5 : 1;
 			std::cout << "Game " << gameId << " has finished!" << std::endl;
+			std::string roomCode = m_user_room_map[userId];
+			user_id hostId = m_rooms[roomCode].hostUserId;
+				std::cout << "Game " << gameId << " has finished!" << std::endl;
+				for (auto& p : game.GetPlayers())
+				{
+					user_id pid = p.GetId();
+					if (pid != hostId)
+					RemovePlayerFromRoom(pid);
+					m_player_game_map.erase(pid);
+				}
+				RemovePlayerFromRoom(hostId);
+			m_active_games.erase(gameId);
 		}
 	}
 	else
@@ -441,27 +479,3 @@ void GameService::SaveChatMessage(user_id userId, const std::string& message)
 	}
 }
 
-GameService::MoveResult GameService::ProcessPlayerMove(user_id userId, const std::vector<PlayerMove>& moves) 
-{
-	std::lock_guard<std::mutex> lock(m_mutex);
-	if (!m_player_game_map.contains(userId)) 
-		return MoveResult::InvalidMove;
-
-	Game& game = m_active_games.at(m_player_game_map[userId]);
-
-	bool allOk = true;
-	for (const auto& move : moves) {
-		if (!game.PlaySingleCard(userId, move.card_value, static_cast<int>(move.stack_index))) {
-			allOk = false;
-			break;
-		}
-	}
-
-	if (allOk && game.EndCurrentTurn(userId)) 
-	{
-		SyncGameToDb(m_player_game_map[userId]);
-		return MoveResult::Success;
-	}
-
-	return MoveResult::InvalidMove;
-}

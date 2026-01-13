@@ -276,7 +276,15 @@ void GameService::ProcessGameAction(const std::string& binaryData, crow::websock
 
 		auto& game = GetGame(gameId);
 		if (game.CheckGameState() != GameState::InProgress) {
+			int finalScore = game.CheckGameState() == GameState::Won ? 5 : 1;
 			std::cout << "Game " << gameId << " has finished!" << std::endl;
+			for (auto& p : game.GetPlayers())
+			{
+				user_id pid = p.GetId();
+				RemovePlayerFromRoom(pid);
+				m_player_game_map.erase(pid);
+			}
+			m_active_games.erase(gameId);
 		}
 	}
 	else
@@ -441,27 +449,3 @@ void GameService::SaveChatMessage(user_id userId, const std::string& message)
 	}
 }
 
-GameService::MoveResult GameService::ProcessPlayerMove(user_id userId, const std::vector<PlayerMove>& moves) 
-{
-	std::lock_guard<std::mutex> lock(m_mutex);
-	if (!m_player_game_map.contains(userId)) 
-		return MoveResult::InvalidMove;
-
-	Game& game = m_active_games.at(m_player_game_map[userId]);
-
-	bool allOk = true;
-	for (const auto& move : moves) {
-		if (!game.PlaySingleCard(userId, move.card_value, static_cast<int>(move.stack_index))) {
-			allOk = false;
-			break;
-		}
-	}
-
-	if (allOk && game.EndCurrentTurn(userId)) 
-	{
-		SyncGameToDb(m_player_game_map[userId]);
-		return MoveResult::Success;
-	}
-
-	return MoveResult::InvalidMove;
-}

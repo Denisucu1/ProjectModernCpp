@@ -32,14 +32,14 @@ void CustomCard::paintEvent(QPaintEvent* event) {
         painter.setPen(Qt::black);
         painter.drawText(rect, Qt::AlignCenter, QString::number(m_value));
 
-        painter.setFont(QFont("Arial", 9, QFont::Bold));
-        if (m_type == DESCENDING) {
-            painter.setPen(Qt::red);
-            painter.drawText(rect.adjusted(5, 5, -5, -5), Qt::AlignTop | Qt::AlignLeft, "▼ 100-1");
-        }
-        else if (m_type == ASCENDING) {
+        painter.setFont(QFont("Arial", 8, QFont::Bold));
+        if (m_type == ASCENDING) {
             painter.setPen(QColor("#2E7D32"));
-            painter.drawText(rect.adjusted(5, 5, -5, -5), Qt::AlignTop | Qt::AlignLeft, "▲ 1-100");
+            painter.drawText(rect.adjusted(5, 5, -5, -5), Qt::AlignTop | Qt::AlignLeft, "▲ 1 -> 100");
+        }
+        else if (m_type == DESCENDING) {
+            painter.setPen(Qt::red);
+            painter.drawText(rect.adjusted(5, 5, -5, -5), Qt::AlignTop | Qt::AlignLeft, "▼ 100 -> 1");
         }
     }
 }

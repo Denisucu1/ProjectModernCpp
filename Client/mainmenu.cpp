@@ -19,6 +19,13 @@ MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
     QWidget(parent), ui(new Ui::MainMenu), m_username(username), m_userId(userId)
 {
     ui->setupUi(this);
+
+    ui->roomCodeInput->setFixedWidth(300);
+    ui->roomCodeInput->setAlignment(Qt::AlignCenter);
+
+    ui->confirmJoinButton->setFixedWidth(300);
+    ui->cancelJoinButton->setFixedWidth(300);
+
     ui->roomCodeInput->setInputMask(">AAAA;");
 
     QString styleSheet = R"(

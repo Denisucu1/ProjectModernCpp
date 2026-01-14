@@ -71,7 +71,7 @@ void MainMenu::setupMenuPages() {
         };
 
     centerPage(ui->menuPage, { ui->playButton, ui->profileButton, ui->exitButton });
-    centerPage(ui->page, { ui->createGameButton, ui->joinGameButton, ui->modeBackButton });
+    centerPage(ui->modeSelectionPage, { ui->createGameButton, ui->joinGameButton, ui->modeBackButton });
 }
 
 void MainMenu::setupProfilePage() {
@@ -142,8 +142,8 @@ void MainMenu::setupLobbyPages() {
     joinLayout->addWidget(ui->cancelJoinButton, 0, Qt::AlignCenter);
     joinLayout->addStretch();
 
-    if (ui->page_2->layout()) delete ui->page_2->layout();
-    QVBoxLayout* lobbyWaitLayout = new QVBoxLayout(ui->page_2);
+    if (ui->lobbyWaitingPage->layout()) delete ui->lobbyWaitingPage->layout();
+    QVBoxLayout* lobbyWaitLayout = new QVBoxLayout(ui->lobbyWaitingPage);
     lobbyWaitLayout->addStretch();
     lobbyWaitLayout->addWidget(ui->roomCodeTitleLabel, 0, Qt::AlignCenter);
     lobbyWaitLayout->addWidget(ui->generatedCodeLabel, 0, Qt::AlignCenter);

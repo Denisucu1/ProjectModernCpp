@@ -38,7 +38,7 @@
     <cursorShape>ArrowCursor</cursorShape>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="menuPage">
     <widget class="QPushButton" name="playButton">
@@ -143,7 +143,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="page">
+   <widget class="QWidget" name="modeSelectionPage">
     <widget class="QPushButton" name="createGameButton">
      <property name="geometry">
       <rect>
@@ -225,7 +225,7 @@
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="page_2">
+   <widget class="QWidget" name="lobbyWaitingPage">
     <widget class="QLabel" name="roomCodeTitleLabel">
      <property name="geometry">
       <rect>

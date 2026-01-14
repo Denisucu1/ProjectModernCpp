@@ -2,6 +2,7 @@
 #include "GameService.h"
 #include <memory> 
 #include <regex>  
+#include <include/gtest/gtest.h>
 
 TEST(GameServiceRoomTest, CreateRoomRegexValidation)
 {

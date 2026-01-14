@@ -124,6 +124,19 @@ namespace WebSocketRoutes{
                     }
                     conn.send_text(resp.dump());
                 }
+                else if (type == "chat")
+                {
+                    if (msg.has("message"))
+                    {
+                        int userId = msg["userId"].i();
+                        std::string message = msg["message"].s();
+                        gameSvc.SaveChatMessage(userId, message);
+                    }
+                    else
+                    {
+                        conn.send_text("{\"error\": \"Missing userId or message for chat\"}");
+					}
+                }
             }
             catch (const std::exception& e) {
                 std::cerr << "WebSocket message exception: " << e.what() << std::endl;

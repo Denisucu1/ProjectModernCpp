@@ -466,27 +466,36 @@ void GameService::SyncGameToDb(const game_id& gameId)
 
 void GameService::SaveChatMessage(user_id userId, const std::string& message)
 {
-	std::lock_guard<std::mutex> lock(m_mutex);
+	std::string roomCode;
+	{
+		std::lock_guard<std::mutex> lock(m_mutex);
 
-	if (!m_player_game_map.contains(userId)) return;
+		if (!m_player_game_map.contains(userId)) return;
 
-	game_id gId = m_player_game_map[userId];
-	int numericMatchId = std::stoi(gId.substr(5));
+		game_id gId = m_player_game_map[userId];
+		roomCode = m_user_room_map[userId];
+		int numericMatchId = std::stoi(gId.substr(5));
 
-	try {
-		auto& storage = getStorage();
+		try {
+			auto& storage = getStorage();
 
-		Chat chatEntry;
-		chatEntry.player_id = userId;
-		chatEntry.game_id = numericMatchId;
-		chatEntry.message = message;
+			Chat chatEntry;
+			chatEntry.player_id = userId;
+			chatEntry.game_id = numericMatchId;
+			chatEntry.message = message;
 
-		storage.insert(chatEntry);
-
-		std::cout << "[Chat] Mesaj salvat pentru meciul " << numericMatchId << " de la user " << userId << std::endl;
+			storage.insert(chatEntry);
+			std::cout << "[Chat] Mesaj salvat pentru meciul " << numericMatchId << " de la user " << userId << std::endl;
+		}
+		catch (const std::exception& e) {
+			std::cerr << "[ChatError] " << e.what() << std::endl;
+		}
 	}
-	catch (const std::exception& e) {
-		std::cerr << "[ChatError] " << e.what() << std::endl;
-	}
+
+	crow::json::wvalue chatJson;
+	chatJson["type"] = "chat";
+	chatJson["senderId"] = userId;
+	chatJson["text"] = message;
+	BroadcastToRoom(roomCode, chatJson.dump());
 }
 

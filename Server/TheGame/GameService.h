@@ -39,6 +39,8 @@ struct MatchData {
 	std::vector<MatchPlayerData> players;
 };
 
+extern "C" __declspec(dllimport) std::string GenerateRoomCode();
+
 class GameService
 {
 public:

@@ -4,7 +4,6 @@
 #include "crow.h"
 #include <iostream>
 #include <utility>
-#include <random>
 #include "BinaryGameService.h"
 #include "Game.h"
 #include "SerializationUtil.h"
@@ -18,20 +17,7 @@ GameService::GameService()
 
 std::string GameService::GenerateRoomCode()
 {
-	std::string roomCode;
-	const int CODE_LEN = 4;
-	roomCode.resize(CODE_LEN);
-	static const char alphanum[] =
-		"0123456789"
-		"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<> dis(0, static_cast<int>(sizeof(alphanum) - 2));
-	for (int i = 0; i < CODE_LEN; ++i)
-	{
-		roomCode[i] = alphanum[dis(gen)];
-	}
-	return roomCode;
+	return ::GenerateRoomCode();
 }
 
 void GameService::BroadcastToRoomInternal(const std::string& roomCode, const std::string& message)

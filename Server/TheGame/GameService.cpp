@@ -8,6 +8,7 @@
 #include "BinaryGameService.h"
 #include "Game.h"
 #include "SerializationUtil.h"
+#include "UserService.h"
 
 
 GameService::GameService()
@@ -53,6 +54,13 @@ void GameService::BroadcastToRoom(const std::string& roomCode, const std::string
 	std::lock_guard<std::mutex> lock(m_mutex);
 	BroadcastToRoomInternal(roomCode, message);
 }
+
+void GameService::UpdatePlayerStats(user_id userId, bool won, int cards_in_hand_at_loss, int time_played_min)
+{
+	UserService userSvc;
+	userSvc.UpdateStats(userId, won, cards_in_hand_at_loss, time_played_min);
+}
+
 
 std::string GameService::CreateRoom(user_id hostId, int maxPlayers)
 {
@@ -309,6 +317,9 @@ void GameService::ProcessGameAction(const std::string& binaryData, crow::websock
 				for (auto& p : game.GetPlayers())
 				{
 					user_id pid = p.GetId();
+					int cardsLeft = p.GetDeckView().size();
+					const int avgGameLenghtMin = 3;
+					UpdatePlayerStats(pid, game.CheckGameState() == GameState::Won, cardsLeft, avgGameLenghtMin);
 					if (pid != hostId)
 					RemovePlayerFromRoom(pid);
 					m_player_game_map.erase(pid);

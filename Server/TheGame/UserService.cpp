@@ -61,7 +61,7 @@ void UserService::UpdateStats(int userId, bool won, int cards_in_hand_at_loss, i
 
     try {
         storage.transaction([&]()-> bool {
-            auto profiles = storage.get_all<Profile>(is_equal(&Profile::user_id, userId));
+            auto profiles = storage.get_all<Profile>(where(is_equal(&Profile::user_id, userId)));
 
             if (profiles.empty()) {
                 std::cerr << "Eroare: Profile pentru User ID " << userId << " nu a fost gasit." << std::endl;
@@ -97,7 +97,7 @@ int UserService::CalculatePerformanceScore(int userId)
     auto& storage = getStorage();
     try {
         
-        auto profiles = storage.get_all<Profile>(is_equal(&Profile::user_id, userId));
+        auto profiles = storage.get_all<Profile>(where(is_equal(&Profile::user_id, userId)));
         if (profiles.empty()) {
             std::cerr << "Eroare: Profile pentru User ID " << userId << " nu a fost gasit la calcul." << std::endl;
             return 1;

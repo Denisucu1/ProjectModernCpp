@@ -46,6 +46,7 @@ public:
 
 	std::string GenerateRoomCode();
 	void BroadcastToRoom(const std::string& roomCode, const std::string& message);
+	void UpdatePlayerStats(user_id userId, bool won, int cards_in_hand_at_loss, int time_played_min);
 	std::string CreateRoom(user_id hostId, int maxPlayers = 4);
 	bool JoinRoom(user_id userId, const std::string& roomCode, UserService& userSvc);
 	std::vector<user_id> GetPlayersInRoom(const std::string& roomCode);

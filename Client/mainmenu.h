@@ -7,6 +7,7 @@
 #include <QJsonArray>
 #include "gameclient.h"
 #include "GameProtocol.pb.h"
+#include "profilewidget.h"
 
 namespace Ui { class MainMenu; }
 
@@ -49,6 +50,7 @@ private:
     int m_gamePageIndex;
     GameClient* m_gameClient;
     QNetworkAccessManager* m_networkManager;
+    ProfileWidget* m_profileWidget;
 
     const int roomCodeInputWidth = 300;
     const int profileCardWidth = 450;

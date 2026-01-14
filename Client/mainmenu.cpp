@@ -49,61 +49,26 @@ void MainMenu::setupMenuPages() {
 }
 
 void MainMenu::setupProfilePage() {
-    if (ui->profilePage->layout()) delete ui->profilePage->layout();
-    for (auto label : ui->profilePage->findChildren<QLabel*>()) { label->hide(); }
+    if (ui->profilePage->layout()) {
+        QLayoutItem* item;
+        while ((item = ui->profilePage->layout()->takeAt(0)) != nullptr) {
+            delete item;
+        }
+    }
+    else {
+        new QVBoxLayout(ui->profilePage);
+    }
 
-    QVBoxLayout* profVLayout = new QVBoxLayout(ui->profilePage);
-    profVLayout->addStretch();
-
-    QWidget* profileCard = new QWidget();
-    profileCard->setObjectName("profileCard");
-    profileCard->setStyleSheet("QWidget#profileCard { background-color: #252525; border: 2px solid #4CAF50; border-radius: 20px; }");
-    profileCard->setFixedWidth(profileCardWidth);
-
-    QVBoxLayout* cardLayout = new QVBoxLayout(profileCard);
-    cardLayout->setContentsMargins(30, 30, 30, 30);
-    cardLayout->setSpacing(20);
-
-    QLabel* nameHeader = new QLabel(m_username.toUpper());
-    nameHeader->setStyleSheet("font-size: 24px; font-weight: bold; color: #4CAF50; border: none;");
-    nameHeader->setAlignment(Qt::AlignCenter);
-    cardLayout->addWidget(nameHeader);
-
-    QFrame* line = new QFrame();
-    line->setFrameShape(QFrame::HLine);
-    line->setStyleSheet("background-color: #444444; border: none; min-height: 1px;");
-    cardLayout->addWidget(line);
-
-    QGridLayout* statsGrid = new QGridLayout();
-    auto addStyledStat = [&](const QString& labelText, QWidget* valueLabel, int row) {
-        QLabel* l = new QLabel(labelText);
-        l->setStyleSheet("color: #AAAAAA; font-size: 14px; border: none;");
-        l->show();
-        valueLabel->setStyleSheet("color: white; font-size: 16px; font-weight: bold; border: none;");
-        valueLabel->show();
-        statsGrid->addWidget(l, row, 0, Qt::AlignLeft);
-        statsGrid->addWidget(valueLabel, row, 1, Qt::AlignRight);
-        };
-
-    addStyledStat("Games Played", ui->gamesPlayedLabel, 0);
-    addStyledStat("Games Won", ui->gamesWonLabel, 1);
-    addStyledStat("Cards at Loss", ui->cardsAtLossLabel, 2);
-    addStyledStat("Total Time (min)", ui->totalTimeLabel, 3);
-    addStyledStat("Performance Score", ui->performanceScoreLabel, 4);
-
-    cardLayout->addLayout(statsGrid);
-    QHBoxLayout* cardHCenter = new QHBoxLayout();
-    cardHCenter->addStretch();
-    cardHCenter->addWidget(profileCard);
-    cardHCenter->addStretch();
-
-    profVLayout->addLayout(cardHCenter);
-    profVLayout->addSpacing(30);
+    QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(ui->profilePage->layout());
+    layout->setContentsMargins(20, 20, 20, 20);
+    layout->addStretch(1);
+    m_profileWidget = new ProfileWidget(m_username, this);
+    layout->addWidget(m_profileWidget, 0, Qt::AlignCenter);
+    layout->addSpacing(30);
     ui->backButton->show();
-    profVLayout->addWidget(ui->backButton, 0, Qt::AlignCenter);
-    profVLayout->addStretch();
+    layout->addWidget(ui->backButton, 0, Qt::AlignCenter);
+    layout->addStretch(1);
 }
-
 void MainMenu::setupLobbyPages() {
     if (ui->lobbyPage->layout()) delete ui->lobbyPage->layout();
     QVBoxLayout* joinLayout = new QVBoxLayout(ui->lobbyPage);
@@ -266,11 +231,7 @@ void MainMenu::on_profileButton_clicked() {
 void MainMenu::onProfileReply(QNetworkReply* reply) {
     if (reply->error() == QNetworkReply::NoError) {
         QJsonObject json = QJsonDocument::fromJson(reply->readAll()).object();
-        ui->gamesPlayedLabel->setText(QString::number(json["gamesPlayed"].toInt()));
-        ui->gamesWonLabel->setText(QString::number(json["gamesWon"].toInt()));
-        ui->totalTimeLabel->setText(QString::number(json["hoursPlayed"].toInt()));
-        ui->cardsAtLossLabel->setText(QString::number(json["cardsLeftOnLosses"].toInt()));
-        ui->performanceScoreLabel->setText(QString::number(json["performanceScore"].toDouble(), 'f', 2));
+        m_profileWidget->updateStats(json);
     }
     reply->deleteLater();
 }

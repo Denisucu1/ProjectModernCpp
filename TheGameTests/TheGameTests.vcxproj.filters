@@ -16,31 +16,64 @@
     <Filter Include="Source Files\Tests_game_logic">
       <UniqueIdentifier>{ca376757-dce6-4a50-94d1-39127ca1249b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GameLogicSources">
+      <UniqueIdentifier>{9160a10a-fd1f-48af-a0aa-bf1ba5a2d3ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\src\gtest-all.cc">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\Server\TheGame\BinaryGameService.cpp">
+      <Filter>Source Files\GameLogicSources</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\src\gtest_main.cc">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\Server\TheGame\Card.cpp">
+      <Filter>Source Files\GameLogicSources</Filter>
     </ClCompile>
     <ClCompile Include="CardTests.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GameLogicSources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server\TheGame\DrawPile.cpp">
+      <Filter>Source Files\GameLogicSources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server\TheGame\Game.cpp">
+      <Filter>Source Files\GameLogicSources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server\TheGame\MATCHSERVICE.CPP">
+      <Filter>Source Files\GameLogicSources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server\TheGame\Player.cpp">
+      <Filter>Source Files\GameLogicSources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server\TheGame\PlayPiles.cpp">
+      <Filter>Source Files\GameLogicSources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server\TheGame\UserService.cpp">
+      <Filter>Source Files\GameLogicSources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server\TheGame\GameProtocol.pb.cc">
+      <Filter>Source Files\GameLogicSources</Filter>
     </ClCompile>
     <ClCompile Include="DrawPileTests.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Tests_game_logic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server\TheGame\GameService.cpp">
+      <Filter>Source Files\Tests_game_logic</Filter>
     </ClCompile>
     <ClCompile Include="GameServiceTests.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Tests_game_logic</Filter>
     </ClCompile>
     <ClCompile Include="GameTests.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Tests_game_logic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\src\gtest_main.cc">
+      <Filter>Source Files\Tests_game_logic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\src\gtest-all.cc">
+      <Filter>Source Files\Tests_game_logic</Filter>
     </ClCompile>
     <ClCompile Include="PlayerTests.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Tests_game_logic</Filter>
     </ClCompile>
     <ClCompile Include="PlayPilesTests.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Tests_game_logic</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

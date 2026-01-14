@@ -14,8 +14,8 @@ extern "C" __declspec(dllexport) std::string GenerateRoomCode()
     std::random_device rd;
     std::mt19937 gen(rd());
 
-    int limita_maxima = static_cast<int>(sizeof(alphanum)) - 2;
-    std::uniform_int_distribution<int> dis(0, limita_maxima);
+	int maxLimit = sizeof(alphanum) - 2;
+    std::uniform_int_distribution<int> dis(0, maxLimit);
 
     for (int i = 0; i < CODE_LEN; ++i)
     {

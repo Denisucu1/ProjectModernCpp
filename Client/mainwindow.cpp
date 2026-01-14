@@ -11,7 +11,6 @@ MainWindow::MainWindow(QWidget* parent)
 {
     ui->setupUi(this);
     setupUiElements();
-    applyStyles();
     m_networkManager = new QNetworkAccessManager(this);
 }
 
@@ -24,21 +23,6 @@ void MainWindow::setupUiElements()
 {
     ui->logoLabel->setPixmap(QPixmap(logoPath));
     ui->logoLabel->setScaledContents(true);
-}
-
-void MainWindow::applyStyles()
-{
-    QString styleSheet = R"(
-        QWidget#MainWindow { background-color: #1e1e1e; }
-        QLabel { font-size: 14px; font-weight: bold; color: #FFFFFF; padding-left: 3px; margin-top: 8px; }
-        QLabel#logoLabel { margin-bottom: 15px; min-height: 50px; }
-        QLineEdit { border: 1px solid #444; border-radius: 8px; padding: 10px; font-size: 14px; background-color: #333; color: white; min-height: 25px; }
-        QPushButton#loginButton { background-color: #E91E63; color: white; border: none; border-radius: 8px; padding: 10px; font-size: 14px; font-weight: bold; min-height: 30px; margin-top: 15px; }
-        QPushButton#loginButton:hover { background-color: #D81B60; }
-        QPushButton#registerButton { background-color: #4CAF50; color: white; border: none; border-radius: 8px; padding: 10px; font-size: 14px; font-weight: bold; min-height: 30px; margin-top: 5px; }
-        QPushButton#registerButton:hover { background-color: #45a049; }
-    )";
-    this->setStyleSheet(styleSheet);
 }
 
 void MainWindow::on_registerButton_clicked()

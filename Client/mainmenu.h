@@ -34,7 +34,6 @@ private slots:
     void onProfileReply(QNetworkReply* reply);
 
 private:
-    void applyStyles();
     void setupNavigationLayout();
     void setupMenuPages();
     void setupProfilePage();

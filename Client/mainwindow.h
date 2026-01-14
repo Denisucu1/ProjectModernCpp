@@ -27,7 +27,6 @@ private slots:
 
 private:
     void setupUiElements();
-    void applyStyles();
     void executeAuthRequest(const QString& url);
 
     Ui::MainWindow* ui;

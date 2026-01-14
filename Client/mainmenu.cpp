@@ -13,7 +13,6 @@
 MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
     QWidget(parent), ui(new Ui::MainMenu), m_username(username), m_userId(userId) {
     ui->setupUi(this);
-    applyStyles();
     setupNavigationLayout();
     setupMenuPages();
     setupProfilePage();
@@ -22,31 +21,6 @@ MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
     m_gameClient->connectToServer();
 }
 
-void MainMenu::applyStyles() {
-    ui->roomCodeInput->setFixedWidth(roomCodeInputWidth);
-    ui->roomCodeInput->setAlignment(Qt::AlignCenter);
-    ui->confirmJoinButton->setFixedWidth(roomCodeInputWidth);
-    ui->cancelJoinButton->setFixedWidth(roomCodeInputWidth);
-    ui->roomCodeInput->setInputMask(">NNNN;");
-
-    QString styleSheet = R"(
-        QWidget#MainMenu { background-color: #1e1e1e; }
-        QPushButton { 
-            background-color: #4a4a4a; color: white; border-radius: 20px; 
-            font-weight: bold; font-size: 14px; min-width: 180px; max-width: 180px; min-height: 45px; border: none;
-        }
-        QPushButton:hover { background-color: #5a5a5a; }
-        QPushButton#playButton, QPushButton#createGameButton, QPushButton#joinGameButton, 
-        QPushButton#confirmJoinButton, QPushButton#startGameButton { background-color: #4CAF50; }
-        QPushButton#exitButton, QPushButton#backButton, QPushButton#cancelJoinButton, 
-        QPushButton#lobbyBackButton, QPushButton#modeBackButton, QPushButton#closeLobbyButton { background-color: #D32F2F; }
-        QPushButton#profileButton { background-color: #5C6BC0; }
-        QLineEdit { padding: 8px; border-radius: 10px; background-color: #2b2b2b; color: white; border: 1px solid #4CAF50; min-width: 180px; }
-        QListWidget { background-color: #2b2b2b; color: white; border-radius: 10px; border: 1px solid #4a4a4a; }
-        QLabel { color: white; }
-    )";
-    this->setStyleSheet(styleSheet);
-}
 
 void MainMenu::setupNavigationLayout() {
     ui->stackedWidget->setMaximumWidth(16777215);

@@ -4,5 +4,5 @@
 
 namespace AuthRoutes
 {
-	void setup(crow::SimpleApp& app, UserService& userSvc);
+    void setup(crow::SimpleApp& app, UserService& userSvc);
 }

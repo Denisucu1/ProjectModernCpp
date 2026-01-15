@@ -5,5 +5,5 @@
 
 namespace GameRoutes
 {
-	void setup(crow::SimpleApp& app, UserService& userSvc, GameService& gameSvc);
+    void setup(crow::SimpleApp& app, UserService& userSvc, GameService& gameSvc);
 }

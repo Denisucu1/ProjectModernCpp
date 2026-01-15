@@ -17,6 +17,8 @@ public:
     void StartGame(int matchId, const std::vector<int>& userIds);
     void UpdateMatchState(int matchId, const std::string& newStacksState, const std::string& newDeckState, int nextPlayerId);
     void CheckForTimeouts();
+
+    static bool IsInMatchmakingRange(float matchScore, float player_score);
 };
 
 #endif // MATCH_SERVICE_H

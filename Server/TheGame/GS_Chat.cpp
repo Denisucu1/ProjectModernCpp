@@ -23,15 +23,28 @@ namespace GameImpl::Chat {
 
             try {
                 auto& storage = getStorage();
+                auto players = storage.get_all<Jucator>(
+                    where(is_equal(&Jucator::user_id, userId) && is_equal(&Jucator::game_id, numericMatchId))
+                );
+
+                if (players.empty()) {
+                    std::cerr << "[ChatError] Not found player " << userId
+                        << " in game " << numericMatchId << std::endl;
+                    return;
+                }
+
+                int realPlayerId = players.front().id;
 
                 ::Chat chatEntry;
-                chatEntry.player_id = userId;
+                chatEntry.player_id = realPlayerId; 
                 chatEntry.game_id = numericMatchId;
                 chatEntry.message = message;
 
                 storage.insert(chatEntry);
-                std::cout << "[Chat] Mesaj salvat pentru meciul " << numericMatchId << " de la user " << userId << std::endl;
-            }
+
+                std::cout << "[Chat] Saved message (PlayerID: " << realPlayerId
+                    << ", Match: " << numericMatchId << ") de la user " << userId << std::endl;
+				}
             catch (const std::exception& e) {
                 std::cerr << "[ChatError] " << e.what() << std::endl;
             }

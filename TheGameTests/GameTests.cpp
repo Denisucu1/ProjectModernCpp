@@ -5,9 +5,9 @@
 std::vector<Player> create_players(int count) 
 {
     std::vector<Player> players;
-    for (int i = 0; i < count; ++i) {
+    for (int i = 0; i < count; ++i) 
         players.emplace_back("P" + std::to_string(i + 1), i + 1);
-    }
+    
     return players;
 }
 
@@ -51,12 +51,14 @@ TEST(GameLogic, NextPlayerRotation)
     ASSERT_NE(firstIdx, (firstIdx + 1) % 3);
 }
 
-TEST(GameLogic, FullGameLossCondition) {
+TEST(GameLogic, FullGameLossCondition) 
+{
     Game game(create_players(2));
     ASSERT_EQ(game.CheckGameState(), GameState::InProgress);
 }
 
-TEST(GameLogic, EndTurnConstraints) {
+TEST(GameLogic, EndTurnConstraints) 
+{
     Game game(create_players(2));
     int id = game.GetPlayers()[0].GetId();
 
@@ -82,6 +84,7 @@ TEST(GameLogic, BackjumpRuleIntegration)
 TEST(GameLogic, PlayCardOutOfTurn) 
 {
     Game game(create_players(2));
+
     int firstPlayerId = game.GetPlayers()[0].GetId();
     int secondPlayerId = game.GetPlayers()[1].GetId();
 

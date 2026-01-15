@@ -15,8 +15,8 @@ std::vector<Player> create_test_players()
 TEST(BinaryGameServiceTest, ShouldProcessValidPlayCardAction)
 {
     Game game(create_test_players());
-    int currentUserId = game.GetPlayers()[game.GetCurrentPlayerIndex()].GetId();
 
+    int currentUserId = game.GetPlayers()[game.GetCurrentPlayerIndex()].GetId();
     uint8_t cardValue = game.GetPlayers()[game.GetCurrentPlayerIndex()].GetDeck()[0];
 
     myproject::GameMessage msg;
@@ -24,7 +24,7 @@ TEST(BinaryGameServiceTest, ShouldProcessValidPlayCardAction)
     auto* action = msg.mutable_action();
     action->set_action_type(myproject::PlayerAction::PLAY_CARD);
     action->set_card_value(cardValue);
-    action->set_stack_index(0); // Ascend 1
+    action->set_stack_index(0); 
 
     std::string binaryData = msg.SerializeAsString();
 
@@ -41,6 +41,7 @@ TEST(BinaryGameServiceTest, ShouldReturnErrorForInvalidCard)
     myproject::GameMessage msg;
     msg.set_type(myproject::GameMessage::ACTION);
     auto* action = msg.mutable_action();
+
     action->set_action_type(myproject::PlayerAction::PLAY_CARD);
     action->set_card_value(1); 
     action->set_stack_index(0);

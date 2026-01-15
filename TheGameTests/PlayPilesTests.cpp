@@ -87,6 +87,5 @@ TEST(PlayPilesUtils, CardPlacementUpdatesValue)
 {
     PlayPiles piles;
     piles.PlayCardOnStack(PlayPiles::ascend_2, Card(25));
-    // GetStackValue returnează uint8_t
     ASSERT_EQ(static_cast<uint8_t>(25), piles.GetStackValue(PlayPiles::ascend_2));
 }

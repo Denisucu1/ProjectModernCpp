@@ -130,7 +130,7 @@ void MainWindow::onLoginReply(QNetworkReply* reply) {
 void MainWindow::onRegisterReply(QNetworkReply* reply) {
     ui->registerButton->setEnabled(true);
     if (reply->error() == QNetworkReply::NoError) {
-        QMessageBox::information(this, "Succes", "Te poți loga acum.");
+        QMessageBox::information(this, "Success", "Registration successful. You can log in now.");
     }
     reply->deleteLater();
 }

@@ -1,6 +1,7 @@
 #include "DrawPile.h"
 #include <algorithm>
 #include <random>
+#include <iostream>
 
 DrawPile::DrawPile()
 {
@@ -40,6 +41,7 @@ Card DrawPile::DrawACard()
 {
 	Card card = m_drawPile.back();
 	m_drawPile.pop_back();
+	std::cout << "DrawPile::DrawACard: Drew card with value " << static_cast<int>(card.GetValue()) << ", remaining cards: " << m_drawPile.size() << '\n';
 	return card;
 }
 

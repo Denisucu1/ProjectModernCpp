@@ -34,6 +34,12 @@
     <Filter Include="Source Files\GameProtocol">
       <UniqueIdentifier>{b872d551-14ae-4917-89a5-52ca3155d7c8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\server_logic">
+      <UniqueIdentifier>{e9027c08-fe64-4db1-9af8-85eab3cad0c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\server_logic\GameServiceInternal">
+      <UniqueIdentifier>{10f8c6a9-3deb-47cc-ab40-091a551192bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="User.h">
@@ -90,6 +96,9 @@
     <ClInclude Include="GameProtocol.pb.h">
       <Filter>Source Files\GameProtocol</Filter>
     </ClInclude>
+    <ClInclude Include="GS_Internal.h">
+      <Filter>Source Files\server_logic\GameServiceInternal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UserService.cpp">
@@ -102,9 +111,6 @@
       <Filter>Source Files\game_logic</Filter>
     </ClCompile>
     <ClCompile Include="Game.cpp">
-      <Filter>Source Files\game_logic</Filter>
-    </ClCompile>
-    <ClCompile Include="GameService.cpp">
       <Filter>Source Files\game_logic</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
@@ -136,6 +142,21 @@
     </ClCompile>
     <ClCompile Include="GameProtocol.pb.cc">
       <Filter>Source Files\GameProtocol</Filter>
+    </ClCompile>
+    <ClCompile Include="GameService.cpp">
+      <Filter>Source Files\server_logic</Filter>
+    </ClCompile>
+    <ClCompile Include="GS_Connection.cpp">
+      <Filter>Source Files\server_logic\GameServiceInternal</Filter>
+    </ClCompile>
+    <ClCompile Include="GS_Room.cpp">
+      <Filter>Source Files\server_logic\GameServiceInternal</Filter>
+    </ClCompile>
+    <ClCompile Include="GS_Game.cpp">
+      <Filter>Source Files\server_logic\GameServiceInternal</Filter>
+    </ClCompile>
+    <ClCompile Include="GS_Chat.cpp">
+      <Filter>Source Files\server_logic\GameServiceInternal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

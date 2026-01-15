@@ -27,6 +27,7 @@ public:
     size_t GetDeckSize() const { return m_cards.GetSize(); }
     std::uint8_t GetMinCardsToPlay() const { return m_cards.IsEmpty() ? 1 : 2; }
     const std::vector<Player>& GetPlayers() const { return m_players; }
+    std::vector<Player>& GetPlayers() { return m_players; }
 
 private:
     DrawPile m_cards;

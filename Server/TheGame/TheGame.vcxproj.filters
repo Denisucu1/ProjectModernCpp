@@ -105,6 +105,9 @@
     <ClInclude Include="GS_Internal.h">
       <Filter>Header Files\server_logic\GameServiceInternal</Filter>
     </ClInclude>
+    <ClInclude Include="SerializationUtil.h">
+      <Filter>Header Files\Routing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UserService.cpp">

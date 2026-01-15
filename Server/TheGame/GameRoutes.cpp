@@ -1,6 +1,7 @@
 #include "GameRoutes.h"
+#include "Match.h"
 
-namespace GameRoutes{
+namespace GameRoutes {
     void GameRoutes::setup(crow::SimpleApp& app, UserService& userSvc, GameService& gameSvc)
     {
         CROW_ROUTE(app, "/api/game_status/<int>").methods("GET"_method)
@@ -61,7 +62,6 @@ namespace GameRoutes{
 
             const auto& match = matchOpt.value();
             crow::json::wvalue res;
-
 
             res["matchId"] = match.match_id;
             res["status"] = match.status;

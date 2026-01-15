@@ -16,7 +16,7 @@ namespace MatchConstants {
 class GameDB {
     friend auto initStorage();
     friend class MatchService;
-private:
+public:
     int id = 0;
     int max_players = MatchConstants::MaxPlayersDefault;
     std::string status = MatchConstants::StatusInitial;
@@ -26,7 +26,6 @@ private:
     std::int64_t creation_timestamp = 0;
     double first_player_score = MatchConstants::ScoreInitial;
 
-public:
     GameDB() = default;
     int GetId() const;
     const std::string& GetStatus() const;
@@ -41,14 +40,13 @@ public:
 class PlayerDB {
     friend auto initStorage();
     friend class MatchService;
-private:
+public:
     int id = 0;
     int user_id = 0;
     int game_id = 0;
     int seat_index = 0;
     std::string hand = "";
 
-public:
     PlayerDB() = default;
     int GetId() const;
     int GetUserId() const;
@@ -60,13 +58,12 @@ public:
 class Move {
     friend auto initStorage();
     friend class MatchService;
-private:
+public:
     int id = 0;
     int player_id = 0;
     int game_id = 0;
     std::string cards_played = "";
 
-public:
     Move() = default;
     int GetId() const;
     int GetPlayerId() const;
@@ -77,13 +74,12 @@ public:
 class Chat {
     friend auto initStorage();
     friend class MatchService;
-private:
+public:
     int id = 0;
     int player_id = 0;
     int game_id = 0;
     std::string message = "";
 
-public:
     Chat() = default;
     int GetId() const;
     int GetPlayerId() const;

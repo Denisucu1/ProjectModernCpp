@@ -1,6 +1,7 @@
 ﻿#include "GameService.h"
 #include "GS_Internal.h"
 #include "UserService.h"
+#include "Match.h"
 
 GameService::GameService()
 {
@@ -119,7 +120,29 @@ std::optional<game_id> GameService::GetPlayerGameStatus(user_id userId)
 
 std::optional<MatchData> GameService::GetMatchState(int matchIdInt)
 {
-	return std::optional<MatchData>();
+	auto& storage = getStorage();
+	try {
+		auto gameOpt = storage.get_all<GameDB>(where(c(&GameDB::id) == matchIdInt));
+		if (gameOpt.empty()) return std::nullopt;
+		const auto& gameDb = gameOpt.front();
+
+		MatchData data;
+		data.match_id = gameDb.GetId();
+		data.status = gameDb.GetStatus();
+		data.deck_count = 0;
+
+		auto players = storage.get_all<PlayerDB>(where(c(&PlayerDB::game_id) == matchIdInt));
+		for (const auto& p : players) {
+			MatchPlayerData pd;
+			pd.id = p.GetId();
+			pd.userId = p.GetUserId();
+			data.players.push_back(pd);
+		}
+		return data;
+	}
+	catch (...) {
+		return std::nullopt;
+	}
 }
 
 void GameService::CreateGame(std::list<user_id>& playerIds)

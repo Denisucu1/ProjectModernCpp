@@ -17,6 +17,3 @@ public:
 	static ActionResult ProcessPlayerAction(Game& game, int userId, const std::string& binaryData);
 	static std::vector<std::pair<int, std::string>> PrepareBroadcastMessages(Game& game);
 };
-
-
-

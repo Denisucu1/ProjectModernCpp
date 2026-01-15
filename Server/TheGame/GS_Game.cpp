@@ -2,6 +2,7 @@
 #include "BinaryGameService.h"
 #include "DatabaseManager.h"
 #include "SerializationUtil.h"
+#include "Match.h"
 #include <iostream>
 
 namespace GameImpl::GameLogic {
@@ -73,18 +74,18 @@ namespace GameImpl::GameLogic {
             storage.transaction([&]() -> bool
                 {
                     storage.update_all(
-                        set(c(&Joc::stacks_state) = stacksSerialized,
-                            c(&Joc::deck_state) = deckStr),
-                        where(is_equal(&Joc::id, numericId))
+                        set(c(&GameDB::stacks_state) = stacksSerialized,
+                            c(&GameDB::deck_state) = deckStr),
+                        where(is_equal(&GameDB::id, numericId))
                     );
 
                     for (const auto& player : game.GetPlayers())
                     {
                         std::string handStr = SerializationUtil::Serialize(player.GetDeck());
                         storage.update_all(
-                            set(c(&Jucator::hand) = handStr),
-                            where(is_equal(&Jucator::game_id, numericId) &&
-                                is_equal(&Jucator::user_id, player.GetId()))
+                            set(c(&PlayerDB::hand) = handStr),
+                            where(is_equal(&PlayerDB::game_id, numericId) &&
+                                is_equal(&PlayerDB::user_id, player.GetId()))
                         );
                     }
                     return true;

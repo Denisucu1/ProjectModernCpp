@@ -4,11 +4,11 @@
 
 Player::Player(std::string name_string, int id)
     : m_name(std::move(name_string)),
-    m_deck_active_size(0),
-    m_score(0),
     m_id(id)
 {
-    m_deck.fill(0); 
+    m_deck.fill(0);
+    m_deck_active_size = 0;
+    m_score = 0;
 }
 
 Player::Player(Player&& other)
@@ -42,7 +42,7 @@ void Player::SetDeck(const std::vector<std::uint8_t>& deck)
 
     for (size_t i = 0; i < m_deck_active_size; ++i)
         m_deck[i] = deck[i];
-    
+
 }
 
 std::span<const std::uint8_t> Player::GetDeck() const {
@@ -61,10 +61,12 @@ std::span<const std::uint8_t> Player::GetDeckView() const
 
 bool Player::RemoveCard(std::uint8_t cardValue)
 {
-    for (std::uint8_t i = 0; i < m_deck_active_size; ++i) 
+    for (std::uint8_t i = 0; i < m_deck_active_size; ++i)
     {
-        if (m_deck[i] == cardValue) 
+        if (m_deck[i] == cardValue)
         {
+            // Mutăm ultima carte în locul celei șterse (ordinea nu contează strict, sau folosim vector)
+            // Aici păstrăm logica de array fix
             m_deck[i] = m_deck[m_deck_active_size - 1];
             m_deck_active_size--;
             return true;

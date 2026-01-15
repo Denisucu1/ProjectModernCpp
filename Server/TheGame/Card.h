@@ -5,9 +5,7 @@ class Card
 {
 public:
     Card();
-
     explicit Card(std::uint8_t value);
-
     std::uint8_t GetValue() const;
 
     static constexpr std::uint8_t MIN_VALUE = 2;

@@ -23,14 +23,12 @@ struct Room {
 };
 
 struct MatchPlayerData {
-
 	int id;
 	int userId;
 	std::vector<int> cards_in_hand;
 };
 
 struct MatchData {
-
 	int match_id;
 	std::string status;
 	int current_turn_player_id;
@@ -67,7 +65,6 @@ public:
 	void SaveChatMessage(user_id userId, const std::string& message);
 
 private:
-
 	std::mutex m_mutex;
 	std::mutex m_connection_mutex;
 	std::unordered_map<user_id, crow::websocket::connection*> m_userConnections;
@@ -80,11 +77,8 @@ private:
 	std::map<user_id, game_id> m_player_game_map;
 
 	void CreateGame(std::list<user_id>& playerIds);
-
 	void BroadcastToRoomInternal(const std::string& roomCode, const std::string& message);
-
 	MatchData GenerateMatchData(const Game& game);
 	std::string GenerateRandomCode();
-
 	long long m_game_id_counter_ = 0;
 };

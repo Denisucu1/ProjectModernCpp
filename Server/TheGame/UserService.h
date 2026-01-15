@@ -12,6 +12,7 @@ public:
     void UpdateStats(int userId, bool won, int cards_in_hand_at_loss, int time_played_min);
     int CalculatePerformanceScore(int userId);
     std::optional<Profile> GetProfileById(int userId);
+    std::optional<User> GetUserById(int userId);
     std::optional<std::string> GenerateAndStoreToken(int userId);
     std::optional<int> GetUserIdByToken(const std::string& token);
 };

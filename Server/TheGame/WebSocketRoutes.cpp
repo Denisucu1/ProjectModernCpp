@@ -1,15 +1,15 @@
 ﻿#pragma once
 #include "WebSocketRoutes.h"
+#include <algorithm>
 
-namespace WebSocketRoutes{
-
-	void setup(crow::SimpleApp& app, UserService& userSvc, GameService& gameSvc) {
+namespace WebSocketRoutes {
+    void setup(crow::SimpleApp& app, UserService& userSvc, GameService& gameSvc) {
         CROW_WEBSOCKET_ROUTE(app, "/ws/game")
             .onopen([&](crow::websocket::connection& conn) {
             std::cout << "WebSocket connection opened." << std::endl;
                 })
             .onclose([&](crow::websocket::connection& conn, const std::string& reason, uint16_t code) {
-			gameSvc.removeConnection(&conn);
+            gameSvc.removeConnection(&conn);
             std::cout << "WebSocket connection closed: " << reason << " (code " << code << ")" << std::endl;
                 })
             .onmessage([&](crow::websocket::connection& conn, const std::string& data, bool isBinary) {
@@ -85,7 +85,7 @@ namespace WebSocketRoutes{
                                 auto userOpt = userSvc.GetUserById(pid);
                                 if (userOpt) {
                                     resp["players"][i]["userId"] = pid;
-                                    resp["players"][i]["username"] = userOpt->username;
+                                    resp["players"][i]["username"] = userOpt->GetUsername();
                                     i++;
                                 }
                             }
@@ -135,7 +135,7 @@ namespace WebSocketRoutes{
                     else
                     {
                         conn.send_text("{\"error\": \"Missing userId or message for chat\"}");
-					}
+                    }
                 }
             }
             catch (const std::exception& e) {
@@ -143,6 +143,5 @@ namespace WebSocketRoutes{
                 conn.send_text("{\"error\": \"Server error: " + std::string(e.what()) + "\"}");
             }
                 });
-	}
-
+    }
 }

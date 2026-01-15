@@ -1,9 +1,9 @@
 #include "AuthRoutes.h"
 #include "JsonUtil.h"
 
-namespace AuthRoutes{
-	void AuthRoutes::setup(crow::SimpleApp& app, UserService& userSvc)
-	{
+namespace AuthRoutes {
+    void AuthRoutes::setup(crow::SimpleApp& app, UserService& userSvc)
+    {
         CROW_ROUTE(app, "/api/login").methods("POST"_method)
             ([&userSvc](const crow::request& req) {
 
@@ -77,5 +77,5 @@ namespace AuthRoutes{
             }
             return res;
                 });
-	}
+    }
 }

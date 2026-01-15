@@ -33,7 +33,7 @@ private:
     std::string m_name;
     std::array<std::uint8_t, 8> m_deck;
 
-    std::uint8_t m_deck_active_size; 
+    std::uint8_t m_deck_active_size;
     std::uint8_t m_score;
     int m_id;
 };

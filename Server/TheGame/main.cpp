@@ -7,16 +7,12 @@
 #include "ApiRoutes.h"
 #include <string>
 #include <exception>
-
 #include <clocale>
 #include <locale>
-
 #include <sqlite3.h>
-
 #include "GameService.h"
 
 int main() {
-
     std::cout << "=== SQLite Version Check ===" << std::endl;
     std::cout << "Compiled with header version: " << SQLITE_VERSION << std::endl;
     std::cout << "Running with DLL version:     " << sqlite3_libversion() << std::endl;

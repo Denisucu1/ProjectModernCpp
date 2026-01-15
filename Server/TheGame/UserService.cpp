@@ -87,6 +87,12 @@ std::optional<Profile> UserService::GetProfileById(int userId) {
     return res.empty() ? std::nullopt : std::make_optional(res.front());
 }
 
+std::optional<User> UserService::GetUserById(int userId) {
+    auto& storage = getStorage();
+    auto res = storage.get_all<User>(where(c(&User::id) == userId));
+    return res.empty() ? std::nullopt : std::make_optional(res.front());
+}
+
 std::optional<std::string> UserService::GenerateAndStoreToken(int userId) {
     auto& storage = getStorage();
     std::mt19937_64 gen(std::random_device{}());

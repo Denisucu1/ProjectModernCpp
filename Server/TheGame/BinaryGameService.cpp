@@ -2,38 +2,38 @@
 
 BinaryGameService::ActionResult BinaryGameService::ProcessPlayerAction(Game& game, int userId, const std::string& binaryData)
 {
-	myproject::GameMessage msg;
-	if(!msg.ParseFromString(binaryData)) {
-		return { false, "Failed to parse action message", false };
-	}
+    myproject::GameMessage msg;
+    if (!msg.ParseFromString(binaryData)) {
+        return { false, "Failed to parse action message", false };
+    }
 
-	if(msg.type() != myproject::GameMessage::ACTION || !msg.has_action()) {
-		return { false, "Invalid message type for action", false };
-	}
-	const myproject::PlayerAction& action = msg.action();
+    if (msg.type() != myproject::GameMessage::ACTION || !msg.has_action()) {
+        return { false, "Invalid message type for action", false };
+    }
+    const myproject::PlayerAction& action = msg.action();
 
-	if(action.action_type() == myproject::PlayerAction::PLAY_CARD) {
+    if (action.action_type() == myproject::PlayerAction::PLAY_CARD) {
         if (game.PlaySingleCard(userId, action.card_value(), action.stack_index()))
         {
             return { true, "", false };
         }
-		else 
-		{
-			return { false, "Invalid move", false };
-		}
-	}
-	else if (action.action_type() == myproject::PlayerAction_ActionType_END_TURN)
-	{
-		if (game.EndCurrentTurn(userId))
-		{
-			return { true, "", true };
-		}
-		else
-		{
-			return { false, "Cannot end turn now", false };
-		}
-	}
-	return { false, "Unknown Action", false };
+        else
+        {
+            return { false, "Invalid move", false };
+        }
+    }
+    else if (action.action_type() == myproject::PlayerAction_ActionType_END_TURN)
+    {
+        if (game.EndCurrentTurn(userId))
+        {
+            return { true, "", true };
+        }
+        else
+        {
+            return { false, "Cannot end turn now", false };
+        }
+    }
+    return { false, "Unknown Action", false };
 }
 
 std::vector<std::pair<int, std::string>> BinaryGameService::PrepareBroadcastMessages(Game& game)

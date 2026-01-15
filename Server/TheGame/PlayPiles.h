@@ -10,8 +10,8 @@ public:
 
     PlayPiles();
 
-    enum StackIndex : size_t 
-	{
+    enum StackIndex : size_t
+    {
         ascend_1 = 0, ascend_2 = 1,
         descend_1 = 2, descend_2 = 3
     };

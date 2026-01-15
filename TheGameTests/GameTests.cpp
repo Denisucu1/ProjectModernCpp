@@ -42,3 +42,12 @@ TEST(GameLogic, LossConditionOnInsufficientMoves)
     ASSERT_FALSE(game.EndCurrentTurn(userId))
         << "Jocul nu ar trebui să permită finalul turului dacă s-a jucat doar o carte (minim 2 necesare).";
 }
+
+TEST(GameLogic, NextPlayerRotation) 
+{
+    Game game(create_players(3));
+    int firstIdx = game.GetCurrentPlayerIndex();
+
+    game.EndCurrentTurn(game.GetPlayers()[firstIdx].GetId()); 
+    ASSERT_NE(firstIdx, (firstIdx + 1) % 3);
+}

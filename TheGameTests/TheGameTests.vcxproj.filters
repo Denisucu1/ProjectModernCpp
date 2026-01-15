@@ -19,60 +19,69 @@
     <Filter Include="Source Files\GameLogicSources">
       <UniqueIdentifier>{9160a10a-fd1f-48af-a0aa-bf1ba5a2d3ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GameLogicSources\LogicaServer">
+      <UniqueIdentifier>{c47dd3c1-8f64-4c5e-99fc-32f58091bca4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GameLogicSources\LogicaJoc">
+      <UniqueIdentifier>{5887dd10-ea56-4bc2-ba51-4e165068851a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GameLogicSources\Utilitare">
+      <UniqueIdentifier>{e1fd6006-81d7-4b39-b966-101ed55efc28}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Server\TheGame\BinaryGameService.cpp">
-      <Filter>Source Files\GameLogicSources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Server\TheGame\Card.cpp">
-      <Filter>Source Files\GameLogicSources</Filter>
-    </ClCompile>
-    <ClCompile Include="CardTests.cpp">
-      <Filter>Source Files\GameLogicSources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Server\TheGame\DrawPile.cpp">
-      <Filter>Source Files\GameLogicSources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Server\TheGame\Game.cpp">
-      <Filter>Source Files\GameLogicSources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Server\TheGame\MATCHSERVICE.CPP">
-      <Filter>Source Files\GameLogicSources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Server\TheGame\Player.cpp">
-      <Filter>Source Files\GameLogicSources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Server\TheGame\PlayPiles.cpp">
-      <Filter>Source Files\GameLogicSources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Server\TheGame\UserService.cpp">
-      <Filter>Source Files\GameLogicSources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Server\TheGame\GameProtocol.pb.cc">
-      <Filter>Source Files\GameLogicSources</Filter>
-    </ClCompile>
     <ClCompile Include="DrawPileTests.cpp">
       <Filter>Source Files\Tests_game_logic</Filter>
     </ClCompile>
-    <ClCompile Include="..\Server\TheGame\GameService.cpp">
-      <Filter>Source Files\Tests_game_logic</Filter>
-    </ClCompile>
-    <ClCompile Include="GameServiceTests.cpp">
-      <Filter>Source Files\Tests_game_logic</Filter>
-    </ClCompile>
     <ClCompile Include="GameTests.cpp">
-      <Filter>Source Files\Tests_game_logic</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\src\gtest_main.cc">
-      <Filter>Source Files\Tests_game_logic</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\src\gtest-all.cc">
       <Filter>Source Files\Tests_game_logic</Filter>
     </ClCompile>
     <ClCompile Include="PlayerTests.cpp">
       <Filter>Source Files\Tests_game_logic</Filter>
     </ClCompile>
     <ClCompile Include="PlayPilesTests.cpp">
+      <Filter>Source Files\Tests_game_logic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server\TheGame\BinaryGameService.cpp">
+      <Filter>Source Files\GameLogicSources\LogicaServer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server\TheGame\MATCHSERVICE.CPP">
+      <Filter>Source Files\GameLogicSources\LogicaServer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server\TheGame\UserService.cpp">
+      <Filter>Source Files\GameLogicSources\LogicaServer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server\TheGame\Card.cpp">
+      <Filter>Source Files\GameLogicSources\LogicaJoc</Filter>
+    </ClCompile>
+    <ClCompile Include="CardTests.cpp">
+      <Filter>Source Files\GameLogicSources\LogicaJoc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server\TheGame\DrawPile.cpp">
+      <Filter>Source Files\GameLogicSources\LogicaJoc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server\TheGame\Game.cpp">
+      <Filter>Source Files\GameLogicSources\LogicaJoc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server\TheGame\Player.cpp">
+      <Filter>Source Files\GameLogicSources\LogicaJoc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server\TheGame\PlayPiles.cpp">
+      <Filter>Source Files\GameLogicSources\LogicaJoc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\src\gtest_main.cc">
+      <Filter>Source Files\GameLogicSources\Utilitare</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\src\gtest-all.cc">
+      <Filter>Source Files\GameLogicSources\Utilitare</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server\TheGame\JsonUtil.cpp">
+      <Filter>Source Files\GameLogicSources\Utilitare</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server\TheGame\GameProtocol.pb.cc">
+      <Filter>Source Files\GameLogicSources\LogicaServer</Filter>
+    </ClCompile>
+    <ClCompile Include="BinaryGameServiceTests.cpp">
       <Filter>Source Files\Tests_game_logic</Filter>
     </ClCompile>
   </ItemGroup>

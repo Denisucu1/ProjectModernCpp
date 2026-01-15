@@ -111,8 +111,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)|x64\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sqlite3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Server\x64\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -139,14 +139,14 @@
     <ClCompile Include="..\Server\TheGame\DrawPile.cpp" />
     <ClCompile Include="..\Server\TheGame\Game.cpp" />
     <ClCompile Include="..\Server\TheGame\GameProtocol.pb.cc" />
-    <ClCompile Include="..\Server\TheGame\GameService.cpp" />
+    <ClCompile Include="..\Server\TheGame\JsonUtil.cpp" />
     <ClCompile Include="..\Server\TheGame\MATCHSERVICE.CPP" />
     <ClCompile Include="..\Server\TheGame\Player.cpp" />
     <ClCompile Include="..\Server\TheGame\PlayPiles.cpp" />
     <ClCompile Include="..\Server\TheGame\UserService.cpp" />
+    <ClCompile Include="BinaryGameServiceTests.cpp" />
     <ClCompile Include="CardTests.cpp" />
     <ClCompile Include="DrawPileTests.cpp" />
-    <ClCompile Include="GameServiceTests.cpp" />
     <ClCompile Include="GameTests.cpp" />
     <ClCompile Include="PlayerTests.cpp" />
     <ClCompile Include="PlayPilesTests.cpp" />

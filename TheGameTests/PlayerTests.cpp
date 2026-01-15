@@ -1,12 +1,17 @@
 #include "gtest/gtest.h"
 #include "Player.h"
 
-TEST(PlayerTest, InitializationAndIdentity) {
-    Player p("Andrei", 123);
-    ASSERT_EQ(123, p.GetId());
+TEST(PlayerTest, RemoveNonExistentCard) 
+{
+    Player p("Andrei", 1);
+    p.SetDeck({ 10, 20 });
+
+    ASSERT_FALSE(p.RemoveCard(99));
+    ASSERT_EQ(2, p.GetDeckView().size()); 
 }
 
-TEST(PlayerTest, SetAndGetDeck) {
+TEST(PlayerTest, SetAndGetDeck)
+{
     Player p("Test", 1);
     std::vector<uint8_t> hand = { 10, 20, 30 };
     p.SetDeck(hand);
@@ -16,7 +21,8 @@ TEST(PlayerTest, SetAndGetDeck) {
     ASSERT_EQ(10, deckView[0]);
 }
 
-TEST(PlayerTest, RemoveCardLogic) {
+TEST(PlayerTest, RemoveCardLogic) 
+{
     Player p("Test", 1);
     p.SetDeck({ 10, 20, 30 });
 
@@ -25,7 +31,8 @@ TEST(PlayerTest, RemoveCardLogic) {
     for (auto c : p.GetDeckView()) ASSERT_NE(20, c);
 }
 
-TEST(PlayerTest, MoveSemantics) {
+TEST(PlayerTest, MoveSemantics) 
+{
     Player p1("Original", 1);
     p1.SetDeck({ 5, 10 });
 

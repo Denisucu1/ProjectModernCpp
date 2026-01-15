@@ -11,7 +11,8 @@ std::vector<Player> create_test_players() {
     return players;
 }
 
-TEST(BinaryGameServiceTest, ShouldProcessValidPlayCardAction) {
+TEST(BinaryGameServiceTest, ShouldProcessValidPlayCardAction)
+{
     Game game(create_test_players());
     int currentUserId = game.GetPlayers()[game.GetCurrentPlayerIndex()].GetId();
 
@@ -31,7 +32,8 @@ TEST(BinaryGameServiceTest, ShouldProcessValidPlayCardAction) {
     ASSERT_TRUE(result.success) << "Mutarea ar trebui sa fie valida conform logicii binare.";
 }
 
-TEST(BinaryGameServiceTest, ShouldReturnErrorForInvalidCard) {
+TEST(BinaryGameServiceTest, ShouldReturnErrorForInvalidCard)
+{
     Game game(create_test_players());
     int currentUserId = game.GetPlayers()[game.GetCurrentPlayerIndex()].GetId();
 
@@ -49,7 +51,8 @@ TEST(BinaryGameServiceTest, ShouldReturnErrorForInvalidCard) {
     ASSERT_EQ("Invalid move", result.message);
 }
 
-TEST(BinaryGameServiceTest, ShouldPrepareCorrectBroadcastMessages) {
+TEST(BinaryGameServiceTest, ShouldPrepareCorrectBroadcastMessages) 
+{
     Game game(create_test_players());
 
     auto messages = BinaryGameService::PrepareBroadcastMessages(game);
@@ -63,3 +66,30 @@ TEST(BinaryGameServiceTest, ShouldPrepareCorrectBroadcastMessages) {
     ASSERT_EQ(98 - 16, response.state().cards_remaining_in_deck()); 
 }
 
+TEST(BinaryGameServiceTest, EndTurnAndRotation) 
+{
+    Game game(create_test_players());
+    int currentId = game.GetPlayers()[game.GetCurrentPlayerIndex()].GetId();
+
+    game.PlaySingleCard(currentId, game.GetPlayers()[0].GetDeckView()[0], PlayPiles::ascend_1);
+    game.PlaySingleCard(currentId, game.GetPlayers()[0].GetDeckView()[1], PlayPiles::ascend_2);
+
+    myproject::GameMessage msg;
+    msg.set_type(myproject::GameMessage::ACTION);
+    msg.mutable_action()->set_action_type(myproject::PlayerAction::END_TURN);
+
+    auto result = BinaryGameService::ProcessPlayerAction(game, currentId, msg.SerializeAsString());
+    ASSERT_TRUE(result.success);
+}
+
+TEST(BinaryGameServiceTest, UnknownActionType)
+{
+    Game game(create_test_players());
+    myproject::GameMessage msg;
+    msg.set_type(myproject::GameMessage::ACTION);
+
+    std::string data = msg.SerializeAsString();
+    auto result = BinaryGameService::ProcessPlayerAction(game, 101, data);
+
+    ASSERT_FALSE(result.success);
+}

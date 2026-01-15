@@ -65,3 +65,17 @@ TEST(GameLogic, EndTurnConstraints) {
     game.PlaySingleCard(id, game.GetPlayers()[0].GetDeck()[0], PlayPiles::ascend_1);
     ASSERT_FALSE(game.EndCurrentTurn(id));
 }
+
+TEST(GameLogic, BackjumpRuleIntegration) 
+{
+    Game game(create_players(2));
+    int id = game.GetPlayers()[0].GetId();
+
+    game.PlaySingleCard(id, 50, PlayPiles::ascend_1);
+    std::vector<uint8_t> customHand = { 40, 60, 70 };
+    const_cast<Player&>(game.GetPlayers()[0]).SetDeck(customHand);
+
+    ASSERT_TRUE(game.PlaySingleCard(id, 40, PlayPiles::ascend_1))
+        << "Regula de -10 pe stiva ascendenta ar trebui sa fie valida prin interfata Game.";
+}
+

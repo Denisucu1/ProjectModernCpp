@@ -139,7 +139,6 @@
     <ClCompile Include="..\Server\TheGame\DrawPile.cpp" />
     <ClCompile Include="..\Server\TheGame\Game.cpp" />
     <ClCompile Include="..\Server\TheGame\GameProtocol.pb.cc" />
-    <ClCompile Include="..\Server\TheGame\JsonUtil.cpp" />
     <ClCompile Include="..\Server\TheGame\MATCHSERVICE.CPP" />
     <ClCompile Include="..\Server\TheGame\Player.cpp" />
     <ClCompile Include="..\Server\TheGame\PlayPiles.cpp" />
@@ -148,8 +147,10 @@
     <ClCompile Include="CardTests.cpp" />
     <ClCompile Include="DrawPileTests.cpp" />
     <ClCompile Include="GameTests.cpp" />
+    <ClCompile Include="MatchServiceTests.cpp" />
     <ClCompile Include="PlayerTests.cpp" />
     <ClCompile Include="PlayPilesTests.cpp" />
+    <ClCompile Include="UserServiceTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Server\TheGame\TheGame.vcxproj">

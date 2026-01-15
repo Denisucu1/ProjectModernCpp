@@ -75,13 +75,16 @@
     <ClCompile Include="..\..\..\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\src\gtest-all.cc">
       <Filter>Source Files\GameLogicSources\Utilitare</Filter>
     </ClCompile>
-    <ClCompile Include="..\Server\TheGame\JsonUtil.cpp">
-      <Filter>Source Files\GameLogicSources\Utilitare</Filter>
-    </ClCompile>
     <ClCompile Include="..\Server\TheGame\GameProtocol.pb.cc">
       <Filter>Source Files\GameLogicSources\LogicaServer</Filter>
     </ClCompile>
     <ClCompile Include="BinaryGameServiceTests.cpp">
+      <Filter>Source Files\Tests_game_logic</Filter>
+    </ClCompile>
+    <ClCompile Include="UserServiceTests.cpp">
+      <Filter>Source Files\Tests_game_logic</Filter>
+    </ClCompile>
+    <ClCompile Include="MatchServiceTests.cpp">
       <Filter>Source Files\Tests_game_logic</Filter>
     </ClCompile>
   </ItemGroup>

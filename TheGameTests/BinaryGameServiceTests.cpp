@@ -39,7 +39,7 @@ TEST(BinaryGameServiceTest, ShouldReturnErrorForInvalidCard) {
     msg.set_type(myproject::GameMessage::ACTION);
     auto* action = msg.mutable_action();
     action->set_action_type(myproject::PlayerAction::PLAY_CARD);
-    action->set_card_value(1); // Cartea 1 nu există în pachet (pachetul are 2-99)
+    action->set_card_value(1); 
     action->set_stack_index(0);
 
     std::string binaryData = msg.SerializeAsString();
@@ -62,3 +62,4 @@ TEST(BinaryGameServiceTest, ShouldPrepareCorrectBroadcastMessages) {
     ASSERT_EQ(myproject::GameMessage::STATE_UPDATE, response.type());
     ASSERT_EQ(98 - 16, response.state().cards_remaining_in_deck()); 
 }
+

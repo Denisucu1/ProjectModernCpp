@@ -127,6 +127,14 @@ std::optional<int> MatchService::FindOrCreateMatch(int requestingUserId)
     }
 }
 
+bool MatchService::IsInMatchmakingRange(float matchScore, float player_score)
+{
+    float lowerScore = player_score - MAX_SCORE_DIFFERENCE;
+    float upperScore = player_score + MAX_SCORE_DIFFERENCE;
+
+    return (matchScore >= lowerScore && matchScore <= upperScore);
+}
+
 void MatchService::StartGame(int matchId, const std::vector<int>& userIds)
 {
     auto& storage = getStorage();

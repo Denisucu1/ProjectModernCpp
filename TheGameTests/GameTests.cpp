@@ -12,7 +12,6 @@ std::vector<Player> create_players(int count)
 }
 
 
-
 TEST(GameLogic, DistributeCardsTwoPlayers)
 {
     Game game(create_players(2));
@@ -50,4 +49,19 @@ TEST(GameLogic, NextPlayerRotation)
 
     game.EndCurrentTurn(game.GetPlayers()[firstIdx].GetId()); 
     ASSERT_NE(firstIdx, (firstIdx + 1) % 3);
+}
+
+TEST(GameLogic, FullGameLossCondition) {
+    Game game(create_players(2));
+    ASSERT_EQ(game.CheckGameState(), GameState::InProgress);
+}
+
+TEST(GameLogic, EndTurnConstraints) {
+    Game game(create_players(2));
+    int id = game.GetPlayers()[0].GetId();
+
+    ASSERT_FALSE(game.EndCurrentTurn(id));
+
+    game.PlaySingleCard(id, game.GetPlayers()[0].GetDeck()[0], PlayPiles::ascend_1);
+    ASSERT_FALSE(game.EndCurrentTurn(id));
 }

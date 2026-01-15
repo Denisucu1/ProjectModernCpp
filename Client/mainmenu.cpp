@@ -206,7 +206,7 @@ void MainMenu::UpdateGameInterface(const myproject::GameState& state) {
 void MainMenu::OnProfileReply(QNetworkReply* reply) {
     if (reply->error() == QNetworkReply::NoError) {
         QJsonObject json = QJsonDocument::fromJson(reply->readAll()).object();
-        m_profileWidget->updateStats(json);
+        m_profileWidget->UpdateStats(json);
     }
     reply->deleteLater();
 }

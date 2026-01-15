@@ -4,10 +4,10 @@
 #include <QFrame>
 
 ProfileWidget::ProfileWidget(const QString& username, QWidget* parent) : QWidget(parent) {
-    setupLayout(username);
+    SetupLayout(username);
 }
 
-void ProfileWidget::setupLayout(const QString& username) {
+void ProfileWidget::SetupLayout(const QString& username) {
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->addStretch();
 
@@ -44,7 +44,7 @@ void ProfileWidget::setupLayout(const QString& username) {
     mainLayout->addStretch();
 }
 
-void ProfileWidget::updateStats(const QJsonObject& json) {
+void ProfileWidget::UpdateStats(const QJsonObject& json) {
     m_gamesPlayedLabel->setText(QString::number(json["gamesPlayed"].toInt()));
     m_gamesWonLabel->setText(QString::number(json["gamesWon"].toInt()));
     m_totalTimeLabel->setText(QString::number(json["hoursPlayed"].toInt()));

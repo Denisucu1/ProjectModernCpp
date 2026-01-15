@@ -26,7 +26,11 @@ void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSv
         return res;
             });
 
-    AuthRoutes::setup(app, userSvc);
-    GameRoutes::setup(app, userSvc, gameSvc);
-    WebSocketRoutes::setup(app, userSvc, gameSvc);
+	AuthRoutes::setup(app, userSvc);
+
+	GameRoutes::setup(app, userSvc, gameSvc);
+
+	WebSocketRoutes::setup(app, userSvc, gameSvc);
+
 }
+

@@ -1,4 +1,4 @@
-#ifndef MAINMENU_H
+﻿#ifndef MAINMENU_H
 #define MAINMENU_H
 
 #include <QWidget>
@@ -15,6 +15,15 @@ class MainMenu : public QWidget {
     Q_OBJECT
 
 public:
+    enum class PageIndex {
+        menu = 0,
+        profile = 1,
+        modeSelection = 2,
+        joinRoom = 3,
+        lobbyWait = 4,
+        game = 5
+    };
+
     explicit MainMenu(const QString& username, int userId, QWidget* parent = nullptr);
     ~MainMenu() override;
 
@@ -35,14 +44,17 @@ private slots:
     void onProfileReply(QNetworkReply* reply);
 
 private:
+    void initializeUi();
     void setupNavigationLayout();
     void setupMenuPages();
     void setupProfilePage();
     void setupLobbyPages();
     void setupGameLogic();
+
     void updatePlayerList(const QJsonArray& players);
     void processRoomStatus(const QJsonObject& json);
     void updateGameInterface(const myproject::GameState& state);
+    void switchToPage(PageIndex page);
 
     Ui::MainMenu* ui;
     QString m_username;
@@ -52,14 +64,9 @@ private:
     QNetworkAccessManager* m_networkManager;
     ProfileWidget* m_profileWidget;
 
-    const int roomCodeInputWidth = 300;
-    const int profileCardWidth = 450;
-    const int roomCodeLength = 4;
-    const int menuPageIndex = 0;
-    const int profilePageIndex = 1;
-    const int modeSelectionPageIndex = 2;
-    const int joinRoomPageIndex = 3;
-    const int lobbyWaitPageIndex = 4;
+    const int m_roomCodeLength = 4;
+    const QString m_wsUrl = "ws://localhost:18080/ws/game";
+    const QString m_profileUrlTemplate = "http://localhost:18080/api/profile/%1";
 };
 
 #endif

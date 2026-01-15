@@ -164,6 +164,15 @@
     <ClCompile Include="BinaryGameService.cpp">
       <Filter>Source Files\server_logic</Filter>
     </ClCompile>
+    <ClCompile Include="User.cpp">
+      <Filter>Source Files\db</Filter>
+    </ClCompile>
+    <ClCompile Include="Match.cpp">
+      <Filter>Source Files\db</Filter>
+    </ClCompile>
+    <ClCompile Include="DatabaseManager.cpp">
+      <Filter>Source Files\db</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GameProtocol.proto">

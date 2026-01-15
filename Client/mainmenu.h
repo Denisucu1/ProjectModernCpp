@@ -28,33 +28,34 @@ public:
     ~MainMenu() override;
 
 private slots:
-    void on_playButton_clicked();
-    void on_exitButton_clicked();
-    void on_backButton_clicked();
-    void on_modeBackButton_clicked();
-    void on_cancelJoinButton_clicked();
-    void on_createGameButton_clicked();
-    void on_joinGameButton_clicked();
-    void on_confirmJoinButton_clicked();
-    void on_startGameButton_clicked();
-    void on_profileButton_clicked();
-    void on_closeLobbyButton_clicked();
-    void onSocketMessage(const QString& message);
-    void onGameBinaryMessage(const QByteArray& data);
-    void onProfileReply(QNetworkReply* reply);
+    void OnPlayButtonClicked();
+    void OnExitButtonClicked();
+    void OnBackButtonClicked();
+    void OnModeBackButtonClicked();
+    void OnCancelJoinButtonClicked();
+    void OnCreateGameButtonClicked();
+    void OnJoinGameButtonClicked();
+    void OnConfirmJoinButtonClicked();
+    void OnStartGameButtonClicked();
+    void OnProfileButtonClicked();
+    void OnCloseLobbyButtonClicked();
+    void OnSocketMessage(const QString& message);
+    void OnGameBinaryMessage(const QByteArray& data);
+    void OnProfileReply(QNetworkReply* reply);
 
 private:
-    void initializeUi();
-    void setupNavigationLayout();
-    void setupMenuPages();
-    void setupProfilePage();
-    void setupLobbyPages();
-    void setupGameLogic();
+    void InitializeUi();
+    void ConnectUiSignals();
+    void SetupNavigationLayout();
+    void SetupMenuPages();
+    void SetupProfilePage();
+    void SetupLobbyPages();
+    void SetupGameLogic();
 
-    void updatePlayerList(const QJsonArray& players);
-    void processRoomStatus(const QJsonObject& json);
-    void updateGameInterface(const myproject::GameState& state);
-    void switchToPage(PageIndex page);
+    void UpdatePlayerList(const QJsonArray& players);
+    void ProcessRoomStatus(const QJsonObject& json);
+    void UpdateGameInterface(const myproject::GameState& state);
+    void SwitchToPage(PageIndex page);
 
     Ui::MainMenu* ui;
     QString m_username;
@@ -64,9 +65,9 @@ private:
     QNetworkAccessManager* m_networkManager;
     ProfileWidget* m_profileWidget;
 
-    const int m_roomCodeLength = 4;
-    const QString m_wsUrl = "ws://localhost:18080/ws/game";
-    const QString m_profileUrlTemplate = "http://localhost:18080/api/profile/%1";
+    const int RoomCodeLength = 4;
+    const QString ServerWsUrl = "ws://localhost:18080/ws/game";
+    const QString ProfileUrlTemplate = "http://localhost:18080/api/profile/%1";
 };
 
 #endif

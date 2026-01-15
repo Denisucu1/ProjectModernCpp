@@ -120,8 +120,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>sqlite3.lib;libprotobufd.lib;TheGameDLL.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\..\vcpkg_installed\x64-windows\x64-windows\lib;$(SolutionDir)x64\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sqlite3.lib;libprotobufd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\vcpkg_installed\x64-windows\x64-windows\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -143,11 +143,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ApiRoutes.cpp" /><ClCompile Include="AuthRoutes.cpp" /><ClCompile Include="BinaryGameService.cpp"><ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"></ExcludedFromBuild></ClCompile><ClCompile Include="Card.cpp" /><ClCompile Include="DatabaseManager.cpp" /><ClCompile Include="DrawPile.cpp" /><ClCompile Include="Game.cpp" /><ClCompile Include="GameProtocol.pb.cc" /><ClCompile Include="GameRoutes.cpp" /><ClCompile Include="GameService.cpp"><ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"></ExcludedFromBuild></ClCompile><ClCompile Include="GS_Chat.cpp" /><ClCompile Include="GS_Connection.cpp" /><ClCompile Include="GS_Game.cpp" /><ClCompile Include="GS_Room.cpp" /><ClCompile Include="JsonUtil.cpp" />
-    <ClCompile Include="main.cpp" /><ClCompile Include="Match.cpp" /><ClCompile Include="MatchService.cpp" /><ClCompile Include="Player.cpp" /><ClCompile Include="PlayPiles.cpp" /><ClCompile Include="User.cpp" /><ClCompile Include="UserService.cpp" /><ClCompile Include="WebSocketRoutes.cpp" /> 
+    <ClCompile Include="ApiRoutes.cpp" /><ClCompile Include="AuthRoutes.cpp" /><ClCompile Include="BinaryGameService.cpp"><ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"></ExcludedFromBuild></ClCompile><ClCompile Include="Card.cpp" /><ClCompile Include="DrawPile.cpp" /><ClCompile Include="Game.cpp" /><ClCompile Include="GameProtocol.pb.cc" /><ClCompile Include="GameRoutes.cpp" /><ClCompile Include="GameService.cpp"><ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"></ExcludedFromBuild></ClCompile><ClCompile Include="JsonUtil.cpp" />
+    <ClCompile Include="main.cpp" /><ClCompile Include="MatchService.cpp" /><ClCompile Include="Player.cpp" /><ClCompile Include="PlayPiles.cpp" /><ClCompile Include="UserService.cpp" /><ClCompile Include="WebSocketRoutes.cpp" /> 
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ApiRoutes.h" /><ClInclude Include="AuthRoutes.h" /><ClInclude Include="BinaryGameService.h"><ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"></ExcludedFromBuild></ClInclude><ClInclude Include="Card.h" /><ClInclude Include="DatabaseManager.h" /><ClInclude Include="DrawPile.h" /><ClInclude Include="Game.h" /><ClInclude Include="GameProtocol.pb.h" /><ClInclude Include="GameRoutes.h" /><ClInclude Include="GameService.h"><ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"></ExcludedFromBuild></ClInclude><ClInclude Include="GS_Internal.h" /><ClInclude Include="JsonUtil.h" /><ClInclude Include="Match.h" /><ClInclude Include="MatchService.h" /><ClInclude Include="Player.h" /><ClInclude Include="PlayPiles.h" /><ClInclude Include="User.h" /><ClInclude Include="UserService.h" /><ClInclude Include="WebSocketRoutes.h" />
+    <ClInclude Include="ApiRoutes.h" /><ClInclude Include="AuthRoutes.h" /><ClInclude Include="BinaryGameService.h"><ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"></ExcludedFromBuild></ClInclude><ClInclude Include="Card.h" /><ClInclude Include="DatabaseManager.h" /><ClInclude Include="DrawPile.h" /><ClInclude Include="Game.h" /><ClInclude Include="GameProtocol.pb.h" /><ClInclude Include="GameRoutes.h" /><ClInclude Include="GameService.h"><ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"></ExcludedFromBuild></ClInclude><ClInclude Include="JsonUtil.h" /><ClInclude Include="Match.h" /><ClInclude Include="MatchService.h" /><ClInclude Include="Player.h" /><ClInclude Include="PlayPiles.h" /><ClInclude Include="User.h" /><ClInclude Include="UserService.h" /><ClInclude Include="WebSocketRoutes.h" />
     
     
     

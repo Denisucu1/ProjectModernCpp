@@ -1,47 +1,69 @@
-#pragma once
+
+#ifndef MATCH_H
+#define MATCH_H
 
 #include <string>
-#include <cstdint>
 
-auto initStorage();
 
-namespace MatchConstants {
-    inline const int MaxPlayersDefault = 5;
-    inline const std::string StatusInitial = "Waiting for players";
-    inline const std::string DifficultyDefault = "Normal";
-    inline const std::string StacksInitial = "[1, 1, 100, 100]";
-    inline const double ScoreInitial = 1.0;
-}
-
-class GameDB {
-    friend auto initStorage();
-    friend class MatchService;
-private:
-    int id = 0;
-    int max_players = MatchConstants::MaxPlayersDefault;
-    std::string status = MatchConstants::StatusInitial;
-    std::string difficulty = MatchConstants::DifficultyDefault;
-    std::string deck_state = "";
-    std::string stacks_state = MatchConstants::StacksInitial;
-    std::int64_t creation_timestamp = 0;
-    double first_player_score = MatchConstants::ScoreInitial;
+class Joc {
 
 public:
-    GameDB() = default;
-    int GetId() const;
-    const std::string& GetStatus() const;
-    const std::string& GetDifficulty() const;
-    int GetMaxPlayers() const;
-    const std::string& GetDeckState() const;
-    const std::string& GetStacksState() const;
-    std::int64_t GetCreationTimestamp() const;
-    double GetFirstPlayerScore() const;
+
+    int id = 0;
+    int max_players = 5;
+
+    std::string status = "Waiting for players";
+    std::string difficulty = "Normal";
+    std::string deck_state = "";
+    std::string stacks_state = "[1, 1, 100, 100]";
+    std::int64_t creation_timestamp = 0;
+
+    double first_player_score = 1.0;
+
+public:
+    Joc() = default;
+
+    int GetId() const 
+    { 
+        return id; 
+    }
+    const std::string& GetStatus() const 
+    { 
+        return status; 
+    }
+    const std::string& GetDifficulty() const 
+    { 
+        return difficulty; 
+    }
+    int GetMaxPlayers() const 
+    { 
+        return max_players; 
+    }
+    const std::string& GetDeckState() const 
+    { 
+        return deck_state; 
+    }
+    const std::string& GetStacksState() const 
+    { 
+        return stacks_state; 
+    }
+
+    std::int64_t GetCreationTimestamp() const
+    {
+        return creation_timestamp;
+    }
+
+    double GetFirstPlayerScore() const
+    {
+        return first_player_score;
+    }
+
 };
 
-class PlayerDB {
-    friend auto initStorage();
-    friend class MatchService;
-private:
+class Jucator {
+
+public:
+
     int id = 0;
     int user_id = 0;
     int game_id = 0;
@@ -49,18 +71,35 @@ private:
     std::string hand = "";
 
 public:
-    PlayerDB() = default;
-    int GetId() const;
-    int GetUserId() const;
-    int GetGameId() const;
-    int Get_seat_index() const;
-    const std::string& GetHand() const;
+    Jucator() = default;
+
+    int GetId() const 
+    { 
+        return id; 
+    }
+    int GetUserId() const 
+    { 
+        return user_id; 
+    }
+    int GetGameId() const 
+    { 
+        return game_id; 
+    }
+    int GetSeatIndex() const 
+    { 
+        return seat_index; 
+    }
+    const std::string& GetHand() const 
+    { 
+        return hand; 
+    }
+    
 };
 
 class Move {
-    friend auto initStorage();
-    friend class MatchService;
-private:
+
+public:
+
     int id = 0;
     int player_id = 0;
     int game_id = 0;
@@ -68,16 +107,29 @@ private:
 
 public:
     Move() = default;
-    int GetId() const;
-    int GetPlayerId() const;
-    int GetGameId() const;
-    const std::string& GetCardsPlayed() const;
+
+    int GetId() const 
+    { 
+        return id; 
+    }
+    int GetPlayerId() const 
+    { 
+        return player_id; 
+    }
+    int GetGameId() const 
+    { 
+        return game_id; 
+    }
+    const std::string& GetCardsPlayed() const 
+    { 
+        return cards_played; 
+    }
 };
 
 class Chat {
-    friend auto initStorage();
-    friend class MatchService;
-private:
+
+public:
+
     int id = 0;
     int player_id = 0;
     int game_id = 0;
@@ -85,8 +137,24 @@ private:
 
 public:
     Chat() = default;
-    int GetId() const;
-    int GetPlayerId() const;
-    int GetGameId() const;
-    const std::string& GetMessage() const;
+
+    int GetId() const 
+    { 
+        return id; 
+    }
+    int GetPlayerId() const 
+    { 
+        return player_id; 
+    }
+    int GetGameId() const 
+    { 
+        return game_id; 
+    }
+    const std::string& GetMessage() const 
+    { 
+        return message; 
+    }
 };
+
+
+#endif // MATCH_H

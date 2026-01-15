@@ -1,13 +1,14 @@
 #include "DrawPile.h"
 #include <algorithm>
 #include <random>
-#include <iostream>
 
 DrawPile::DrawPile()
 {
-	m_drawPile.reserve(TOTAL_CARDS);
-	for (std::uint8_t i = 0; i < TOTAL_CARDS; ++i) {
-		m_drawPile.emplace_back(CARD_START_VALUE + i);
+	m_drawPile.reserve(98);
+
+	for (std::uint8_t value = 2; value <= 99; value++)
+	{
+		m_drawPile.emplace_back(value);
 	}
 
 	MixPile();
@@ -39,7 +40,6 @@ Card DrawPile::DrawACard()
 {
 	Card card = m_drawPile.back();
 	m_drawPile.pop_back();
-	std::cout << "DrawPile::DrawACard: Drew card with value " << static_cast<int>(card.GetValue()) << ", remaining cards: " << m_drawPile.size() << '\n';
 	return card;
 }
 

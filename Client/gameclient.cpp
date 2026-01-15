@@ -9,6 +9,8 @@ GameClient::GameClient(const QUrl& url, int userId, QObject* parent)
     connect(&m_webSocket, &QWebSocket::connected, this, &GameClient::onConnected);
     connect(&m_webSocket, &QWebSocket::disconnected, this, &GameClient::onDisconnected);
     connect(&m_webSocket, &QWebSocket::textMessageReceived, this, &GameClient::onTextMessageReceived);
+
+    connect(&m_webSocket, &QWebSocket::binaryMessageReceived, this, &GameClient::onBinaryMessageReceived);
 }
 
 void GameClient::connectToServer()
@@ -28,12 +30,11 @@ void GameClient::onConnected()
     qDebug() << "WebSocket connected";
     emit connected();
 
-    QJsonObject json;
-    json["type"] = "login";
-    json["userId"] = m_userId;
+    QJsonObject login;
+    login["type"] = "login";
+    login["userId"] = m_userId;
+    m_webSocket.sendTextMessage(QJsonDocument(login).toJson(QJsonDocument::Compact));
 
-    QJsonDocument doc(json);
-    sendMessage(doc.toJson(QJsonDocument::Compact));
 }
 
 void GameClient::onDisconnected()
@@ -46,4 +47,14 @@ void GameClient::onTextMessageReceived(const QString& message)
 {
     qDebug() << "Message received:" << message;
     emit messageReceived(message);
+}
+
+void GameClient::sendBinaryMessage(const QByteArray& data) {
+    if (m_webSocket.isValid()) {
+        m_webSocket.sendBinaryMessage(data);
+    }
+}
+
+void GameClient::onBinaryMessageReceived(const QByteArray& message) {
+    emit binaryMessageReceived(message);
 }

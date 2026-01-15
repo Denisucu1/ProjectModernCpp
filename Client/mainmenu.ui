@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>893</width>
-    <height>569</height>
+    <width>1029</width>
+    <height>738</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -22,8 +22,8 @@
   <widget class="QStackedWidget" name="stackedWidget">
    <property name="geometry">
     <rect>
-     <x>200</x>
-     <y>20</y>
+     <x>250</x>
+     <y>10</y>
      <width>400</width>
      <height>551</height>
     </rect>
@@ -84,118 +84,36 @@
    <widget class="QWidget" name="profilePage">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <spacer name="verticalSpacer">
-       <property name="orientation">
-        <enum>Qt::Orientation::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>178</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="usernameLabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>16777213</height>
-        </size>
-       </property>
-       <property name="contextMenuPolicy">
-        <enum>Qt::ContextMenuPolicy::PreventContextMenu</enum>
-       </property>
-       <property name="toolTipDuration">
-        <number>-6</number>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::Shape::StyledPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Shadow::Plain</enum>
-       </property>
-       <property name="text">
-        <string>PLAYER_NAME</string>
-       </property>
-       <property name="textFormat">
-        <enum>Qt::TextFormat::MarkdownText</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="4" column="0">
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>Timp Total Jucat (min):</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Jocuri Jucate:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLabel" name="gamesWonLabel">
-         <property name="text">
-          <string>0</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QLabel" name="totalTimeLabel">
-         <property name="text">
-          <string>0</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLabel" name="gamesPlayedLabel">
-         <property name="text">
-          <string>0</string>
-         </property>
-        </widget>
-       </item>
        <item row="3" column="0">
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>Total Carti la Pierdere:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Jocuri Castigate:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
         <widget class="QLabel" name="cardsAtLossLabel">
          <property name="text">
           <string>0</string>
          </property>
         </widget>
        </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="label_6">
+       <item row="4" column="0">
+        <widget class="QLabel" name="totalTimeLabel">
          <property name="text">
-          <string>Scor Performanta:</string>
+          <string>0</string>
          </property>
         </widget>
        </item>
-       <item row="5" column="1">
+       <item row="1" column="0">
+        <widget class="QLabel" name="gamesPlayedLabel">
+         <property name="text">
+          <string>0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="gamesWonLabel">
+         <property name="text">
+          <string>0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
         <widget class="QLabel" name="performanceScoreLabel">
          <property name="text">
           <string>0</string>
@@ -219,22 +137,9 @@
         </size>
        </property>
        <property name="text">
-        <string>INAPOI</string>
+        <string>Back</string>
        </property>
       </widget>
-     </item>
-     <item>
-      <spacer name="verticalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Orientation::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>177</height>
-        </size>
-       </property>
-      </spacer>
      </item>
     </layout>
    </widget>
@@ -275,31 +180,18 @@
       </rect>
      </property>
      <property name="text">
-      <string>Inapoi</string>
+      <string>Back</string>
      </property>
     </widget>
    </widget>
    <widget class="QWidget" name="lobbyPage">
-    <widget class="QPushButton" name="lobbyBackButton">
-     <property name="geometry">
-      <rect>
-       <x>400</x>
-       <y>330</y>
-       <width>80</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Inapoi</string>
-     </property>
-    </widget>
     <widget class="QLineEdit" name="roomCodeInput">
      <property name="geometry">
       <rect>
-       <x>80</x>
+       <x>50</x>
        <y>230</y>
        <width>113</width>
-       <height>21</height>
+       <height>41</height>
       </rect>
      </property>
      <property name="maxLength">
@@ -309,8 +201,8 @@
     <widget class="QPushButton" name="confirmJoinButton">
      <property name="geometry">
       <rect>
-       <x>230</x>
-       <y>230</y>
+       <x>240</x>
+       <y>240</y>
        <width>101</width>
        <height>21</height>
       </rect>
@@ -322,14 +214,14 @@
     <widget class="QPushButton" name="cancelJoinButton">
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>150</x>
        <y>310</y>
        <width>80</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>Inapoi</string>
+      <string>Back</string>
      </property>
     </widget>
    </widget>
@@ -363,8 +255,8 @@
     <widget class="QPushButton" name="startGameButton">
      <property name="geometry">
       <rect>
-       <x>110</x>
-       <y>240</y>
+       <x>140</x>
+       <y>410</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -376,14 +268,24 @@
     <widget class="QPushButton" name="closeLobbyButton">
      <property name="geometry">
       <rect>
-       <x>109</x>
-       <y>310</y>
+       <x>140</x>
+       <y>480</y>
        <width>131</width>
        <height>31</height>
       </rect>
      </property>
      <property name="text">
-      <string>Inapoi</string>
+      <string>Back</string>
+     </property>
+    </widget>
+    <widget class="QListWidget" name="lobbyPlayersList">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>200</y>
+       <width>256</width>
+       <height>192</height>
+      </rect>
      </property>
     </widget>
    </widget>

@@ -15,6 +15,7 @@ public:
     int CalculatePerformanceScore(int userId);
 
     std::optional <Profile> GetProfileById(int userId);
+    std::optional<User> GetUserById(int id);
 
     std::optional<std::string> GenerateAndStoreToken(int userId);
     std::optional<int> GetUserIdByToken(const std::string& token);

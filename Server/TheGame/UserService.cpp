@@ -61,7 +61,7 @@ void UserService::UpdateStats(int userId, bool won, int cards_in_hand_at_loss, i
 
     try {
         storage.transaction([&]()-> bool {
-            auto profiles = storage.get_all<Profile>(is_equal(&Profile::user_id, userId));
+            auto profiles = storage.get_all<Profile>(where(is_equal(&Profile::user_id, userId)));
 
             if (profiles.empty()) {
                 std::cerr << "Eroare: Profile pentru User ID " << userId << " nu a fost gasit." << std::endl;
@@ -97,7 +97,7 @@ int UserService::CalculatePerformanceScore(int userId)
     auto& storage = getStorage();
     try {
         
-        auto profiles = storage.get_all<Profile>(is_equal(&Profile::user_id, userId));
+        auto profiles = storage.get_all<Profile>(where(is_equal(&Profile::user_id, userId)));
         if (profiles.empty()) {
             std::cerr << "Eroare: Profile pentru User ID " << userId << " nu a fost gasit la calcul." << std::endl;
             return 1;
@@ -144,6 +144,21 @@ std::optional<Profile> UserService::GetProfileById(int userId)
     catch (...) {
         return std::nullopt;
     }
+}
+
+std::optional<User> UserService::GetUserById(int id)
+{
+    auto& storage = getStorage();
+    try {
+        auto users = storage.get_all<User>(where(is_equal(&User::id, id)));
+        if (users.empty()) {
+            return std::nullopt;
+        }
+        return users.front();
+    }
+    catch (...) {
+        return std::nullopt;
+	}
 }
 
 std::optional<std::string> UserService::GenerateAndStoreToken(int userId)

@@ -1,19 +1,15 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "gamewindow.h"
 #include "mainmenu.h"
-
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QMessageBox>
-#include <QVariant>
-#include <QPixmap>
 
 MainWindow::MainWindow(QWidget* parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
@@ -87,118 +83,54 @@ MainWindow::MainWindow(QWidget* parent)
 
     m_networkManager = new QNetworkAccessManager(this);
 }
+MainWindow::~MainWindow() { delete ui; }
 
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
+void MainWindow::on_registerButton_clicked() {
+    QString user = ui->usernameLineEdit->text();
+    QString pass = ui->passwordLineEdit->text();
+    if (user.isEmpty() || pass.isEmpty()) return;
 
-void MainWindow::on_registerButton_clicked()
-{
-    QString username = ui->usernameLineEdit->text();
-    QString password = ui->passwordLineEdit->text();
+    QJsonObject json; json["username"] = user; json["password"] = pass;
+    QNetworkRequest req(QUrl("http://localhost:18080/api/register"));
+    req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-    if (username.isEmpty() || password.isEmpty()) {
-        QMessageBox::warning(this, "Eroare Inregistrare", "Username si Parola nu pot fi goale!");
-        return;
-    }
-
-    QJsonObject jsonRequest;
-    jsonRequest["username"] = username;
-    jsonRequest["password"] = password;
-    QJsonDocument jsonDoc(jsonRequest);
-    QByteArray jsonData = jsonDoc.toJson();
-
-    QUrl registerUrl("http://localhost:18080/api/register");
-    QNetworkRequest request(registerUrl);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
-    QNetworkReply* reply = m_networkManager->post(request, jsonData);
-    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
-        onRegisterReply(reply);
-        });
+    QNetworkReply* reply = m_networkManager->post(req, QJsonDocument(json).toJson());
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() { onRegisterReply(reply); });
     ui->registerButton->setEnabled(false);
 }
 
-void MainWindow::on_loginButton_clicked()
-{
-    QString username = ui->usernameLineEdit->text();
-    QString password = ui->passwordLineEdit->text();
+void MainWindow::on_loginButton_clicked() {
+    QString user = ui->usernameLineEdit->text();
+    QString pass = ui->passwordLineEdit->text();
+    if (user.isEmpty() || pass.isEmpty()) return;
 
-    if (username.isEmpty() || password.isEmpty()) {
-        QMessageBox::warning(this, "Eroare Login", "Username si Parola nu pot fi goale!");
-        return;
-    }
+    QJsonObject json; json["username"] = user; json["password"] = pass;
+    QNetworkRequest req(QUrl("http://localhost:18080/api/login"));
+    req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-    QJsonObject jsonRequest;
-    jsonRequest["username"] = username;
-    jsonRequest["password"] = password;
-    QJsonDocument jsonDoc(jsonRequest);
-    QByteArray jsonData = jsonDoc.toJson();
-
-    QUrl loginUrl("http://localhost:18080/api/login");
-    QNetworkRequest request(loginUrl);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
-    QNetworkReply* reply = m_networkManager->post(request, jsonData);
-    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
-        onLoginReply(reply);
-        });
+    QNetworkReply* reply = m_networkManager->post(req, QJsonDocument(json).toJson());
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() { onLoginReply(reply); });
     ui->loginButton->setEnabled(false);
 }
 
-void MainWindow::onLoginReply(QNetworkReply* reply)
-{
+void MainWindow::onLoginReply(QNetworkReply* reply) {
     ui->loginButton->setEnabled(true);
-
-    if (reply->error() != QNetworkReply::NoError) {
-        QMessageBox::critical(this, "Eroare Retea", "Eroare de conexiune: " + reply->errorString());
-        reply->deleteLater();
-        return;
+    if (reply->error() == QNetworkReply::NoError) {
+        auto obj = QJsonDocument::fromJson(reply->readAll()).object();
+        if (obj["success"].toBool()) {
+            MainMenu* menu = new MainMenu(ui->usernameLineEdit->text(), obj["userId"].toInt());
+            menu->setAttribute(Qt::WA_DeleteOnClose);
+            menu->show();
+            this->close();
+        }
     }
-
-    QByteArray responseData = reply->readAll();
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
-    QJsonObject jsonObj = jsonDoc.object();
-
-    if (jsonObj["success"].toBool()) {
-        QString username = ui->usernameLineEdit->text();
-
-        int userId = jsonObj["userId"].toInt();
-
-        MainMenu* menu = new MainMenu(username, userId, nullptr);
-
-        menu->setAttribute(Qt::WA_DeleteOnClose);
-        menu->show();
-        this->close();
-    }
-    else {
-        QString errorMsg = jsonObj["message"].toString();
-        QMessageBox::warning(this, "Eroare Login", "Login esuat: " + errorMsg);
-    }
-
     reply->deleteLater();
 }
 
-void MainWindow::onRegisterReply(QNetworkReply* reply)
-{
+void MainWindow::onRegisterReply(QNetworkReply* reply) {
     ui->registerButton->setEnabled(true);
-    if (reply->error() != QNetworkReply::NoError) {
-        QMessageBox::critical(this, "Eroare Retea", "Eroare de conexiune: " + reply->errorString());
-        reply->deleteLater();
-        return;
+    if (reply->error() == QNetworkReply::NoError) {
+        QMessageBox::information(this, "Success", "Registration successful. You can log in now.");
     }
-    QByteArray responseData = reply->readAll();
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
-    QJsonObject jsonObj = jsonDoc.object();
-
-    if (jsonObj["success"].toBool()) {
-        QMessageBox::information(this, "Inregistrare OK", "Te-ai inregistrat cu succes! Acum te poti loga.");
-    }
-    else {
-        QString errorMsg = jsonObj["message"].toString();
-        QMessageBox::warning(this, "Eroare Inregistrare", "Inregistrare esuata: " + errorMsg);
-    }
-
     reply->deleteLater();
 }

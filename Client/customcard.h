@@ -2,28 +2,33 @@
 #define CUSTOMCARD_H
 
 #include <QWidget>
-#include <cstdint>
 
-class CustomCard : public QWidget
-{
+class CustomCard : public QWidget {
     Q_OBJECT
-
 public:
-    explicit CustomCard(QWidget* parent = nullptr);
-    void setValue(std::uint8_t value);
-    std::uint8_t getValue() const;
-    void setFaceDown(bool faceDown);
+    enum CardType { HAND_CARD, ASCENDING, DESCENDING, DRAW_PILE };
 
-signals:
-    void clicked(std::uint8_t value);
+    explicit CustomCard(QWidget* parent = nullptr);
+
+    void setValue(int value);
+    int getValue() const;
+    void setType(CardType type);
+    CardType getType() const;
+    void setSelected(bool selected);
+    void setFaceDown(bool faceDown);
 
 protected:
     void paintEvent(QPaintEvent* event) override;
     void mousePressEvent(QMouseEvent* event) override;
 
+signals:
+    void cardClicked(CustomCard* card);
+
 private:
-    std::uint8_t m_value;
-    bool m_isFaceDown;
+    int m_value;
+    CardType m_type;
+    bool m_selected;
+    bool m_faceDown;
 };
 
 #endif

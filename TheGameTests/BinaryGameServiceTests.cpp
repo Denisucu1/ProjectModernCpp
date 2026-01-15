@@ -4,7 +4,8 @@
 #include "Player.h"
 #include "GameProtocol.pb.h" //
 
-std::vector<Player> create_test_players() {
+std::vector<Player> create_test_players() 
+{
     std::vector<Player> players;
     players.emplace_back("Andrei", 101);
     players.emplace_back("Matei", 102);
@@ -90,6 +91,24 @@ TEST(BinaryGameServiceTest, UnknownActionType)
 
     std::string data = msg.SerializeAsString();
     auto result = BinaryGameService::ProcessPlayerAction(game, 101, data);
+
+    ASSERT_FALSE(result.success);
+}
+
+TEST(BinaryGameServiceTest, InvalidStackIndex) 
+{
+    Game game(create_test_players());
+    int currentId = game.GetPlayers()[game.GetCurrentPlayerIndex()].GetId();
+    uint8_t cardVal = game.GetPlayers()[game.GetCurrentPlayerIndex()].GetDeckView()[0];
+
+    myproject::GameMessage msg;
+    msg.set_type(myproject::GameMessage::ACTION);
+    auto* action = msg.mutable_action();
+    action->set_action_type(myproject::PlayerAction::PLAY_CARD);
+    action->set_card_value(cardVal);
+    action->set_stack_index(5); 
+
+    auto result = BinaryGameService::ProcessPlayerAction(game, currentId, msg.SerializeAsString());
 
     ASSERT_FALSE(result.success);
 }

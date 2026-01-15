@@ -79,3 +79,17 @@ TEST(GameLogic, BackjumpRuleIntegration)
         << "Regula de -10 pe stiva ascendenta ar trebui sa fie valida prin interfata Game.";
 }
 
+TEST(GameLogic, PlayCardOutOfTurn) 
+{
+    Game game(create_players(2));
+    int firstPlayerId = game.GetPlayers()[0].GetId();
+    int secondPlayerId = game.GetPlayers()[1].GetId();
+
+    int activeId = game.GetPlayers()[game.GetCurrentPlayerIndex()].GetId();
+    int inactiveId = (activeId == firstPlayerId) ? secondPlayerId : firstPlayerId;
+
+    uint8_t cardVal = game.GetPlayers()[game.GetCurrentPlayerIndex() == 0 ? 1 : 0].GetDeckView()[0];
+
+    ASSERT_FALSE(game.PlaySingleCard(inactiveId, cardVal, PlayPiles::ascend_1))
+        << "Jocul nu ar trebui sa permita unui jucator sa mute daca nu este randul lui.";
+}

@@ -1,5 +1,4 @@
 ﻿#include "WebSocketRoutes.h"
-#include <algorithm>
 
 namespace WebSocketRoutes {
     void setup(crow::SimpleApp& app, UserService& userSvc, GameService& gameSvc) {
@@ -59,7 +58,7 @@ namespace WebSocketRoutes {
                         int i = 0;
                         for (auto pid : playerIds) {
                             auto userOpt = userSvc.GetUserById(pid);
-                            if (userOpt.has_value()) {
+                            if (userOpt) {
                                 resp["players"][i]["userId"] = pid;
                                 resp["players"][i]["username"] = userOpt->GetUsername();
                                 i++;

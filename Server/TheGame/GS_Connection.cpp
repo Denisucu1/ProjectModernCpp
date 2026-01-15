@@ -12,6 +12,7 @@ namespace GameImpl::Connection {
         std::lock_guard<std::mutex> lock(mtx);
         connections[userId] = conn;
         connToUser[conn] = userId;
+        std::cout << "WebSocket connection added for user ID: " << userId << '\n';
     }
 
     void Remove(std::unordered_map<user_id, crow::websocket::connection*>& connections,
@@ -29,9 +30,14 @@ namespace GameImpl::Connection {
                 userId = it->second;
                 connToUser.erase(it);
                 connections.erase(userId);
+                std::cout << "WebSocket connection removed for user ID: " << userId << '\n';
             }
         }
-        if (userId != -1) service.RemovePlayerFromRoom(userId);
+
+        if (userId != -1)
+        {
+            service.RemovePlayerFromRoom(userId);
+        }
     }
 
     void SendText(std::unordered_map<user_id, crow::websocket::connection*>& connections,
@@ -41,7 +47,11 @@ namespace GameImpl::Connection {
     {
         std::lock_guard<std::mutex> lock(mtx);
         auto it = connections.find(userId);
-        if (it != connections.end()) it->second->send_text(message);
+        if (it != connections.end())
+        {
+            it->second->send_text(message);
+            std::cout << "Sent message to user ID: " << userId << '\n';
+        }
     }
 
     void SendBinary(std::unordered_map<user_id, crow::websocket::connection*>& connections,
@@ -51,6 +61,10 @@ namespace GameImpl::Connection {
     {
         std::lock_guard<std::mutex> lock(mtx);
         auto it = connections.find(userId);
-        if (it != connections.end()) it->second->send_binary(binaryData);
+        if (it != connections.end())
+        {
+            it->second->send_binary(binaryData);
+            std::cout << "Sent binary data to user ID: " << userId << '\n';
+        }
     }
 }

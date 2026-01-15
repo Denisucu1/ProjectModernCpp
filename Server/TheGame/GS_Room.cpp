@@ -12,10 +12,11 @@ namespace GameImpl::Room {
     {
         std::lock_guard<std::mutex> lock(mtx);
 
-        if (maxPlayers < ServiceConfig::MinPlayers || maxPlayers > ServiceConfig::MaxPlayers) return "";
+        if (maxPlayers < 2 || maxPlayers > 5) return "";
         if (userRoomMap.count(hostId)) return "";
 
         std::string roomCode;
+
         do {
             roomCode = ::GenerateRoomCode();
         } while (rooms.count(roomCode));
@@ -29,6 +30,7 @@ namespace GameImpl::Room {
         userRoomMap[hostId] = roomCode;
         rooms[roomCode] = newRoom;
 
+        std::cout << "Room created with code: " << roomCode << " by host ID: " << hostId << std::endl;
         return roomCode;
     }
 
@@ -47,12 +49,15 @@ namespace GameImpl::Room {
             std::lock_guard<std::mutex> lock(mtx);
 
             if (userRoomMap.count(userId)) return false;
+
             auto itRoom = rooms.find(roomCode);
             if (itRoom == rooms.end()) return false;
 
             ::Room& room = itRoom->second;
-            if (room.players.count(userId) || room.isGameStarted || static_cast<int>(room.players.size()) >= room.maxPlayers)
+            if (room.players.count(userId) || room.isGameStarted || (int)room.players.size() >= room.maxPlayers)
+            {
                 return false;
+            }
 
             room.players.insert(userId);
             userRoomMap[userId] = roomCode;
@@ -64,23 +69,29 @@ namespace GameImpl::Room {
             int idx = 0;
             for (auto pid : room.players) {
                 auto userOpt = userSvc.GetUserById(pid);
-                if (userOpt.has_value()) {
+                if (userOpt) {
                     updateMsg["players"][idx]["userId"] = pid;
-                    updateMsg["players"][idx]["username"] = userOpt->GetUsername();
+                    updateMsg["players"][idx]["username"] = userOpt->username;
                     idx++;
                 }
-                if (pid != userId) otherPlayers.push_back(pid);
+
+                if (pid != userId) {
+                    otherPlayers.push_back(pid);
+                }
             }
             serializedMsg = updateMsg.dump();
         }
 
-        for (auto pid : otherPlayers) service.sendMessageToUser(pid, serializedMsg);
+        for (auto pid : otherPlayers) {
+            service.sendMessageToUser(pid, serializedMsg);
+        }
+
         return true;
     }
 
     bool RemovePlayer(std::unordered_map<std::string, ::Room>& rooms,
         std::unordered_map<user_id, std::string>& userRoomMap,
-        std::map<user_id, std::string>& playerGameMap,
+        std::map<user_id, game_id>& playerGameMap,
         std::mutex& mtx,
         user_id userId,
         GameService& service)
@@ -91,9 +102,13 @@ namespace GameImpl::Room {
             std::string roomCode = userRoomMap[userId];
             userRoomMap.erase(userId);
 
-            if (rooms.count(roomCode)) {
+            if (rooms.count(roomCode))
+            {
                 ::Room& room = rooms[roomCode];
-                if (room.hostUserId == userId) {
+                if (room.hostUserId == userId)
+                {
+                    std::cout << "Host left. Closing room " << roomCode << std::endl;
+
                     for (auto pid : room.players) {
                         if (pid != userId) {
                             crow::json::wvalue msg;
@@ -109,14 +124,22 @@ namespace GameImpl::Room {
                 }
 
                 room.players.erase(userId);
-                if (room.players.empty()) rooms.erase(roomCode);
-                else if (!room.isGameStarted) {
+                if (room.players.empty())
+                {
+                    rooms.erase(roomCode);
+                }
+                else if (!room.isGameStarted)
+                {
                     crow::json::wvalue updateMsg;
                     updateMsg["type"] = "room_update";
                     updateMsg["roomCode"] = roomCode;
-                    std::vector<crow::json::wvalue> playersList;
-                    for (auto pid : room.players) playersList.push_back(pid);
+                    std::vector < crow::json::wvalue > playersList;
+                    for (auto pid : room.players)
+                    {
+                        playersList.push_back(pid);
+                    }
                     updateMsg["players"] = std::move(playersList);
+
                     BroadcastInternal(rooms, roomCode, updateMsg.dump(), service);
                 }
                 return true;
@@ -132,7 +155,11 @@ namespace GameImpl::Room {
     {
         auto itRoom = rooms.find(roomCode);
         if (itRoom == rooms.end()) return;
-        for (auto pid : itRoom->second.players) service.sendMessageToUser(pid, message);
+
+        for (auto pid : itRoom->second.players)
+        {
+            service.sendMessageToUser(pid, message);
+        }
     }
 
     std::vector<user_id> GetPlayers(std::unordered_map<std::string, ::Room>& rooms,
@@ -142,6 +169,7 @@ namespace GameImpl::Room {
         std::lock_guard<std::mutex> lock(mtx);
         auto it = rooms.find(roomCode);
         if (it == rooms.end()) return {};
+
         return std::vector<user_id>(it->second.players.begin(), it->second.players.end());
     }
 }

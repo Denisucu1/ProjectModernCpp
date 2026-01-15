@@ -3,6 +3,8 @@
 #include <string>
 #include <cstdint>
 
+auto initStorage();
+
 namespace UserConstants {
     inline const std::string DefaultEmpty = "";
     inline const std::int64_t InitialVal = 0;
@@ -10,6 +12,7 @@ namespace UserConstants {
 }
 
 class User {
+    friend auto initStorage();
     friend class UserService;
     friend class MatchService;
 private:
@@ -23,20 +26,15 @@ private:
 public:
     User() = default;
     int GetId() const;
-    void SetId(int v);
     const std::string& GetUsername() const;
-    void SetUsername(std::string v);
     const std::string& GetPassword() const;
-    void SetPassword(std::string v);
     const std::string& GetSessionToken() const;
-    void SetSessionToken(std::string v);
     std::int64_t GetTokenExpiration() const;
-    void SetTokenExpiration(std::int64_t v);
     std::int64_t GetLastActivity() const;
-    void SetLastActivity(std::int64_t v);
 };
 
 class Profile {
+    friend auto initStorage();
     friend class UserService;
     friend class MatchService;
 private:
@@ -51,17 +49,10 @@ private:
 public:
     Profile() = default;
     int GetId() const;
-    void SetId(int v);
     int GetUserId() const;
-    void SetUserId(int v);
     double GetHoursPlayed() const;
-    void SetHoursPlayed(double v);
     int GetGamesPlayed() const;
-    void SetGamesPlayed(int v);
     int GetGamesWon() const;
-    void SetGamesWon(int v);
     int GetCardsLeftOnLosses() const;
-    void SetCardsLeftOnLosses(int v);
     double GetPerformanceScore() const;
-    void SetPerformanceScore(double v);
 };

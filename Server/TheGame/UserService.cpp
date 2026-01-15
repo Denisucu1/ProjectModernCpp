@@ -110,4 +110,3 @@ std::optional<int> UserService::GetUserIdByToken(const std::string& token) {
     storage.update_all(set(c(&User::LastActivity) = now), where(c(&User::id) == res.front().id));
     return res.front().id;
 }
-}

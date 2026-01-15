@@ -1,6 +1,5 @@
 #include "GS_Internal.h"
 #include "DatabaseManager.h"
-#include "Match.h"
 #include <iostream>
 
 namespace GameImpl::Chat {
@@ -24,13 +23,18 @@ namespace GameImpl::Chat {
 
             try {
                 auto& storage = getStorage();
+
                 ::Chat chatEntry;
-                chatEntry.SetPlayerId(userId);
-                chatEntry.SetGameId(numericMatchId);
-                chatEntry.SetMessage(message);
+                chatEntry.player_id = userId;
+                chatEntry.game_id = numericMatchId;
+                chatEntry.message = message;
+
                 storage.insert(chatEntry);
+                std::cout << "[Chat] Mesaj salvat pentru meciul " << numericMatchId << " de la user " << userId << std::endl;
             }
-            catch (...) {}
+            catch (const std::exception& e) {
+                std::cerr << "[ChatError] " << e.what() << std::endl;
+            }
         }
 
         crow::json::wvalue chatJson;

@@ -11,10 +11,11 @@
 MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
     QWidget(parent), ui(new Ui::MainMenu), m_username(username), m_userId(userId) {
     ui->setupUi(this);
+
     InitializeUi();
     ConnectUiSignals();
-    SetupGameLogic();
-    m_gameClient->connectToServer();
+
+    SetupNetwork();
 }
 
 void MainMenu::InitializeUi() {
@@ -22,20 +23,88 @@ void MainMenu::InitializeUi() {
     SetupMenuPages();
     SetupProfilePage();
     SetupLobbyPages();
+
+    GameWindow* gamePage = new GameWindow(this);
+    m_gamePageIndex = ui->stackedWidget->addWidget(gamePage);
+    SwitchToPage(PageIndex::menu);
 }
 
-void MainMenu::ConnectUiSignals() {
-    connect(ui->playButton, &QPushButton::clicked, this, &MainMenu::OnPlayButtonClicked);
-    connect(ui->exitButton, &QPushButton::clicked, this, &MainMenu::OnExitButtonClicked);
-    connect(ui->backButton, &QPushButton::clicked, this, &MainMenu::OnBackButtonClicked);
-    connect(ui->modeBackButton, &QPushButton::clicked, this, &MainMenu::OnModeBackButtonClicked);
-    connect(ui->cancelJoinButton, &QPushButton::clicked, this, &MainMenu::OnCancelJoinButtonClicked);
-    connect(ui->createGameButton, &QPushButton::clicked, this, &MainMenu::OnCreateGameButtonClicked);
-    connect(ui->joinGameButton, &QPushButton::clicked, this, &MainMenu::OnJoinGameButtonClicked);
-    connect(ui->confirmJoinButton, &QPushButton::clicked, this, &MainMenu::OnConfirmJoinButtonClicked);
-    connect(ui->startGameButton, &QPushButton::clicked, this, &MainMenu::OnStartGameButtonClicked);
-    connect(ui->profileButton, &QPushButton::clicked, this, &MainMenu::OnProfileButtonClicked);
-    connect(ui->closeLobbyButton, &QPushButton::clicked, this, &MainMenu::OnCloseLobbyButtonClicked);
+void MainMenu::SetupNetwork() {
+    QString wsUrl = "ws://localhost:18080/ws/game";
+    QString apiUrl = "http://localhost:18080";
+
+    m_network = new NetworkManager(wsUrl, apiUrl, m_userId, this);
+
+    connect(m_network, &NetworkManager::roomCreated, this, &MainMenu::HandleRoomCreated);
+    connect(m_network, &NetworkManager::roomJoined, this, &MainMenu::HandleRoomJoined);
+    connect(m_network, &NetworkManager::roomClosed, this, [this](const QString& reason) {
+        QMessageBox::warning(this, "Sesiune Închisă", reason);
+        ui->lobbyPlayersList->clear();
+        SwitchToPage(PageIndex::menu);
+        });
+    connect(m_network, &NetworkManager::playerListUpdated, this, &MainMenu::HandlePlayerListUpdate);
+    connect(m_network, &NetworkManager::gameStateUpdated, this, &MainMenu::HandleGameStateUpdate);
+    connect(m_network, &NetworkManager::gameOver, this, &MainMenu::HandleGameOver);
+    connect(m_network, &NetworkManager::profileStatsReceived, this, &MainMenu::HandleProfileData);
+
+    m_network->connectToServer();
+
+    if (GameWindow* gw = qobject_cast<GameWindow*>(ui->stackedWidget->widget(m_gamePageIndex))) {
+        connect(gw, &GameWindow::playerMoved, m_network, &NetworkManager::sendGameAction);
+    }
+}
+
+void MainMenu::HandleRoomCreated(const QString& code) {
+    ui->generatedCodeLabel->setText(code);
+    ui->lobbyPlayersList->clear();
+    ui->lobbyPlayersList->addItem(m_username + " (ID: " + QString::number(m_userId) + ")");
+    SwitchToPage(PageIndex::lobbyWait);
+}
+
+void MainMenu::HandleRoomJoined(const QString& code) {
+    ui->generatedCodeLabel->setText(code);
+    SwitchToPage(PageIndex::lobbyWait);
+}
+
+void MainMenu::HandlePlayerListUpdate(const QJsonArray& players) {
+    ui->lobbyPlayersList->clear();
+    for (const auto& val : players) {
+        QJsonObject p = val.toObject();
+        QString text = p["username"].toString() + " (ID: " + QString::number(p["userId"].toInt()) + ")";
+        ui->lobbyPlayersList->addItem(text);
+    }
+}
+
+void MainMenu::HandleGameStateUpdate(const myproject::GameState& state) {
+    if (ui->stackedWidget->currentIndex() == static_cast<int>(PageIndex::lobbyWait)) {
+        SwitchToPage(PageIndex::game);
+    }
+
+    std::vector<int> piles;
+    for (int val : state.stack_tops()) piles.push_back(val);
+
+    std::vector<int> hand;
+    for (const auto& p : state.players()) {
+        if (p.user_id() == m_userId) {
+            for (int card : p.your_cards()) hand.push_back(card);
+            break;
+        }
+    }
+
+    if (GameWindow* gw = qobject_cast<GameWindow*>(ui->stackedWidget->widget(m_gamePageIndex))) {
+        gw->updateTable(piles);
+        gw->updateHand(hand);
+        gw->setInteractionEnabled(state.current_player_id() == m_userId);
+    }
+}
+
+void MainMenu::HandleGameOver(bool isVictory) {
+    QMessageBox::information(this, "Joc Terminat", isVictory ? "Victorie!" : "Înfrângere!");
+    SwitchToPage(PageIndex::menu);
+}
+
+void MainMenu::HandleProfileData(const QJsonObject& data) {
+    m_profileWidget->UpdateStats(data);
 }
 
 void MainMenu::SetupNavigationLayout() {
@@ -111,108 +180,37 @@ void MainMenu::SetupLobbyPages() {
     waitLayout->addStretch();
 }
 
-void MainMenu::SetupGameLogic() {
-    m_networkManager = new QNetworkAccessManager(this);
-    GameWindow* gamePage = new GameWindow(this);
-    m_gamePageIndex = ui->stackedWidget->addWidget(gamePage);
-    SwitchToPage(PageIndex::menu);
-
-    m_gameClient = new GameClient(QUrl(ServerWsUrl), m_userId, this);
-    connect(m_gameClient, &GameClient::messageReceived, this, &MainMenu::OnSocketMessage);
-    connect(m_gameClient, &GameClient::binaryMessageReceived, this, &MainMenu::OnGameBinaryMessage);
-
-    connect(gamePage, &GameWindow::playerMoved, this, [this](int cardValue, int stackIndex) {
-        myproject::GameMessage msg;
-        msg.set_type(myproject::GameMessage::ACTION);
-        auto* action = msg.mutable_action();
-        if (cardValue == 0) action->set_action_type(myproject::PlayerAction::END_TURN);
-        else {
-            action->set_action_type(myproject::PlayerAction::PLAY_CARD);
-            action->set_card_value(cardValue);
-            action->set_stack_index(stackIndex);
-        }
-        m_gameClient->sendBinaryMessage(QByteArray::fromStdString(msg.SerializeAsString()));
-        });
-}
-
-void MainMenu::OnSocketMessage(const QString& message) {
-    QJsonObject json = QJsonDocument::fromJson(message.toUtf8()).object();
-    if (json["type"].toString() == "room_closed") {
-        QMessageBox::warning(this, "Room Closed", json["reason"].toString());
-        SwitchToPage(PageIndex::menu);
-        ui->lobbyPlayersList->clear();
-        return;
-    }
-    if (json.contains("players")) UpdatePlayerList(json["players"].toArray());
-    if (json.contains("status")) ProcessRoomStatus(json);
-}
-
-void MainMenu::UpdatePlayerList(const QJsonArray& players) {
-    ui->lobbyPlayersList->clear();
-    for (const auto& val : players) {
-        QJsonObject p = val.toObject();
-        QString text = p["username"].toString() + " (ID: " + QString::number(p["userId"].toInt()) + ")";
-        ui->lobbyPlayersList->addItem(text);
-    }
-}
-
-void MainMenu::ProcessRoomStatus(const QJsonObject& json) {
-    QString status = json["status"].toString();
-    if (status == "room_created") {
-        ui->generatedCodeLabel->setText(json["roomCode"].toString());
-        ui->lobbyPlayersList->clear();
-        ui->lobbyPlayersList->addItem(m_username + " (ID: " + QString::number(m_userId) + ")");
-        SwitchToPage(PageIndex::lobbyWait);
-    }
-    else if (status == "joined_room") {
-        ui->generatedCodeLabel->setText(json["roomCode"].toString());
-        SwitchToPage(PageIndex::lobbyWait);
-    }
-}
-
-void MainMenu::OnGameBinaryMessage(const QByteArray& data) {
-    if (ui->stackedWidget->currentIndex() == static_cast<int>(PageIndex::lobbyWait)) {
-        SwitchToPage(PageIndex::game);
-    }
-    myproject::GameMessage msg;
-    if (!msg.ParseFromArray(data.constData(), data.size())) return;
-    if (msg.type() == myproject::GameMessage_Type_GAME_OVER) {
-        QMessageBox::information(this, "Game Over", msg.state().game_status() == 1 ? "Victory!" : "Defeat!");
-        SwitchToPage(PageIndex::menu);
-        return;
-    }
-    if (msg.type() == myproject::GameMessage_Type_STATE_UPDATE && msg.has_state()) {
-        UpdateGameInterface(msg.state());
-    }
-}
-
-void MainMenu::UpdateGameInterface(const myproject::GameState& state) {
-    std::vector<int> piles;
-    for (int val : state.stack_tops()) piles.push_back(val);
-    std::vector<int> hand;
-    for (const auto& p : state.players()) {
-        if (p.user_id() == m_userId) {
-            for (int card : p.your_cards()) hand.push_back(card);
-            break;
-        }
-    }
-    if (GameWindow* gw = qobject_cast<GameWindow*>(ui->stackedWidget->widget(m_gamePageIndex))) {
-        gw->updateTable(piles);
-        gw->updateHand(hand);
-        gw->setInteractionEnabled(state.current_player_id() == m_userId);
-    }
-}
-
-void MainMenu::OnProfileReply(QNetworkReply* reply) {
-    if (reply->error() == QNetworkReply::NoError) {
-        QJsonObject json = QJsonDocument::fromJson(reply->readAll()).object();
-        m_profileWidget->UpdateStats(json);
-    }
-    reply->deleteLater();
+void MainMenu::ConnectUiSignals() {
+    connect(ui->playButton, &QPushButton::clicked, this, &MainMenu::OnPlayButtonClicked);
+    connect(ui->exitButton, &QPushButton::clicked, this, &MainMenu::OnExitButtonClicked);
+    connect(ui->backButton, &QPushButton::clicked, this, &MainMenu::OnBackButtonClicked);
+    connect(ui->modeBackButton, &QPushButton::clicked, this, &MainMenu::OnModeBackButtonClicked);
+    connect(ui->cancelJoinButton, &QPushButton::clicked, this, &MainMenu::OnCancelJoinButtonClicked);
+    connect(ui->createGameButton, &QPushButton::clicked, this, &MainMenu::OnCreateGameButtonClicked);
+    connect(ui->joinGameButton, &QPushButton::clicked, this, &MainMenu::OnJoinGameButtonClicked);
+    connect(ui->confirmJoinButton, &QPushButton::clicked, this, &MainMenu::OnConfirmJoinButtonClicked);
+    connect(ui->startGameButton, &QPushButton::clicked, this, &MainMenu::OnStartGameButtonClicked);
+    connect(ui->profileButton, &QPushButton::clicked, this, &MainMenu::OnProfileButtonClicked);
+    connect(ui->closeLobbyButton, &QPushButton::clicked, this, &MainMenu::OnCloseLobbyButtonClicked);
 }
 
 void MainMenu::SwitchToPage(PageIndex page) {
     ui->stackedWidget->setCurrentIndex(static_cast<int>(page));
+}
+
+    void MainMenu::OnCreateGameButtonClicked() { m_network->createRoom(); }
+void MainMenu::OnConfirmJoinButtonClicked() {
+    QString code = ui->roomCodeInput->text().toUpper().trimmed();
+    if (code.length() == RoomCodeLength) m_network->joinRoom(code);
+}
+void MainMenu::OnStartGameButtonClicked() { m_network->startGame(ui->generatedCodeLabel->text()); }
+void MainMenu::OnCloseLobbyButtonClicked() {
+    m_network->leaveRoom();
+    SwitchToPage(PageIndex::modeSelection);
+}
+void MainMenu::OnProfileButtonClicked() {
+    SwitchToPage(PageIndex::profile);
+    m_network->fetchProfileStats();
 }
 
 void MainMenu::OnPlayButtonClicked() { SwitchToPage(PageIndex::modeSelection); }
@@ -221,29 +219,5 @@ void MainMenu::OnBackButtonClicked() { SwitchToPage(PageIndex::menu); }
 void MainMenu::OnModeBackButtonClicked() { SwitchToPage(PageIndex::menu); }
 void MainMenu::OnCancelJoinButtonClicked() { SwitchToPage(PageIndex::modeSelection); }
 void MainMenu::OnJoinGameButtonClicked() { SwitchToPage(PageIndex::joinRoom); }
-void MainMenu::OnCreateGameButtonClicked() {
-    QJsonObject j; j["type"] = "create_room"; j["userId"] = m_userId;
-    m_gameClient->sendMessage(QJsonDocument(j).toJson(QJsonDocument::Compact));
-}
-void MainMenu::OnConfirmJoinButtonClicked() {
-    QString code = ui->roomCodeInput->text().toUpper().trimmed();
-    if (code.length() != RoomCodeLength) return;
-    QJsonObject j; j["type"] = "join_room"; j["userId"] = m_userId; j["roomCode"] = code;
-    m_gameClient->sendMessage(QJsonDocument(j).toJson(QJsonDocument::Compact));
-}
-void MainMenu::OnStartGameButtonClicked() {
-    QJsonObject j; j["type"] = "start_game"; j["userId"] = m_userId; j["roomCode"] = ui->generatedCodeLabel->text();
-    m_gameClient->sendMessage(QJsonDocument(j).toJson(QJsonDocument::Compact));
-}
-void MainMenu::OnProfileButtonClicked() {
-    SwitchToPage(PageIndex::profile);
-    QNetworkRequest req(QUrl(ProfileUrlTemplate.arg(m_userId)));
-    QNetworkReply* reply = m_networkManager->get(req);
-    connect(reply, &QNetworkReply::finished, this, [this, reply]() { OnProfileReply(reply); });
-}
-void MainMenu::OnCloseLobbyButtonClicked() {
-    QJsonObject leaveMsg; leaveMsg["type"] = "leave_room"; leaveMsg["userId"] = m_userId;
-    m_gameClient->sendMessage(QJsonDocument(leaveMsg).toJson(QJsonDocument::Compact));
-    SwitchToPage(PageIndex::modeSelection);
-}
+
 MainMenu::~MainMenu() { delete ui; }

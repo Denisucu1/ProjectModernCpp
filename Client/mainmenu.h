@@ -2,12 +2,10 @@
 #define MAINMENU_H
 
 #include <QWidget>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
 #include <QJsonArray>
-#include "gameclient.h"
-#include "GameProtocol.pb.h"
+#include "networkmanager.h"
 #include "profilewidget.h"
+#include "GameProtocol.pb.h"
 
 namespace Ui { class MainMenu; }
 
@@ -39,9 +37,13 @@ private slots:
     void OnStartGameButtonClicked();
     void OnProfileButtonClicked();
     void OnCloseLobbyButtonClicked();
-    void OnSocketMessage(const QString& message);
-    void OnGameBinaryMessage(const QByteArray& data);
-    void OnProfileReply(QNetworkReply* reply);
+
+    void HandleRoomCreated(const QString& code);
+    void HandleRoomJoined(const QString& code);
+    void HandlePlayerListUpdate(const QJsonArray& players);
+    void HandleGameStateUpdate(const myproject::GameState& state);
+    void HandleGameOver(bool isVictory);
+    void HandleProfileData(const QJsonObject& data);
 
 private:
     void InitializeUi();
@@ -50,24 +52,19 @@ private:
     void SetupMenuPages();
     void SetupProfilePage();
     void SetupLobbyPages();
-    void SetupGameLogic();
+    void SetupNetwork();
 
-    void UpdatePlayerList(const QJsonArray& players);
-    void ProcessRoomStatus(const QJsonObject& json);
-    void UpdateGameInterface(const myproject::GameState& state);
     void SwitchToPage(PageIndex page);
 
     Ui::MainMenu* ui;
     QString m_username;
     int m_userId;
     int m_gamePageIndex;
-    GameClient* m_gameClient;
-    QNetworkAccessManager* m_networkManager;
+
+    NetworkManager* m_network; 
     ProfileWidget* m_profileWidget;
 
     const int RoomCodeLength = 4;
-    const QString ServerWsUrl = "ws://localhost:18080/ws/game";
-    const QString ProfileUrlTemplate = "http://localhost:18080/api/profile/%1";
 };
 
 #endif

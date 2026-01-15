@@ -199,6 +199,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainmenu.cpp" />
     <ClCompile Include="mainwindow.cpp" />
+    <ClCompile Include="networkmanager.cpp" />
     <ClCompile Include="profilewidget.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -225,6 +226,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Server\TheGame\GameProtocol.pb.h" />
+    <QtMoc Include="networkmanager.h" />
     <QtMoc Include="profilewidget.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

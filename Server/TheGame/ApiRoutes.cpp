@@ -1,32 +1,70 @@
-﻿#define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
-
-#include "ApiRoutes.h"
-#include "crow.h"
-#include "UserService.h"
+﻿#include "AuthRoutes.h"
 #include "JsonUtil.h"
-#include <exception>
-#include <string>
-#include <iostream>
-#include "GameService.h"
-#include <regex>
-#include "AuthRoutes.h"
-#include "GameRoutes.h"
-#include "WebSocketRoutes.h"
 
-void setupRoutes(crow::SimpleApp& app, UserService& userSvc, GameService& gameSvc)
-{
-    CROW_ROUTE(app, "/<string>path")
-        .methods("OPTIONS"_method)
-        ([&](const crow::request& req, const std::string& path_variable) {
-        crow::response res;
-        res.add_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
-        res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-        res.add_header("Access-Control-Allow-Origin", "*");
-        res.code = 204;
-        return res;
-            });
+namespace AuthRoutes {
+    void setup(crow::SimpleApp& app, UserService& userSvc) {
+        CROW_ROUTE(app, "/api/login").methods("POST"_method)
+            ([&userSvc](const crow::request& req) {
+            crow::response res;
+            res.add_header("Access-Control-Allow-Origin", "*");
+            auto data = crow::json::load(req.body);
 
-    AuthRoutes::setup(app, userSvc);
-    GameRoutes::setup(app, userSvc, gameSvc);
-    WebSocketRoutes::setup(app, userSvc, gameSvc);
+            if (!data || !data.count("username") || !data.count("password")) {
+                res.code = 400;
+                res.body = "{\"success\": false, \"message\": \"Missing credentials\"}";
+                return res;
+            }
+
+            try {
+                std::optional<int> userId = userSvc.Authenticate(data["username"].s(), data["password"].s());
+
+                if (userId.has_value()) {
+                    crow::json::wvalue resp_data;
+                    resp_data["success"] = true;
+                    resp_data["userId"] = userId.value();
+                    resp_data["username"] = data["username"].s();
+                    res.body = resp_data.dump();
+                    res.code = 200;
+                }
+                else {
+                    res.code = 401;
+                    res.body = "{\"success\": false, \"message\": \"Invalid username or password\"}";
+                }
+            }
+            catch (const std::exception& e) {
+                res.code = 500;
+                res.body = "{\"success\": false, \"message\": \"Server error\"}";
+            }
+            return res;
+                });
+
+        CROW_ROUTE(app, "/api/register").methods("POST"_method)
+            ([&userSvc](const crow::request& req) {
+            crow::response res;
+            res.add_header("Access-Control-Allow-Origin", "*");
+            auto data = JsonUtil::parseSimpleJson(req.body);
+
+            if (data.empty() || data.find("username") == data.end() || data.find("password") == data.end()) {
+                res.code = 400;
+                res.body = "{\"success\": false, \"message\": \"Missing credentials\"}";
+                return res;
+            }
+
+            try {
+                if (userSvc.RegisterUser(data["username"], data["password"])) {
+                    res.code = 201;
+                    res.body = "{\"success\": true, \"message\": \"User registered successfully!\"}";
+                }
+                else {
+                    res.code = 409;
+                    res.body = "{\"success\": false, \"message\": \"Username already taken\"}";
+                }
+            }
+            catch (const std::exception& e) {
+                res.code = 500;
+                res.body = "{\"success\": false, \"message\": \"Server error\"}";
+            }
+            return res;
+                });
+    }
 }

@@ -15,7 +15,7 @@ void Game::refillPlayerHand(Player& player)
     while (currentHand.size() < cardsNeeded && !m_cards.IsEmpty()) {
         currentHand.push_back(m_cards.DrawACard().GetValue());
     }
-	player.SetDeck(currentHand);
+    player.SetDeck(currentHand);
 }
 
 void Game::StartGame()
@@ -38,7 +38,7 @@ void Game::NextPlayer(int cardsPlayed)
 
 bool Game::CanPlayerMakeAtLeastOneMove(int playerIndex) const
 {
-    if (playerIndex >= m_players.size()) 
+    if (playerIndex >= m_players.size())
         return false;
     const auto& hand = m_players[playerIndex].GetDeck();
 
@@ -54,15 +54,15 @@ bool Game::CanPlayerMakeAtLeastOneMove(int playerIndex) const
 bool Game::PlaySingleCard(int userId, std::uint8_t cardValue, int stackIndex)
 {
     Player& currentPlayer = m_players[m_current_player_index];
-    if (currentPlayer.GetId() != userId) 
+    if (currentPlayer.GetId() != userId)
         return false;
 
     auto hand = currentPlayer.GetDeck();
-    if (std::find(hand.begin(), hand.end(), cardValue) == hand.end()) 
+    if (std::find(hand.begin(), hand.end(), cardValue) == hand.end())
         return false;
 
     auto stackIdx = static_cast<PlayPiles::StackIndex>(stackIndex);
-    if (!m_play_piles_.IsMoveValid(stackIdx, Card(cardValue))) 
+    if (!m_play_piles_.IsMoveValid(stackIdx, Card(cardValue)))
         return false;
 
     m_play_piles_.PlayCardOnStack(stackIdx, Card(cardValue));
@@ -71,14 +71,14 @@ bool Game::PlaySingleCard(int userId, std::uint8_t cardValue, int stackIndex)
     return true;
 }
 
-bool Game::EndCurrentTurn(int userId) 
+bool Game::EndCurrentTurn(int userId)
 {
     if (m_players[m_current_player_index].GetId() != userId)
         return false;
     if (m_cardsPlayedThisTurn < GetMinCardsToPlay())
         return false;
-    
-	refillPlayerHand(m_players[m_current_player_index]);
+
+    refillPlayerHand(m_players[m_current_player_index]);
 
     NextPlayer(m_cardsPlayedThisTurn);
     m_cardsPlayedThisTurn = 0;

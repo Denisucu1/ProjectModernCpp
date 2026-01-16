@@ -69,12 +69,6 @@
     <ClCompile Include="..\Server\TheGame\PlayPiles.cpp">
       <Filter>Source Files\GameLogicSources\LogicaJoc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\src\gtest_main.cc">
-      <Filter>Source Files\GameLogicSources\Utilitare</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Descarcate\googletest-1.17.0\googletest-1.17.0\googletest\src\gtest-all.cc">
-      <Filter>Source Files\GameLogicSources\Utilitare</Filter>
-    </ClCompile>
     <ClCompile Include="..\Server\TheGame\GameProtocol.pb.cc">
       <Filter>Source Files\GameLogicSources\LogicaServer</Filter>
     </ClCompile>
@@ -86,6 +80,12 @@
     </ClCompile>
     <ClCompile Include="MatchServiceTests.cpp">
       <Filter>Source Files\Tests_game_logic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\googletest-1.17.0\googletest-1.17.0\googletest\src\gtest_main.cc">
+      <Filter>Source Files\GameLogicSources\Utilitare</Filter>
+    </ClCompile>
+    <ClCompile Include="..\googletest-1.17.0\googletest-1.17.0\googletest\src\gtest-all.cc">
+      <Filter>Source Files\GameLogicSources\Utilitare</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

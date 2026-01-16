@@ -101,7 +101,7 @@ void MainMenu::HandleGameStateUpdate(const myproject::GameState& state) {
 }
 
 void MainMenu::HandleGameOver(bool isVictory) {
-    QMessageBox::information(this, "Joc Terminat", isVictory ? "Victorie!" : "Înfrângere!");
+    QMessageBox::information(this, "Game Over", isVictory ? "Victory!" : "Defeat!");
     SwitchToPage(PageIndex::menu);
 }
 

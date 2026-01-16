@@ -39,7 +39,7 @@ void GameWindow::setupChatUI(QHBoxLayout* mainLayout) {
     chatLayout->setContentsMargins(10, 10, 10, 10);
 
     QLabel* chatTitle = new QLabel("GAME CHAT", this);
-    chatTitle->setObjectName("chatTitle");
+    chatTitle->setObjectName("chatTitle"); 
     chatLayout->addWidget(chatTitle);
 
     m_chatDisplay = new QTextEdit(this);
@@ -51,7 +51,7 @@ void GameWindow::setupChatUI(QHBoxLayout* mainLayout) {
     inputLayout->setSpacing(8);
 
     m_chatInput = new QLineEdit(this);
-    m_chatInput->setObjectName("chatInput"); 
+    m_chatInput->setObjectName("chatInput");
     m_chatInput->setPlaceholderText("Type a message...");
 
     QPushButton* sendBtn = new QPushButton("Send", this);
@@ -65,7 +65,8 @@ void GameWindow::setupChatUI(QHBoxLayout* mainLayout) {
     connect(m_chatInput, &QLineEdit::returnPressed, this, &GameWindow::onSendChatClicked);
 
     mainLayout->addWidget(chatContainer, 1);
-}void GameWindow::onSendChatClicked() {
+}
+void GameWindow::onSendChatClicked() {
     QString text = m_chatInput->text().trimmed();
     if (!text.isEmpty()) {
         emit chatMessageSent(text);
@@ -84,10 +85,7 @@ void GameWindow::appendChatMessage(int senderId, const QString& text) {
         displayName = "System";
     }
 
-    m_chatDisplay->append(QString("<span style='color: #555; font-size: 10px;'>[%1]</span> "
-        "<b style='color: %2;'>%3:</b> "
-        "<span style='color: #efefef;'>%4</span>")
-        .arg(timeStr, color, displayName, text));
+    m_chatDisplay->append(CHAT_FORMAT.arg(timeStr, color, displayName, text));
 
     m_chatDisplay->verticalScrollBar()->setValue(m_chatDisplay->verticalScrollBar()->maximum());
 }
@@ -95,7 +93,7 @@ void GameWindow::appendChatMessage(int senderId, const QString& text) {
 void GameWindow::setupTopBar(QVBoxLayout* mainLayout) {
     QHBoxLayout* topBar = new QHBoxLayout();
     m_statusLabel = new QLabel("Waiting for turn...", this);
-    m_statusLabel->setObjectName("statusLabel"); 
+    m_statusLabel->setObjectName("statusLabel");
 
     m_endTurnButton = new QPushButton("End Turn", this);
     m_endTurnButton->setStyleSheet(endTurnStyle);

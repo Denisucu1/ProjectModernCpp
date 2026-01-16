@@ -92,9 +92,10 @@ QWidget#chatContainer {
 QLabel#chatTitle {
     color: #00bfff;
     font-weight: bold;
-    border: none;
+    font-size: 14px;
     letter-spacing: 1px;
     padding-bottom: 5px;
+    border: none;
 }
 
 QTextEdit#chatDisplay {
@@ -111,7 +112,9 @@ QTextEdit#chatDisplay {
 #chatDisplay QScrollBar::handle:vertical { background: #555; border-radius: 4px; }
 
 QLineEdit#chatInput {
+    padding: 8px;
     background: #2a2a2a;
+    color: white;
     border: 1px solid #444;
     border-radius: 6px;
     min-width: 50px; 
@@ -123,10 +126,25 @@ QLineEdit#chatInput:focus {
 
 QPushButton#sendBtn {
     background-color: #0078d4;
+    color: white;
     border-radius: 6px;
-    min-height: 30px;
     padding: 8px 15px;
+    font-weight: bold;
+    min-height: 30px;
 }
 
 QPushButton#sendBtn:hover { background-color: #0086f1; }
-QPushButton#sendBtn:pressed { background-color: #005a9e; }
+QPushButton#sendBtn:pressed { background-color: #005a9e; padding-top: 9px; padding-left: 16px; }
+
+QLabel#statusLabel {
+    font-weight: bold;
+}
+
+QPushButton#endTurnButton {
+    background-color: #5C6BC0;
+}
+
+QWidget#handContainer {
+    background-color: rgba(0, 0, 0, 50);
+    border-top: 1px solid #444;
+}

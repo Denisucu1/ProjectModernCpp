@@ -78,6 +78,11 @@ private:
     const QString endTurnStyle = "QPushButton { background-color: #d32f2f; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold; }";
     const QString statusStyle = "color: white; font-size: 20px; font-weight: bold;";
     const QString handContainerStyle = "background-color: rgba(255, 255, 255, 0.1); border-radius: 15px;";
+
+    static inline const QString CHAT_FORMAT =
+        "<span style='color: #555; font-size: 10px;'>[%1]</span> "
+        "<b style='color: %2;'>%3:</b> "
+        "<span style='color: #efefef;'>%4</span>";
 };
 
 #endif

@@ -1,160 +1,109 @@
-
-#ifndef MATCH_H
-#define MATCH_H
-
+#pragma once
 #include <string>
+#include <cstdint>
 
+class GameEntity {
 
-class Joc {
+private:
 
-public:
-
-    int id = 0;
-    int max_players = 5;
-
-    std::string status = "Waiting for players";
-    std::string difficulty = "Normal";
-    std::string deck_state = "";
-    std::string stacks_state = "[1, 1, 100, 100]";
-    std::int64_t creation_timestamp = 0;
-
-    double first_player_score = 1.0;
+    int m_id = 0;
+    int m_maxPlayers = 5;
+    std::string m_status = "Waiting for players";
+    std::string m_difficulty = "Normal";
+    std::string m_deckState = "";
+    std::string m_stacksState = "[1, 1, 100, 100]";
+    std::int64_t m_creationTimestamp = 0;
+    double m_firstPlayerScore = 1.0;
 
 public:
-    Joc() = default;
+    GameEntity();
 
-    int GetId() const 
-    { 
-        return id; 
-    }
-    const std::string& GetStatus() const 
-    { 
-        return status; 
-    }
-    const std::string& GetDifficulty() const 
-    { 
-        return difficulty; 
-    }
-    int GetMaxPlayers() const 
-    { 
-        return max_players; 
-    }
-    const std::string& GetDeckState() const 
-    { 
-        return deck_state; 
-    }
-    const std::string& GetStacksState() const 
-    { 
-        return stacks_state; 
-    }
+    int GetId() const;
+    int GetMaxPlayers() const;
+    const std::string& GetStatus() const;
+    const std::string& GetDifficulty() const;
+    const std::string& GetDeckState() const;
+    const std::string& GetStacksState() const;
+    std::int64_t GetCreationTimestamp() const;
+    double GetFirstPlayerScore() const;
 
-    std::int64_t GetCreationTimestamp() const
-    {
-        return creation_timestamp;
-    }
-
-    double GetFirstPlayerScore() const
-    {
-        return first_player_score;
-    }
-
+    void SetId(int id);
+    void SetMaxPlayers(int count);
+    void SetStatus(const std::string& status);
+    void SetDifficulty(const std::string& diff);
+    void SetDeckState(const std::string& state);
+    void SetStacksState(const std::string& state);
+    void SetCreationTimestamp(std::int64_t ts);
+    void SetFirstPlayerScore(double score);
 };
 
-class Jucator {
+class PlayerParticipant {
+
+private:
+
+    int m_id = 0;
+    int m_userId = 0;
+    int m_gameId = 0;
+    int m_seatIndex = 0;
+    std::string m_hand = "";
 
 public:
+    PlayerParticipant();
 
-    int id = 0;
-    int user_id = 0;
-    int game_id = 0;
-    int seat_index = 0;
-    std::string hand = "";
+    int GetId() const;
+    int GetUserId() const;
+    int GetGameId() const;
+    int GetSeatIndex() const;
+    const std::string& GetHand() const;
 
-public:
-    Jucator() = default;
-
-    int GetId() const 
-    { 
-        return id; 
-    }
-    int GetUserId() const 
-    { 
-        return user_id; 
-    }
-    int GetGameId() const 
-    { 
-        return game_id; 
-    }
-    int GetSeatIndex() const 
-    { 
-        return seat_index; 
-    }
-    const std::string& GetHand() const 
-    { 
-        return hand; 
-    }
-    
+    void SetId(int id);
+    void SetUserId(int id);
+    void SetGameId(int id);
+    void SetSeatIndex(int index);
+    void SetHand(const std::string& hand);
 };
 
-class Move {
+class MoveEntity {
 
+private:
+
+    int m_id = 0;
+    int m_playerId = 0;
+    int m_gameId = 0;
+    std::string m_cardsPlayed = "";
 public:
+    MoveEntity();
 
-    int id = 0;
-    int player_id = 0;
-    int game_id = 0;
-    std::string cards_played = "";
+    int GetId() const;
+    int GetPlayerId() const;
+    int GetGameId() const;
+    const std::string& GetCardsPlayed() const;
 
-public:
-    Move() = default;
-
-    int GetId() const 
-    { 
-        return id; 
-    }
-    int GetPlayerId() const 
-    { 
-        return player_id; 
-    }
-    int GetGameId() const 
-    { 
-        return game_id; 
-    }
-    const std::string& GetCardsPlayed() const 
-    { 
-        return cards_played; 
-    }
+    void SetId(int id);
+    void SetPlayerId(int id);
+    void SetGameId(int id);
+    void SetCardsPlayed(const std::string& cards);
 };
 
-class Chat {
+class ChatEntity {
+
+private:
+
+    int m_id = 0;
+    int m_playerId = 0;
+    int m_gameId = 0;
+    std::string m_message = "";
 
 public:
+    ChatEntity();
 
-    int id = 0;
-    int player_id = 0;
-    int game_id = 0;
-    std::string message = "";
+    int GetId() const;
+    int GetPlayerId() const;
+    int GetGameId() const;
+    const std::string& GetText() const;
 
-public:
-    Chat() = default;
-
-    int GetId() const 
-    { 
-        return id; 
-    }
-    int GetPlayerId() const 
-    { 
-        return player_id; 
-    }
-    int GetGameId() const 
-    { 
-        return game_id; 
-    }
-    const std::string& GetMessage() const 
-    { 
-        return message; 
-    }
+    void SetId(int id);
+    void SetPlayerId(int id);
+    void SetGameId(int id);
+    void SetText(const std::string& msg);
 };
-
-
-#endif // MATCH_H

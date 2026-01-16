@@ -4,6 +4,8 @@
 
 namespace GameImpl::Chat {
 
+    constexpr int GAME_ID_PREFIX_LENGTH = 5;
+
     void SaveAndBroadcast(user_id userId,
         const std::string& message,
         std::mutex& mtx,
@@ -18,12 +20,11 @@ namespace GameImpl::Chat {
         {
             std::lock_guard<std::mutex> lock(mtx);
 
-            if (userRoomMap.contains(userId)) {
+            if (userRoomMap.contains(userId)) 
                 roomCode = userRoomMap[userId];
-            }
-            else {
+            else 
                 return;
-            }
+            
 
             if (playerGameMap.contains(userId)) {
                 canSaveToDb = true;
@@ -33,18 +34,21 @@ namespace GameImpl::Chat {
 
         if (canSaveToDb) {
             try {
-                int numericMatchId = std::stoi(gId.substr(5));
+                int numericMatchId = std::stoi(gId.substr(GAME_ID_PREFIX_LENGTH));
                 auto& storage = getStorage();
-                auto players = storage.get_all<Jucator>(
-                    where(is_equal(&Jucator::user_id, userId) && is_equal(&Jucator::game_id, numericMatchId))
+                auto players = storage.get_all<PlayerParticipant>(
+                    where(is_equal(&PlayerParticipant::GetUserId, userId) 
+                        && is_equal(&PlayerParticipant::GetGameId, numericMatchId))
                 );
 
                 if (!players.empty()) {
-                    int realPlayerId = players.front().id;
-                    ::Chat chatEntry;
-                    chatEntry.player_id = realPlayerId;
-                    chatEntry.game_id = numericMatchId;
-                    chatEntry.message = message;
+                    int realPlayerId = players.front().GetId();
+
+                    ::ChatEntity chatEntry;
+                    chatEntry.SetPlayerId(realPlayerId);
+                    chatEntry.SetGameId(numericMatchId);
+                    chatEntry.SetText(message);
+
                     storage.insert(chatEntry);
                 }
             }

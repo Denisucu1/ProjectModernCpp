@@ -85,7 +85,7 @@ namespace WebSocketRoutes{
                                 auto userOpt = userSvc.GetUserById(pid);
                                 if (userOpt) {
                                     resp["players"][i]["userId"] = pid;
-                                    resp["players"][i]["username"] = userOpt->username;
+                                    resp["players"][i]["username"] = userOpt->GetUsername();
                                     i++;
                                 }
                             }

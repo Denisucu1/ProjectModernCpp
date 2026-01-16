@@ -87,5 +87,16 @@
     <ClCompile Include="..\googletest-1.17.0\googletest-1.17.0\googletest\src\gtest-all.cc">
       <Filter>Source Files\GameLogicSources\Utilitare</Filter>
     </ClCompile>
+    <ClCompile Include="..\Server\TheGame\Match.cpp">
+      <Filter>Source Files\GameLogicSources\LogicaServer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server\TheGame\User.cpp">
+      <Filter>Source Files\GameLogicSources\LogicaServer</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Server\TheGame\DatabaseManager.h">
+      <Filter>Source Files\GameLogicSources\LogicaServer</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

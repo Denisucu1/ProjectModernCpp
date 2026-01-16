@@ -137,9 +137,11 @@
     <ClCompile Include="..\Server\TheGame\DrawPile.cpp" />
     <ClCompile Include="..\Server\TheGame\Game.cpp" />
     <ClCompile Include="..\Server\TheGame\GameProtocol.pb.cc" />
+    <ClCompile Include="..\Server\TheGame\Match.cpp" />
     <ClCompile Include="..\Server\TheGame\MATCHSERVICE.CPP" />
     <ClCompile Include="..\Server\TheGame\Player.cpp" />
     <ClCompile Include="..\Server\TheGame\PlayPiles.cpp" />
+    <ClCompile Include="..\Server\TheGame\User.cpp" />
     <ClCompile Include="..\Server\TheGame\UserService.cpp" />
     <ClCompile Include="BinaryGameServiceTests.cpp" />
     <ClCompile Include="CardTests.cpp" />
@@ -154,6 +156,9 @@
     <ProjectReference Include="..\Server\TheGame\TheGame.vcxproj">
       <Project>{bd1ebcac-f8f0-46b3-a033-54722bfbd27c}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Server\TheGame\DatabaseManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,11 +1,9 @@
-﻿#ifndef USER_SERVICE_H
-#define USER_SERVICE_H
+﻿#pragma once
 
 #include "DatabaseManager.h"
 #include "User.h"
 #include <optional>
 #include <string>
-
 
 class UserService {
 public:
@@ -22,5 +20,3 @@ public:
 
     static int ComputeScoreLogic(int gamesWon, int gamesPlayed, int cardsLeftOnLosses);
 };
-
-#endif // USER_SERVICE_H

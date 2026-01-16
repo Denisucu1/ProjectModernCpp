@@ -2,7 +2,7 @@
 #include "BinaryGameService.h"
 #include "Game.h"
 #include "Player.h"
-#include "GameProtocol.pb.h" //
+#include "GameProtocol.pb.h" 
 
 std::vector<Player> create_test_players() 
 {

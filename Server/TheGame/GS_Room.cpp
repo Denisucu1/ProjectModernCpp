@@ -71,7 +71,7 @@ namespace GameImpl::Room {
                 auto userOpt = userSvc.GetUserById(pid);
                 if (userOpt) {
                     updateMsg["players"][idx]["userId"] = pid;
-                    updateMsg["players"][idx]["username"] = userOpt->username;
+                    updateMsg["players"][idx]["username"] = userOpt->GetUsername();
                     idx++;
                 }
 

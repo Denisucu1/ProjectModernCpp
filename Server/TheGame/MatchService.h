@@ -1,5 +1,4 @@
-﻿#ifndef MATCH_SERVICE_H
-#define MATCH_SERVICE_H
+﻿#pragma once
 
 #include "DatabaseManager.h"
 #include "Match.h" 
@@ -20,5 +19,3 @@ public:
 
     static bool IsInMatchmakingRange(float matchScore, float player_score);
 };
-
-#endif // MATCH_SERVICE_H

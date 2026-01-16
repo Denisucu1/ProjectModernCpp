@@ -5,6 +5,7 @@
 
 class CustomCard : public QWidget {
     Q_OBJECT
+
 public:
     enum CardType { HAND_CARD, ASCENDING, DESCENDING, DRAW_PILE };
 
@@ -29,6 +30,21 @@ private:
     CardType m_type;
     bool m_selected;
     bool m_faceDown;
+
+    const int cardWidth = 80;
+    const int cardHeight = 120;
+    const int borderRadius = 10;
+    const int borderThickness = 2;
+    const int mainFontSize = 18;
+    const int indicatorFontSize = 8;
+    const int rectAdjustment = 2;
+    const int textMargin = 5;
+
+    const QString colorFaceDown = "#1A237E";
+    const QString colorSelected = "#FFF176";
+    const QString colorAscending = "#2E7D32";
+    const QString colorDescending = "red";
+    const QString fontFamily = "Arial";
 };
 
 #endif

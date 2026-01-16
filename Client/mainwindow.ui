@@ -29,7 +29,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="label">
+     <widget class="QLabel" name="usernameLabel">
       <property name="text">
        <string>Username:</string>
       </property>
@@ -39,7 +39,7 @@
      <widget class="QLineEdit" name="usernameLineEdit"/>
     </item>
     <item>
-     <widget class="QLabel" name="label_2">
+     <widget class="QLabel" name="passwordLabel">
       <property name="text">
        <string>Password:</string>
       </property>

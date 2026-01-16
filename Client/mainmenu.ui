@@ -84,45 +84,6 @@
    <widget class="QWidget" name="profilePage">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="3" column="0">
-        <widget class="QLabel" name="cardsAtLossLabel">
-         <property name="text">
-          <string>0</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="totalTimeLabel">
-         <property name="text">
-          <string>0</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="gamesPlayedLabel">
-         <property name="text">
-          <string>0</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="gamesWonLabel">
-         <property name="text">
-          <string>0</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="performanceScoreLabel">
-         <property name="text">
-          <string>0</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
       <widget class="QPushButton" name="backButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -143,7 +104,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="page">
+   <widget class="QWidget" name="modeSelectionPage">
     <widget class="QPushButton" name="createGameButton">
      <property name="geometry">
       <rect>
@@ -225,7 +186,7 @@
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="page_2">
+   <widget class="QWidget" name="lobbyWaitingPage">
     <widget class="QLabel" name="roomCodeTitleLabel">
      <property name="geometry">
       <rect>

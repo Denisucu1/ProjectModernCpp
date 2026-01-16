@@ -1,0 +1,83 @@
+QWidget#MainWindow, QWidget#MainMenu { 
+    background-color: #1e1e1e; 
+}
+
+QLabel { 
+    color: white; 
+    font-size: 14px; 
+}
+
+QLineEdit { 
+    padding: 8px; 
+    border-radius: 10px; 
+    background-color: #2b2b2b; 
+    color: white; 
+    border: 1px solid #4CAF50; 
+    min-width: 180px; 
+}
+
+QPushButton { 
+    background-color: #4a4a4a; 
+    color: white; 
+    border-radius: 22px; 
+    font-weight: bold; 
+    font-size: 14px; 
+    min-height: 45px; 
+    border: none;
+    padding: 0px 20px;
+}
+
+QPushButton:hover { 
+    background-color: #5a5a5a; 
+}
+
+QPushButton#playButton, QPushButton#profileButton, QPushButton#exitButton,
+QPushButton#createGameButton, QPushButton#joinGameButton, QPushButton#modeBackButton,
+QPushButton#confirmJoinButton, QPushButton#startGameButton, QPushButton#closeLobbyButton { 
+    min-width: 180px; 
+    max-width: 180px; 
+}
+
+QPushButton#loginButton, QPushButton#registerButton { 
+    min-width: 180px; 
+    max-width: 16777215px;
+}
+
+QPushButton#playButton, QPushButton#createGameButton, QPushButton#joinGameButton, 
+QPushButton#confirmJoinButton, QPushButton#startGameButton, QPushButton#registerButton { 
+    background-color: #4CAF50; 
+}
+
+QPushButton#registerButton:hover { 
+    background-color: #45a049; 
+}
+
+QPushButton#exitButton, QPushButton#backButton, QPushButton#cancelJoinButton, 
+QPushButton#lobbyBackButton, QPushButton#modeBackButton, QPushButton#closeLobbyButton { 
+    background-color: #D32F2F; 
+}
+
+QPushButton#loginButton { 
+    background-color: #E91E63; 
+}
+
+QPushButton#loginButton:hover { 
+    background-color: #D81B60; 
+}
+
+QPushButton#profileButton { 
+    background-color: #5C6BC0; 
+}
+
+QListWidget { 
+    background-color: #2b2b2b; 
+    color: white; 
+    border-radius: 10px; 
+    border: 1px solid #4a4a4a; 
+}
+
+QWidget#profileCard { 
+    background-color: #252525; 
+    border: 2px solid #4CAF50; 
+    border-radius: 20px; 
+}

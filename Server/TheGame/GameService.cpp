@@ -87,7 +87,7 @@ Game& GameService::GetGame(const game_id gameId)
 {
 	try
 	{
-		return m_active_games.at(gameId);
+		return *m_active_games.at(gameId);
 	}
 	catch (const std::out_of_range& e)
 	{

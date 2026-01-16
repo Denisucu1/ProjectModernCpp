@@ -10,6 +10,7 @@
 #include "crow.h"
 #include <unordered_set>
 #include "UserService.h"
+#include <memory>
 
 using game_id = std::string;
 using user_id = int;
@@ -76,7 +77,7 @@ private:
 	std::unordered_map<std::string, Room> m_rooms;
 	std::unordered_map<user_id, std::string> m_user_room_map;
 
-	std::map<game_id, Game> m_active_games;
+	std::map<std::string, std::unique_ptr<Game>> m_active_games;
 	std::map<user_id, game_id> m_player_game_map;
 
 	void CreateGame(std::list<user_id>& playerIds);

@@ -80,7 +80,7 @@ namespace GameImpl {
 
     namespace GameLogic {
         void Create(
-            std::map<game_id, Game>& activeGames,
+            std::map<game_id, std::unique_ptr<Game>>& activeGames,
             std::map<user_id, game_id>& playerGameMap,
             long long& idCounter,
             std::list<user_id>& playerIds
@@ -88,7 +88,7 @@ namespace GameImpl {
 
         bool Start(
             std::unordered_map<std::string, ::Room>& rooms,
-            std::map<game_id, Game>& activeGames,
+            std::map<game_id, std::unique_ptr<Game>>& activeGames,
             std::map<user_id, game_id>& playerGameMap,
             long long& idCounter,
             std::mutex& mtx,
@@ -105,19 +105,19 @@ namespace GameImpl {
             std::mutex& mainMtx,
             std::unordered_map<crow::websocket::connection*, user_id>& connToUser,
             std::map<user_id, game_id>& playerGameMap,
-            std::map<game_id, Game>& activeGames,
+            std::map<game_id, std::unique_ptr<Game>>& activeGames,
             std::unordered_map<std::string, ::Room>& rooms,
             std::unordered_map<user_id, std::string>& userRoomMap
         );
 
         void SyncToDb(
             const game_id& gameId,
-            std::map<game_id, Game>& activeGames
+            std::map<game_id, std::unique_ptr<Game>>& activeGames
         );
 
         void BroadcastState(
             const game_id gameId,
-            std::map<game_id, Game>& activeGames,
+            std::map<game_id, std::unique_ptr<Game>>& activeGames,
             GameService& service
         );
     }

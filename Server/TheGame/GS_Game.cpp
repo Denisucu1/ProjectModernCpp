@@ -6,7 +6,7 @@
 
 namespace GameImpl::GameLogic {
 
-    void Create(std::map<game_id, Game>& activeGames,
+    void Create(std::map<game_id, std::unique_ptr<Game>>& activeGames,
         std::map<user_id, game_id>& playerGameMap,
         long long& idCounter,
         std::list<user_id>& playerIds)
@@ -19,7 +19,7 @@ namespace GameImpl::GameLogic {
             playersVec.emplace_back(std::to_string(uid), uid);
         }
 
-        activeGames.emplace(newGameId, Game(std::move(playersVec)));
+        activeGames.emplace(newGameId, std::make_unique<Game>(std::move(playersVec)));
 
         for (auto uid : playerIds)
         {
@@ -28,7 +28,7 @@ namespace GameImpl::GameLogic {
     }
 
     bool Start(std::unordered_map<std::string, ::Room>& rooms,
-        std::map<game_id, Game>& activeGames,
+        std::map<game_id, std::unique_ptr<Game>>& activeGames,
         std::map<user_id, game_id>& playerGameMap,
         long long& idCounter,
         std::mutex& mtx,
@@ -58,10 +58,10 @@ namespace GameImpl::GameLogic {
         return true;
     }
 
-    void SyncToDb(const game_id& gameId, std::map<game_id, Game>& activeGames)
+    void SyncToDb(const game_id& gameId, std::map<game_id, std::unique_ptr<Game>>& activeGames)
     {
         if (!activeGames.count(gameId)) return;
-        Game& game = activeGames.at(gameId);
+        Game& game = *activeGames.at(gameId);
 
         std::string stacksSerialized = SerializationUtil::SerializeStacks(game.GetPlayPiles().GetStacks());
         std::string deckStr = SerializationUtil::Serialize(game.GetDrawPile().GetRemainingCards());
@@ -95,10 +95,10 @@ namespace GameImpl::GameLogic {
         }
     }
 
-    void BroadcastState(const game_id gameId, std::map<game_id, Game>& activeGames, GameService& service)
+    void BroadcastState(const game_id gameId, std::map<game_id, std::unique_ptr<Game>>& activeGames, GameService& service)
     {
         if (!activeGames.count(gameId)) return;
-        Game& game = activeGames.at(gameId);
+        Game& game = *activeGames.at(gameId);
 
         auto messages = BinaryGameService::PrepareBroadcastMessages(game);
         for (const auto& [uid, msg] : messages)
@@ -114,7 +114,7 @@ namespace GameImpl::GameLogic {
         std::mutex& mainMtx,
         std::unordered_map<crow::websocket::connection*, user_id>& connToUser,
         std::map<user_id, game_id>& playerGameMap,
-        std::map<game_id, Game>& activeGames,
+        std::map<game_id, std::unique_ptr<Game>>& activeGames,
         std::unordered_map<std::string, ::Room>& rooms,
         std::unordered_map<user_id, std::string>& userRoomMap)
     {
@@ -132,7 +132,7 @@ namespace GameImpl::GameLogic {
 
             if (!playerGameMap.contains(userId)) return;
             gameId = playerGameMap[userId];
-            Game& game = activeGames.at(gameId);
+            Game& game = *activeGames.at(gameId);
 
             if (game.CheckGameState() == GameState::InProgress) {
                 auto results = BinaryGameService::ProcessPlayerAction(game, userId, binaryData);
@@ -159,7 +159,7 @@ namespace GameImpl::GameLogic {
             {
                 std::lock_guard<std::mutex> lock(mainMtx);
                 if (activeGames.count(gameId)) {
-                    auto& game = activeGames.at(gameId);
+                    auto& game = *activeGames.at(gameId);
                     finalState = game.CheckGameState();
                     if (finalState != GameState::InProgress) {
                         gameFinished = true;

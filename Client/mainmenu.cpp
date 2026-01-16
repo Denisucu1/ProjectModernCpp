@@ -47,11 +47,13 @@ void MainMenu::SetupNetwork() {
     connect(m_network, &NetworkManager::gameOver, this, &MainMenu::HandleGameOver);
     connect(m_network, &NetworkManager::profileStatsReceived, this, &MainMenu::HandleProfileData);
 
-    m_network->connectToServer();
-
     if (GameWindow* gw = qobject_cast<GameWindow*>(ui->stackedWidget->widget(m_gamePageIndex))) {
+        connect(gw, &GameWindow::chatMessageSent, m_network, &NetworkManager::sendChatMessage);
+        connect(m_network, &NetworkManager::chatMessageReceived, gw, &GameWindow::appendChatMessage);
         connect(gw, &GameWindow::playerMoved, m_network, &NetworkManager::sendGameAction);
     }
+
+    m_network->connectToServer();
 }
 
 void MainMenu::HandleRoomCreated(const QString& code) {
@@ -198,7 +200,7 @@ void MainMenu::SwitchToPage(PageIndex page) {
     ui->stackedWidget->setCurrentIndex(static_cast<int>(page));
 }
 
-    void MainMenu::OnCreateGameButtonClicked() { m_network->createRoom(); }
+void MainMenu::OnCreateGameButtonClicked() { m_network->createRoom(); }
 void MainMenu::OnConfirmJoinButtonClicked() {
     QString code = ui->roomCodeInput->text().toUpper().trimmed();
     if (code.length() == RoomCodeLength) m_network->joinRoom(code);

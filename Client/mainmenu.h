@@ -61,7 +61,7 @@ private:
     int m_userId;
     int m_gamePageIndex;
 
-    NetworkManager* m_network; 
+    NetworkManager* m_network;
     ProfileWidget* m_profileWidget;
 
     const int RoomCodeLength = 4;

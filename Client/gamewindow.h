@@ -6,6 +6,9 @@
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QTextEdit>
+#include <QLineEdit>
+#include <QDateTime>
 #include <vector>
 #include "CustomCard.h"
 
@@ -20,24 +23,32 @@ public:
     void setStatusMessage(const QString& message);
     void setInteractionEnabled(bool enabled);
 
+    void appendChatMessage(int senderId, const QString& text);
+
 signals:
     void playerMoved(int cardValue, int stackIndex);
+    void chatMessageSent(const QString& text);
 
 private slots:
     void onCardClicked(CustomCard* card);
     void onEndTurnClicked();
+    void onSendChatClicked();
 
 private:
     void setupUI();
     void setupTopBar(QVBoxLayout* mainLayout);
     void setupTableArea(QVBoxLayout* mainLayout);
     void setupHandArea(QVBoxLayout* mainLayout);
+    void setupChatUI(QHBoxLayout* mainLayout);
     void configurePile(CustomCard*& pile, CustomCard::CardType type, int value, int index);
 
     QLabel* m_statusLabel;
     QPushButton* m_endTurnButton;
     QWidget* m_handContainer;
     QHBoxLayout* m_handLayout;
+
+    QTextEdit* m_chatDisplay;
+    QLineEdit* m_chatInput;
 
     CustomCard* m_pileDesc1;
     CustomCard* m_pileDesc2;

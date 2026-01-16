@@ -26,6 +26,7 @@ public:
 
     void fetchProfileStats();
 
+    void sendChatMessage(const QString& text);
     void sendGameAction(int cardValue, int stackIndex);
 
 signals:
@@ -33,6 +34,8 @@ signals:
     void roomJoined(const QString& roomCode);
     void roomClosed(const QString& reason);
     void playerListUpdated(const QJsonArray& players);
+
+    void chatMessageReceived(int senderId, const QString& text);
 
     void gameStarted();
     void gameStateUpdated(const myproject::GameState& state);
@@ -57,4 +60,4 @@ private:
     QNetworkAccessManager* m_restManager;
 };
 
-#endif 
+#endif

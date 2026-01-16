@@ -15,6 +15,17 @@ void NetworkManager::connectToServer() {
     m_gameClient->connectToServer();
 }
 
+void NetworkManager::sendChatMessage(const QString& text) {
+    if (text.trimmed().isEmpty()) return;
+
+    QJsonObject j;
+    j["type"] = "chat";
+    j["userId"] = m_userId;
+    j["text"] = text;
+
+    m_gameClient->sendMessage(QJsonDocument(j).toJson(QJsonDocument::Compact));
+}
+
 void NetworkManager::createRoom() {
     QJsonObject j;
     j["type"] = "create_room";
@@ -71,6 +82,13 @@ void NetworkManager::sendGameAction(int cardValue, int stackIndex) {
 
 void NetworkManager::onSocketMessageReceived(const QString& message) {
     QJsonObject json = QJsonDocument::fromJson(message.toUtf8()).object();
+
+    if (json["type"].toString() == "chat") {
+        int senderId = json["senderId"].toInt();
+        QString text = json["text"].toString();
+        emit chatMessageReceived(senderId, text);
+        return;
+    }
 
     if (json["type"].toString() == "room_closed") {
         emit roomClosed(json["reason"].toString());

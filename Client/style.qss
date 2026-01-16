@@ -23,8 +23,8 @@ QPushButton {
     font-weight: bold; 
     font-size: 14px; 
     min-height: 45px; 
-    border: none;
-    padding: 0px 20px;
+    border: none; 
+    padding: 0px 20px; 
 }
 
 QPushButton:hover { 
@@ -40,7 +40,7 @@ QPushButton#confirmJoinButton, QPushButton#startGameButton, QPushButton#closeLob
 
 QPushButton#loginButton, QPushButton#registerButton { 
     min-width: 180px; 
-    max-width: 16777215px;
+    max-width: 16777215px; 
 }
 
 QPushButton#playButton, QPushButton#createGameButton, QPushButton#joinGameButton, 
@@ -81,3 +81,52 @@ QWidget#profileCard {
     border: 2px solid #4CAF50; 
     border-radius: 20px; 
 }
+
+
+QWidget#chatContainer {
+    background-color: rgba(30, 30, 30, 230);
+    border-radius: 12px;
+    border: 1px solid #444;
+}
+
+QLabel#chatTitle {
+    color: #00bfff;
+    font-weight: bold;
+    border: none;
+    letter-spacing: 1px;
+    padding-bottom: 5px;
+}
+
+QTextEdit#chatDisplay {
+    background-color: #121212;
+    color: #e0e0e0;
+    border: 1px solid #333;
+    border-radius: 6px;
+    font-family: 'Segoe UI', Arial;
+    font-size: 12px;
+    padding: 5px;
+}
+
+#chatDisplay QScrollBar:vertical { border: none; background: #222; width: 8px; }
+#chatDisplay QScrollBar::handle:vertical { background: #555; border-radius: 4px; }
+
+QLineEdit#chatInput {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 6px;
+    min-width: 50px; 
+}
+
+QLineEdit#chatInput:focus {
+    border: 1px solid #00bfff;
+}
+
+QPushButton#sendBtn {
+    background-color: #0078d4;
+    border-radius: 6px;
+    min-height: 30px;
+    padding: 8px 15px;
+}
+
+QPushButton#sendBtn:hover { background-color: #0086f1; }
+QPushButton#sendBtn:pressed { background-color: #005a9e; }

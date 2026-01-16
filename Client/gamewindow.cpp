@@ -32,80 +32,30 @@ void GameWindow::setupUI() {
 
 void GameWindow::setupChatUI(QHBoxLayout* mainLayout) {
     QWidget* chatContainer = new QWidget(this);
-    chatContainer->setFixedWidth(280); 
-    chatContainer->setStyleSheet(
-        "QWidget { "
-        "  background-color: rgba(30, 30, 30, 230); "
-        "  border-radius: 12px; "
-        "  border: 1px solid #444; "
-        "}"
-    );
+    chatContainer->setObjectName("chatContainer"); 
+    chatContainer->setFixedWidth(280);
 
     QVBoxLayout* chatLayout = new QVBoxLayout(chatContainer);
     chatLayout->setContentsMargins(10, 10, 10, 10);
 
     QLabel* chatTitle = new QLabel("GAME CHAT", this);
-    chatTitle->setStyleSheet(
-        "color: #00bfff; "
-        "font-weight: bold; "
-        "font-size: 14px; "
-        "border: none; "
-        "letter-spacing: 1px; "
-        "padding-bottom: 5px;"
-    );
+    chatTitle->setObjectName("chatTitle");
     chatLayout->addWidget(chatTitle);
 
     m_chatDisplay = new QTextEdit(this);
+    m_chatDisplay->setObjectName("chatDisplay");
     m_chatDisplay->setReadOnly(true);
-    m_chatDisplay->setStyleSheet(
-        "QTextEdit { "
-        "  background-color: #121212; "
-        "  color: #e0e0e0; "
-        "  border: 1px solid #333; "
-        "  border-radius: 6px; "
-        "  font-family: 'Segoe UI', Arial; "
-        "  font-size: 12px; "
-        "  padding: 5px;"
-        "}"
-        "QScrollBar:vertical { border: none; background: #222; width: 8px; }"
-        "QScrollBar::handle:vertical { background: #555; border-radius: 4px; }"
-    );
     chatLayout->addWidget(m_chatDisplay);
 
     QHBoxLayout* inputLayout = new QHBoxLayout();
     inputLayout->setSpacing(8);
 
     m_chatInput = new QLineEdit(this);
+    m_chatInput->setObjectName("chatInput"); 
     m_chatInput->setPlaceholderText("Type a message...");
-    m_chatInput->setStyleSheet(
-        "QLineEdit { "
-        "  padding: 8px; "
-        "  background: #2a2a2a; "
-        "  color: white; "
-        "  border: 1px solid #444; "
-        "  border-radius: 6px; "
-        "}"
-        "QLineEdit:focus { border: 1px solid #00bfff; }"
-    );
 
     QPushButton* sendBtn = new QPushButton("Send", this);
-    sendBtn->setStyleSheet(
-        "QPushButton { "
-        "  background-color: #0078d4; "
-        "  color: white; "
-        "  border-radius: 6px; "
-        "  padding: 8px 15px; "
-        "  font-weight: bold; "
-        "  border: none; "
-        "}"
-        "QPushButton:hover { "
-        "  background-color: #0086f1; "
-        "}"
-        "QPushButton:pressed { "
-        "  background-color: #005a9e; "
-        "  padding-top: 9px; padding-left: 16px; " 
-        "}"
-    );
+    sendBtn->setObjectName("sendBtn"); 
 
     inputLayout->addWidget(m_chatInput);
     inputLayout->addWidget(sendBtn);
@@ -115,9 +65,7 @@ void GameWindow::setupChatUI(QHBoxLayout* mainLayout) {
     connect(m_chatInput, &QLineEdit::returnPressed, this, &GameWindow::onSendChatClicked);
 
     mainLayout->addWidget(chatContainer, 1);
-}
-
-void GameWindow::onSendChatClicked() {
+}void GameWindow::onSendChatClicked() {
     QString text = m_chatInput->text().trimmed();
     if (!text.isEmpty()) {
         emit chatMessageSent(text);
@@ -147,7 +95,7 @@ void GameWindow::appendChatMessage(int senderId, const QString& text) {
 void GameWindow::setupTopBar(QVBoxLayout* mainLayout) {
     QHBoxLayout* topBar = new QHBoxLayout();
     m_statusLabel = new QLabel("Waiting for turn...", this);
-    m_statusLabel->setStyleSheet(statusStyle);
+    m_statusLabel->setObjectName("statusLabel"); 
 
     m_endTurnButton = new QPushButton("End Turn", this);
     m_endTurnButton->setStyleSheet(endTurnStyle);
@@ -198,8 +146,9 @@ void GameWindow::configurePile(CustomCard*& pile, CustomCard::CardType type, int
 
 void GameWindow::setupHandArea(QVBoxLayout* mainLayout) {
     m_handContainer = new QWidget(this);
+    m_handContainer->setObjectName("handContainer");
     m_handContainer->setFixedHeight(handAreaHeight);
-    m_handContainer->setStyleSheet(handContainerStyle);
+
     m_handLayout = new QHBoxLayout(m_handContainer);
     m_handLayout->setAlignment(Qt::AlignCenter);
     mainLayout->addWidget(m_handContainer);

@@ -1,4 +1,4 @@
-#include "GS_Internal.h"
+﻿#include "GS_Internal.h"
 #include "DatabaseManager.h"
 #include <iostream>
 
@@ -12,41 +12,44 @@ namespace GameImpl::Chat {
         GameService& service)
     {
         std::string roomCode;
+        bool canSaveToDb = false;
+        game_id gId;
+
         {
             std::lock_guard<std::mutex> lock(mtx);
 
-            if (!playerGameMap.contains(userId)) return;
+            if (userRoomMap.contains(userId)) {
+                roomCode = userRoomMap[userId];
+            }
+            else {
+                return;
+            }
 
-            game_id gId = playerGameMap[userId];
-            roomCode = userRoomMap[userId];
-            int numericMatchId = std::stoi(gId.substr(5));
+            if (playerGameMap.contains(userId)) {
+                canSaveToDb = true;
+                gId = playerGameMap[userId];
+            }
+        }
 
+        if (canSaveToDb) {
             try {
+                int numericMatchId = std::stoi(gId.substr(5));
                 auto& storage = getStorage();
                 auto players = storage.get_all<Jucator>(
                     where(is_equal(&Jucator::user_id, userId) && is_equal(&Jucator::game_id, numericMatchId))
                 );
 
-                if (players.empty()) {
-                    std::cerr << "[ChatError] Not found player " << userId
-                        << " in game " << numericMatchId << std::endl;
-                    return;
+                if (!players.empty()) {
+                    int realPlayerId = players.front().id;
+                    ::Chat chatEntry;
+                    chatEntry.player_id = realPlayerId;
+                    chatEntry.game_id = numericMatchId;
+                    chatEntry.message = message;
+                    storage.insert(chatEntry);
                 }
-
-                int realPlayerId = players.front().id;
-
-                ::Chat chatEntry;
-                chatEntry.player_id = realPlayerId; 
-                chatEntry.game_id = numericMatchId;
-                chatEntry.message = message;
-
-                storage.insert(chatEntry);
-
-                std::cout << "[Chat] Saved message (PlayerID: " << realPlayerId
-                    << ", Match: " << numericMatchId << ") de la user " << userId << std::endl;
-				}
+            }
             catch (const std::exception& e) {
-                std::cerr << "[ChatError] " << e.what() << std::endl;
+                std::cerr << "[ChatSaveError] " << e.what() << std::endl;
             }
         }
 
@@ -54,6 +57,9 @@ namespace GameImpl::Chat {
         chatJson["type"] = "chat";
         chatJson["senderId"] = userId;
         chatJson["text"] = message;
-        service.BroadcastToRoom(roomCode, chatJson.dump());
+
+        if (!roomCode.empty()) {
+            service.BroadcastToRoom(roomCode, chatJson.dump());
+        }
     }
 }

@@ -127,12 +127,19 @@ void GameWindow::onSendChatClicked() {
 
 void GameWindow::appendChatMessage(int senderId, const QString& text) {
     QString timeStr = QDateTime::currentDateTime().toString("HH:mm");
-    QString color = (senderId == -1) ? "#888" : "#4dabf7";
+
+    QString color = "#4dabf7";
+    QString displayName = "User " + QString::number(senderId);
+
+    if (senderId == -1) {
+        color = "#888888";
+        displayName = "System";
+    }
 
     m_chatDisplay->append(QString("<span style='color: #555; font-size: 10px;'>[%1]</span> "
-        "<b style='color: %2;'>User %3:</b> "
+        "<b style='color: %2;'>%3:</b> "
         "<span style='color: #efefef;'>%4</span>")
-        .arg(timeStr, color, QString::number(senderId), text));
+        .arg(timeStr, color, displayName, text));
 
     m_chatDisplay->verticalScrollBar()->setValue(m_chatDisplay->verticalScrollBar()->maximum());
 }

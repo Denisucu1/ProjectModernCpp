@@ -1,4 +1,4 @@
-#include "networkmanager.h"
+﻿#include "networkmanager.h"
 #include <QJsonDocument>
 
 NetworkManager::NetworkManager(const QString& wsUrl, const QString& apiBaseUrl, int userId, QObject* parent)
@@ -20,9 +20,8 @@ void NetworkManager::sendChatMessage(const QString& text) {
 
     QJsonObject j;
     j["type"] = "chat";
-    j["userId"] = m_userId;
-    j["text"] = text;
-
+    j["userId"] = m_userId; 
+    j["message"] = text;
     m_gameClient->sendMessage(QJsonDocument(j).toJson(QJsonDocument::Compact));
 }
 
@@ -85,7 +84,7 @@ void NetworkManager::onSocketMessageReceived(const QString& message) {
 
     if (json["type"].toString() == "chat") {
         int senderId = json["senderId"].toInt();
-        QString text = json["text"].toString();
+        QString text = json["text"].toString(); 
         emit chatMessageReceived(senderId, text);
         return;
     }

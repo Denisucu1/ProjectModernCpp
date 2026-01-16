@@ -1,5 +1,6 @@
 ﻿#include "Game.h"
 #include <algorithm>
+#include <ranges>
 
 Game::Game(std::vector<Player> players)
     : m_players(std::move(players)), m_cards(), m_play_piles_(), m_current_player_index(0)
@@ -86,8 +87,9 @@ bool Game::EndCurrentTurn(int userId)
 }
 
 GameState Game::CheckGameState() const {
-    bool handsEmpty = std::all_of(m_players.begin(), m_players.end(),
-        [](const Player& p) { return p.GetDeck().empty(); });
+    bool handsEmpty = std::ranges::all_of(m_players, [](const Player& p) {
+        return p.GetDeck().empty();
+        });
 
     if (m_cards.IsEmpty() && handsEmpty)
         return GameState::Won;

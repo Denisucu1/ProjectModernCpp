@@ -4,10 +4,10 @@ namespace JsonUtil {
     std::unordered_map<std::string, std::string> parseSimpleJson(const std::string& json) {
         std::unordered_map<std::string, std::string> data;
 
-        // Expresie regulată pentru a găsi tiparul: "cheie": "valoare"
-        // \"(.*?)\"  -> caută text între ghilimele (cheia)
-        // \s*:\s* -> caută două puncte, ignorând spațiile din jur
-        // \"(.*?)\"  -> caută text între ghilimele (valoarea)
+        // Expresie regulata pentru a gasi tiparul: "cheie": "valoare"
+        // \"(.*?)\"  -> cauta text intre ghilimele (cheia)
+        // \s*:\s* -> cauta doua puncte, ignorand spatiile din jur
+        // \"(.*?)\"  -> cauta text intre ghilimele (valoarea)
         std::regex pattern(R"(\"([^\"]+)\"\s*:\s*\"([^\"]+)\")");
 
         auto begin = std::sregex_iterator(json.begin(), json.end(), pattern);

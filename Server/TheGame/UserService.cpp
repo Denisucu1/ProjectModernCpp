@@ -223,3 +223,21 @@ std::optional<int> UserService::GetUserIdByToken(const std::string& token)
         return std::nullopt;
     }
 }
+
+int UserService::ComputeScoreLogic(int gamesWon, int gamesPlayed, int cardsLeftOnLosses) 
+{
+    if (gamesPlayed == 0)
+        return 1;
+
+    float win_rate = (float)gamesWon / gamesPlayed;
+    int games_lost = gamesPlayed - gamesWon;
+
+    float average_loss_cards = (games_lost > 0)
+        ? float(cardsLeftOnLosses) / games_lost
+        : 0.0f;
+
+    float raw_score = (win_rate * 5.0f) - (average_loss_cards / 10.0f);
+    int final_score = (int)std::round(raw_score);
+
+    return std::min(std::max(final_score, 1), 5);
+}

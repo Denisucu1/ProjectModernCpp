@@ -19,6 +19,8 @@ public:
 
     std::optional<std::string> GenerateAndStoreToken(int userId);
     std::optional<int> GetUserIdByToken(const std::string& token);
+
+    static int ComputeScoreLogic(int gamesWon, int gamesPlayed, int cardsLeftOnLosses);
 };
 
 #endif // USER_SERVICE_H

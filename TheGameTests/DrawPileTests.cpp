@@ -20,3 +20,13 @@ TEST(DrawPileTest, IsEmptyInitiallyFalse)
     DrawPile pile;
     ASSERT_FALSE(pile.IsEmpty());
 }
+
+TEST(DrawPileTest, ExhaustionTest)
+{
+    DrawPile pile;
+    for (int i = 0; i < 98; ++i) 
+        pile.DrawACard();
+    
+    ASSERT_TRUE(pile.IsEmpty());
+    ASSERT_EQ(0, pile.GetSize());
+}

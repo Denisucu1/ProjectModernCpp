@@ -5,32 +5,28 @@
 std::vector<Player> create_players(int count) 
 {
     std::vector<Player> players;
-    for (int i = 0; i < count; ++i) {
+    for (int i = 0; i < count; ++i) 
         players.emplace_back("P" + std::to_string(i + 1), i + 1);
-    }
+    
     return players;
 }
-
 
 
 TEST(GameLogic, DistributeCardsTwoPlayers)
 {
     Game game(create_players(2));
-    // REPARARE: GetDeck() returnează span. Trebuie .size() comparat cu un literal de tip size_t (ULL)
     ASSERT_EQ(8ULL, game.GetPlayers()[0].GetDeck().size());
 }
 
 TEST(GameLogic, DistributeCardsFourPlayers)
 {
     Game game(create_players(4));
-    // REPARARE: .size() cu 6ULL
     ASSERT_EQ(6ULL, game.GetPlayers()[0].GetDeck().size());
 }
 
 TEST(GameLogic, MinCardsToPlayIsTwoInitially)
 {
     Game game(create_players(2));
-    // GetMinCardsToPlay returnează uint8_t, comparăm cu uint8_t explicit
     ASSERT_EQ(static_cast<uint8_t>(2), game.GetMinCardsToPlay());
 }
 
@@ -38,13 +34,65 @@ TEST(GameLogic, LossConditionOnInsufficientMoves)
 {
     Game game(create_players(2));
     uint8_t userId = 1;
-    uint8_t card_val = game.GetPlayers()[0].GetDeck()[0]; // Luăm prima carte din span
+    uint8_t card_val = game.GetPlayers()[0].GetDeck()[0]; 
 
-    // REPARARE: Folosim noul API (PlaySingleCard apoi EndCurrentTurn)
-    // Pas 1: Jucăm o singură carte (valid conform regulilor de mutare, dar insuficient pentru tur)
     ASSERT_TRUE(game.PlaySingleCard(userId, card_val, PlayPiles::ascend_1));
 
-    // Pas 2: Încercăm să încheiem turul. Trebuie să returneze FALSE pentru că am jucat doar 1 carte, nu 2
     ASSERT_FALSE(game.EndCurrentTurn(userId))
         << "Jocul nu ar trebui să permită finalul turului dacă s-a jucat doar o carte (minim 2 necesare).";
+}
+
+TEST(GameLogic, NextPlayerRotation) 
+{
+    Game game(create_players(3));
+    int firstIdx = game.GetCurrentPlayerIndex();
+
+    game.EndCurrentTurn(game.GetPlayers()[firstIdx].GetId()); 
+    ASSERT_NE(firstIdx, (firstIdx + 1) % 3);
+}
+
+TEST(GameLogic, FullGameLossCondition) 
+{
+    Game game(create_players(2));
+    ASSERT_EQ(game.CheckGameState(), GameState::InProgress);
+}
+
+TEST(GameLogic, EndTurnConstraints) 
+{
+    Game game(create_players(2));
+    int id = game.GetPlayers()[0].GetId();
+
+    ASSERT_FALSE(game.EndCurrentTurn(id));
+
+    game.PlaySingleCard(id, game.GetPlayers()[0].GetDeck()[0], PlayPiles::ascend_1);
+    ASSERT_FALSE(game.EndCurrentTurn(id));
+}
+
+TEST(GameLogic, BackjumpRuleIntegration) 
+{
+    Game game(create_players(2));
+    int id = game.GetPlayers()[0].GetId();
+
+    game.PlaySingleCard(id, 50, PlayPiles::ascend_1);
+    std::vector<uint8_t> customHand = { 40, 60, 70 };
+    const_cast<Player&>(game.GetPlayers()[0]).SetDeck(customHand);
+
+    ASSERT_TRUE(game.PlaySingleCard(id, 40, PlayPiles::ascend_1))
+        << "Regula de -10 pe stiva ascendenta ar trebui sa fie valida prin interfata Game.";
+}
+
+TEST(GameLogic, PlayCardOutOfTurn) 
+{
+    Game game(create_players(2));
+
+    int firstPlayerId = game.GetPlayers()[0].GetId();
+    int secondPlayerId = game.GetPlayers()[1].GetId();
+
+    int activeId = game.GetPlayers()[game.GetCurrentPlayerIndex()].GetId();
+    int inactiveId = (activeId == firstPlayerId) ? secondPlayerId : firstPlayerId;
+
+    uint8_t cardVal = game.GetPlayers()[game.GetCurrentPlayerIndex() == 0 ? 1 : 0].GetDeckView()[0];
+
+    ASSERT_FALSE(game.PlaySingleCard(inactiveId, cardVal, PlayPiles::ascend_1))
+        << "Jocul nu ar trebui sa permita unui jucator sa mute daca nu este randul lui.";
 }

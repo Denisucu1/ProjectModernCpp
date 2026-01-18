@@ -19,44 +19,44 @@ void NetworkManager::sendChatMessage(const QString& text) {
     if (text.trimmed().isEmpty()) return;
 
     QJsonObject j;
-    j["type"] = "chat";
-    j["userId"] = m_userId; 
-    j["message"] = text;
+    j[m_keyType] = m_typeChat;
+    j[m_keyUserId] = m_userId;
+    j[m_keyMessage] = text;
     m_gameClient->sendMessage(QJsonDocument(j).toJson(QJsonDocument::Compact));
 }
 
 void NetworkManager::createRoom() {
     QJsonObject j;
-    j["type"] = "create_room";
-    j["userId"] = m_userId;
+    j[m_keyType] = m_typeCreateRoom;
+    j[m_keyUserId] = m_userId;
     m_gameClient->sendMessage(QJsonDocument(j).toJson(QJsonDocument::Compact));
 }
 
 void NetworkManager::joinRoom(const QString& roomCode) {
     QJsonObject j;
-    j["type"] = "join_room";
-    j["userId"] = m_userId;
-    j["roomCode"] = roomCode;
+    j[m_keyType] = m_typeJoinRoom;
+    j[m_keyUserId] = m_userId;
+    j[m_keyRoomCode] = roomCode;
     m_gameClient->sendMessage(QJsonDocument(j).toJson(QJsonDocument::Compact));
 }
 
 void NetworkManager::startGame(const QString& roomCode) {
     QJsonObject j;
-    j["type"] = "start_game";
-    j["userId"] = m_userId;
-    j["roomCode"] = roomCode;
+    j[m_keyType] = m_typeStartGame;
+    j[m_keyUserId] = m_userId;
+    j[m_keyRoomCode] = roomCode;
     m_gameClient->sendMessage(QJsonDocument(j).toJson(QJsonDocument::Compact));
 }
 
 void NetworkManager::leaveRoom() {
     QJsonObject j;
-    j["type"] = "leave_room";
-    j["userId"] = m_userId;
+    j[m_keyType] = m_typeLeaveRoom;
+    j[m_keyUserId] = m_userId;
     m_gameClient->sendMessage(QJsonDocument(j).toJson(QJsonDocument::Compact));
 }
 
 void NetworkManager::fetchProfileStats() {
-    QUrl url(m_apiBaseUrl + QString("/api/profile/%1").arg(m_userId));
+    QUrl url(m_apiBaseUrl + m_profileEndpoint.arg(m_userId));
     QNetworkRequest request(url);
     QNetworkReply* reply = m_restManager->get(request);
     connect(reply, &QNetworkReply::finished, this, &NetworkManager::onProfileReplyFinished);
@@ -67,7 +67,7 @@ void NetworkManager::sendGameAction(int cardValue, int stackIndex) {
     msg.set_type(myproject::GameMessage::ACTION);
     auto* action = msg.mutable_action();
 
-    if (cardValue == 0) {
+    if (cardValue == m_endTurnValue) {
         action->set_action_type(myproject::PlayerAction::END_TURN);
     }
     else {
@@ -81,35 +81,36 @@ void NetworkManager::sendGameAction(int cardValue, int stackIndex) {
 
 void NetworkManager::onSocketMessageReceived(const QString& message) {
     QJsonObject json = QJsonDocument::fromJson(message.toUtf8()).object();
+    QString typeValue = json[m_keyType].toString();
 
-    if (json["type"].toString() == "chat") {
-        int senderId = json["senderId"].toInt();
-        QString text = json["text"].toString(); 
+    if (typeValue == m_typeChat) {
+        int senderId = json[m_keySenderId].toInt();
+        QString text = json[m_keyText].toString();
         emit chatMessageReceived(senderId, text);
         return;
     }
 
-    if (json["type"].toString() == "room_closed") {
-        emit roomClosed(json["reason"].toString());
+    if (typeValue == m_typeRoomClosed) {
+        emit roomClosed(json[m_keyReason].toString());
         return;
     }
 
-    if (json.contains("players")) {
-        emit playerListUpdated(json["players"].toArray());
+    if (json.contains(m_keyPlayers)) {
+        emit playerListUpdated(json[m_keyPlayers].toArray());
     }
 
-    if (json.contains("status")) {
+    if (json.contains(m_keyStatus)) {
         processJsonResponse(json);
     }
 }
 
 void NetworkManager::processJsonResponse(const QJsonObject& json) {
-    QString status = json["status"].toString();
-    if (status == "room_created") {
-        emit roomCreated(json["roomCode"].toString());
+    QString statusValue = json[m_keyStatus].toString();
+    if (statusValue == m_statusRoomCreated) {
+        emit roomCreated(json[m_keyRoomCode].toString());
     }
-    else if (status == "joined_room") {
-        emit roomJoined(json["roomCode"].toString());
+    else if (statusValue == m_statusJoinedRoom) {
+        emit roomJoined(json[m_keyRoomCode].toString());
     }
 }
 
@@ -118,7 +119,7 @@ void NetworkManager::onBinaryMessageReceived(const QByteArray& data) {
     if (!msg.ParseFromArray(data.constData(), data.size())) return;
 
     if (msg.type() == myproject::GameMessage_Type_GAME_OVER) {
-        emit gameOver(msg.state().game_status() == 1);
+        emit gameOver(msg.state().game_status() == m_victoryStatus);
     }
     else if (msg.type() == myproject::GameMessage_Type_STATE_UPDATE && msg.has_state()) {
         emit gameStateUpdated(msg.state());

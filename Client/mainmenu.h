@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QJsonArray>
+#include <QString>
 #include "networkmanager.h"
 #include "profilewidget.h"
 #include "GameProtocol.pb.h"
@@ -14,12 +15,12 @@ class MainMenu : public QWidget {
 
 public:
     enum class PageIndex {
-        menu = 0,
-        profile = 1,
-        modeSelection = 2,
-        joinRoom = 3,
-        lobbyWait = 4,
-        game = 5
+        Menu = 0,
+        Profile = 1,
+        ModeSelection = 2,
+        JoinRoom = 3,
+        LobbyWait = 4,
+        Game = 5
     };
 
     explicit MainMenu(const QString& username, int userId, QWidget* parent = nullptr);
@@ -53,10 +54,9 @@ private:
     void setupProfilePage();
     void setupLobbyPages();
     void setupNetwork();
-
     void switchToPage(PageIndex page);
 
-    Ui::MainMenu* ui;
+    Ui::MainMenu* m_ui;
     QString m_username;
     int m_userId;
     int m_gamePageIndex;
@@ -65,6 +65,26 @@ private:
     ProfileWidget* m_profileWidget;
 
     const int m_roomCodeLength = 4;
+    const int m_minWinWidth = 850;
+    const int m_maxWinWidth = 16777215;
+    const int m_marginZero = 0;
+    const int m_marginStandard = 20;
+    const int m_spacingStandard = 20;
+    const int m_spacingLarge = 30;
+    const int m_stretchFactor = 1;
+
+    const QString m_wsUrl = "ws://localhost:18080/ws/game";
+    const QString m_apiUrl = "http://localhost:18080";
+
+    const QString m_keyUsername = "username";
+    const QString m_keyUserId = "userId";
+
+    const QString m_playerDisplayFormat = "%1 (ID: %2)";
+
+    const QString m_titleSessionClosed = "Closed Session";
+    const QString m_titleGameOver = "Game Over";
+    const QString m_msgVictory = "Victory!";
+    const QString m_msgDefeat = "Defeat!";
 };
 
 #endif

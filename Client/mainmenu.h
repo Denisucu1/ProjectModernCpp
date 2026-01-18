@@ -15,12 +15,12 @@ class MainMenu : public QWidget {
 
 public:
     enum class PageIndex {
-        Menu = 0,
-        Profile = 1,
-        ModeSelection = 2,
-        JoinRoom = 3,
-        LobbyWait = 4,
-        Game = 5
+        menu = 0,
+        profile = 1,
+        modeSelection = 2,
+        joinRoom = 3,
+        lobbyWait = 4,
+        game = 5
     };
 
     explicit MainMenu(const QString& username, int userId, QWidget* parent = nullptr);

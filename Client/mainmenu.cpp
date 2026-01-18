@@ -28,7 +28,7 @@ void MainMenu::initializeUi() {
 
     GameWindow* gamePage = new GameWindow(this);
     m_gamePageIndex = m_ui->stackedWidget->addWidget(gamePage);
-    switchToPage(PageIndex::Menu);
+    switchToPage(PageIndex::menu);
 }
 
 void MainMenu::setupNetwork() {
@@ -39,7 +39,7 @@ void MainMenu::setupNetwork() {
     connect(m_network, &NetworkManager::roomClosed, this, [this](const QString& reason) {
         QMessageBox::warning(this, m_titleSessionClosed, reason);
         m_ui->lobbyPlayersList->clear();
-        switchToPage(PageIndex::Menu);
+        switchToPage(PageIndex::menu);
         });
     connect(m_network, &NetworkManager::playerListUpdated, this, &MainMenu::handlePlayerListUpdate);
     connect(m_network, &NetworkManager::gameStateUpdated, this, &MainMenu::handleGameStateUpdate);
@@ -59,12 +59,12 @@ void MainMenu::handleRoomCreated(const QString& code) {
     m_ui->generatedCodeLabel->setText(code);
     m_ui->lobbyPlayersList->clear();
     m_ui->lobbyPlayersList->addItem(m_playerDisplayFormat.arg(m_username).arg(m_userId));
-    switchToPage(PageIndex::LobbyWait);
+    switchToPage(PageIndex::lobbyWait);
 }
 
 void MainMenu::handleRoomJoined(const QString& code) {
     m_ui->generatedCodeLabel->setText(code);
-    switchToPage(PageIndex::LobbyWait);
+    switchToPage(PageIndex::lobbyWait);
 }
 
 void MainMenu::handlePlayerListUpdate(const QJsonArray& players) {
@@ -78,8 +78,8 @@ void MainMenu::handlePlayerListUpdate(const QJsonArray& players) {
 }
 
 void MainMenu::handleGameStateUpdate(const myproject::GameState& state) {
-    if (m_ui->stackedWidget->currentIndex() == static_cast<int>(PageIndex::LobbyWait)) {
-        switchToPage(PageIndex::Game);
+    if (m_ui->stackedWidget->currentIndex() == static_cast<int>(PageIndex::lobbyWait)) {
+        switchToPage(PageIndex::game);
     }
 
     std::vector<int> piles;
@@ -102,7 +102,7 @@ void MainMenu::handleGameStateUpdate(const myproject::GameState& state) {
 
 void MainMenu::handleGameOver(bool isVictory) {
     QMessageBox::information(this, m_titleGameOver, isVictory ? m_msgVictory : m_msgDefeat);
-    switchToPage(PageIndex::Menu);
+    switchToPage(PageIndex::menu);
 }
 
 void MainMenu::handleProfileData(const QJsonObject& data) {
@@ -208,18 +208,18 @@ void MainMenu::onConfirmJoinButtonClicked() {
 void MainMenu::onStartGameButtonClicked() { m_network->startGame(m_ui->generatedCodeLabel->text()); }
 void MainMenu::onCloseLobbyButtonClicked() {
     m_network->leaveRoom();
-    switchToPage(PageIndex::ModeSelection);
+    switchToPage(PageIndex::modeSelection);
 }
 void MainMenu::onProfileButtonClicked() {
-    switchToPage(PageIndex::Profile);
+    switchToPage(PageIndex::profile);
     m_network->fetchProfileStats();
 }
 
-void MainMenu::onPlayButtonClicked() { switchToPage(PageIndex::ModeSelection); }
+void MainMenu::onPlayButtonClicked() { switchToPage(PageIndex::modeSelection); }
 void MainMenu::onExitButtonClicked() { QApplication::quit(); }
-void MainMenu::onBackButtonClicked() { switchToPage(PageIndex::Menu); }
-void MainMenu::onModeBackButtonClicked() { switchToPage(PageIndex::Menu); }
-void MainMenu::onCancelJoinButtonClicked() { switchToPage(PageIndex::ModeSelection); }
-void MainMenu::onJoinGameButtonClicked() { switchToPage(PageIndex::JoinRoom); }
+void MainMenu::onBackButtonClicked() { switchToPage(PageIndex::menu); }
+void MainMenu::onModeBackButtonClicked() { switchToPage(PageIndex::menu); }
+void MainMenu::onCancelJoinButtonClicked() { switchToPage(PageIndex::modeSelection); }
+void MainMenu::onJoinGameButtonClicked() { switchToPage(PageIndex::joinRoom); }
 
 MainMenu::~MainMenu() { delete m_ui; }

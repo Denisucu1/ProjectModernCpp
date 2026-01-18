@@ -29,11 +29,20 @@ private:
     void setupUiElements();
     void executeAuthRequest(const QString& url);
 
-    Ui::MainWindow* ui;
+    Ui::MainWindow* m_ui;
     QNetworkAccessManager* m_networkManager;
 
-    const QString apiLoginUrl = "http://localhost:18080/api/login";
-    const QString apiRegisterUrl = "http://localhost:18080/api/register";
-    const QString logoPath = ":/LOGO.png";
+    const QString m_apiLoginUrl = "http://localhost:18080/api/login";
+    const QString m_apiRegisterUrl = "http://localhost:18080/api/register";
+    const QString m_logoPath = ":/LOGO.png";
+
+    const QString m_jsonUser = "username";
+    const QString m_jsonPass = "password";
+    const QString m_jsonSuccess = "success";
+    const QString m_jsonUserId = "userId";
+    const QString m_contentType = "application/json";
+
+    const QString m_msgRegSuccessTitle = "Success";
+    const QString m_msgRegSuccessBody = "Registration successful. You can log in now.";
 };
 #endif

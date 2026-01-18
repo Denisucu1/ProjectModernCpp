@@ -64,7 +64,7 @@ private:
     NetworkManager* m_network;
     ProfileWidget* m_profileWidget;
 
-    const int RoomCodeLength = 4;
+    const int m_roomCodeLength = 4;
 };
 
 #endif

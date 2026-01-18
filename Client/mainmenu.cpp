@@ -38,7 +38,7 @@ void MainMenu::setupNetwork() {
     connect(m_network, &NetworkManager::roomCreated, this, &MainMenu::handleRoomCreated);
     connect(m_network, &NetworkManager::roomJoined, this, &MainMenu::handleRoomJoined);
     connect(m_network, &NetworkManager::roomClosed, this, [this](const QString& reason) {
-        QMessageBox::warning(this, "Sesiune Închisă", reason);
+        QMessageBox::warning(this, "Closed Session", reason);
         ui->lobbyPlayersList->clear();
         switchToPage(PageIndex::menu);
         });
@@ -152,7 +152,7 @@ void MainMenu::setupProfilePage() {
 }
 
 void MainMenu::setupLobbyPages() {
-    ui->roomCodeInput->setMaxLength(RoomCodeLength);
+    ui->roomCodeInput->setMaxLength(m_roomCodeLength);
     ui->roomCodeInput->setAlignment(Qt::AlignCenter);
     connect(ui->roomCodeInput, &QLineEdit::textEdited, [this](const QString& text) {
         int pos = ui->roomCodeInput->cursorPosition();
@@ -203,7 +203,7 @@ void MainMenu::switchToPage(PageIndex page) {
 void MainMenu::onCreateGameButtonClicked() { m_network->createRoom(); }
 void MainMenu::onConfirmJoinButtonClicked() {
     QString code = ui->roomCodeInput->text().toUpper().trimmed();
-    if (code.length() == RoomCodeLength) m_network->joinRoom(code);
+    if (code.length() == m_roomCodeLength) m_network->joinRoom(code);
 }
 void MainMenu::onStartGameButtonClicked() { m_network->startGame(ui->generatedCodeLabel->text()); }
 void MainMenu::onCloseLobbyButtonClicked() {

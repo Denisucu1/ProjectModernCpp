@@ -4,8 +4,8 @@
 #include <QMouseEvent>
 
 CustomCard::CustomCard(QWidget* parent) : QWidget(parent),
-m_value(0), m_type(HAND_CARD), m_selected(false), m_faceDown(false) {
-    setFixedSize(cardWidth, cardHeight);
+m_value(m_emptyValue), m_type(HAND_CARD), m_selected(false), m_faceDown(false) {
+    setFixedSize(m_cardWidth, m_cardHeight);
 }
 
 void CustomCard::setValue(int value) {
@@ -41,31 +41,34 @@ void CustomCard::paintEvent(QPaintEvent* event) {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    QRect rect = this->rect().adjusted(rectAdjustment, rectAdjustment, -rectAdjustment, -rectAdjustment);
-    QColor bgColor = m_faceDown ? QColor(colorFaceDown) : Qt::white;
+    QRect rect = this->rect().adjusted(m_rectAdjustment, m_rectAdjustment, -m_rectAdjustment, -m_rectAdjustment);
+
+    QColor bgColor = m_faceDown ? QColor(m_colorFaceDown) : m_colorBackground;
     if (m_selected) {
-        bgColor = QColor(colorSelected);
+        bgColor = QColor(m_colorSelected);
     }
 
     painter.setBrush(bgColor);
-    painter.setPen(QPen(Qt::black, borderThickness));
-    painter.drawRoundedRect(rect, borderRadius, borderRadius);
+    painter.setPen(QPen(m_colorText, m_borderThickness));
+    painter.drawRoundedRect(rect, m_borderRadius, m_borderRadius);
 
     if (!m_faceDown) {
-        painter.setFont(QFont(fontFamily, mainFontSize, QFont::Bold));
-        painter.setPen(Qt::black);
+        painter.setFont(QFont(m_fontFamily, m_mainFontSize, QFont::Bold));
+        painter.setPen(m_colorText);
         painter.drawText(rect, Qt::AlignCenter, QString::number(m_value));
 
-        painter.setFont(QFont(fontFamily, indicatorFontSize, QFont::Bold));
-        QRect textRect = rect.adjusted(textMargin, textMargin, -textMargin, -textMargin);
+        painter.setFont(QFont(m_fontFamily, m_indicatorFontSize, QFont::Bold));
+        QRect textRect = rect.adjusted(m_textMargin, m_textMargin, -m_textMargin, -m_textMargin);
 
         if (m_type == ASCENDING) {
-            painter.setPen(QColor(colorAscending));
-            painter.drawText(textRect, Qt::AlignTop | Qt::AlignLeft, "▲ 1 -> 100");
+            painter.setPen(QColor(m_colorAscending));
+            painter.drawText(textRect, Qt::AlignTop | Qt::AlignLeft,
+                m_txtAsc.arg(m_minValue).arg(m_maxValue));
         }
         else if (m_type == DESCENDING) {
-            painter.setPen(QColor(colorDescending));
-            painter.drawText(textRect, Qt::AlignTop | Qt::AlignLeft, "▼ 100 -> 1");
+            painter.setPen(QColor(m_colorDescending));
+            painter.drawText(textRect, Qt::AlignTop | Qt::AlignLeft,
+                m_txtDesc.arg(m_maxValue).arg(m_minValue));
         }
     }
 }

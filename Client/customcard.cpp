@@ -45,7 +45,7 @@ void CustomCard::paintEvent(QPaintEvent* event) {
 
     QColor bgColor = m_faceDown ? QColor(m_colorFaceDown) : m_colorBackground;
     if (m_selected) {
-        bgColor = QColor(m_colorSelected);
+        bgColor = m_colorSelected;
     }
 
     painter.setBrush(bgColor);
@@ -61,7 +61,7 @@ void CustomCard::paintEvent(QPaintEvent* event) {
         QRect textRect = rect.adjusted(m_textMargin, m_textMargin, -m_textMargin, -m_textMargin);
 
         if (m_type == ASCENDING) {
-            painter.setPen(QColor(m_colorAscending));
+            painter.setPen(m_colorAscending);
             painter.drawText(textRect, Qt::AlignTop | Qt::AlignLeft,
                 m_txtAsc.arg(m_minValue).arg(m_maxValue));
         }

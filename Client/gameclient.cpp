@@ -31,8 +31,8 @@ void GameClient::onConnected()
     emit connected();
 
     QJsonObject login;
-    login["type"] = "login";
-    login["userId"] = m_userId;
+    login[m_keyType] = m_valueLogin;
+    login[m_keyUserId] = m_userId;
     m_webSocket.sendTextMessage(QJsonDocument(login).toJson(QJsonDocument::Compact));
 
 }

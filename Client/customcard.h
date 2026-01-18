@@ -40,10 +40,10 @@ private:
     const int m_rectAdjustment = 2;
     const int m_textMargin = 5;
 
-    const QString m_colorFaceDown = "#1A237E";
-    const QString m_colorSelected = "#FFF176";
-    const QString m_colorAscending = "#2E7D32";
-    const QString m_colorDescending = "red";
+    const QColor m_colorFaceDown = QColor("#1A237E");
+    const QColor m_colorSelected = QColor("#FFF176");
+    const QColor m_colorAscending = QColor("#2E7D32");
+    const QColor m_colorDescending = Qt::red;
     const QColor m_colorBackground = Qt::white; 
     const QColor m_colorText = Qt::black;    
     const QString m_fontFamily = "Arial";

@@ -30,6 +30,10 @@ private:
     QWebSocket m_webSocket;
     QUrl m_url;
     int m_userId;
+
+    const QString m_keyType = "type";
+    const QString m_keyUserId = "userId";
+    const QString m_valueLogin = "login";
 };
 
 #endif

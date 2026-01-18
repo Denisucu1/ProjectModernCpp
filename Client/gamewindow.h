@@ -83,6 +83,15 @@ private:
     const QString m_nameSystem = "System";
     const QString m_prefixUser = "User ";
 
+    const QString m_txtChatTitle = "GAME CHAT";
+    const QString m_txtChatPlaceholder = "Type a message...";
+    const QString m_txtSend = "Send";
+    const QString m_txtEndTurn = "End Turn";
+    const QString m_txtWaiting = "Waiting for turn...";
+    const QString m_txtYourTurn = "Your turn";
+    const QString m_txtWaitTurn = "Wait for your turn";
+    const QString m_dateTimeFormat = "HH:mm";
+
     static inline const QString CHAT_FORMAT =
         "<span style='color: #555; font-size: 10px;'>[%1]</span> "
         "<b style='color: %2;'>%3:</b> "

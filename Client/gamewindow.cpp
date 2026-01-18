@@ -37,7 +37,7 @@ void GameWindow::setupChatUI(QHBoxLayout* mainLayout) {
     QVBoxLayout* chatLayout = new QVBoxLayout(chatContainer);
     chatLayout->setContentsMargins(m_layoutPadding / 2, m_layoutPadding / 2, m_layoutPadding / 2, m_layoutPadding / 2);
 
-    QLabel* chatTitle = new QLabel("GAME CHAT", this);
+    QLabel* chatTitle = new QLabel(m_txtChatTitle, this);
     chatTitle->setObjectName("chatTitle");
     chatLayout->addWidget(chatTitle);
 
@@ -51,9 +51,9 @@ void GameWindow::setupChatUI(QHBoxLayout* mainLayout) {
 
     m_chatInput = new QLineEdit(this);
     m_chatInput->setObjectName("chatInput");
-    m_chatInput->setPlaceholderText("Type a message...");
+    m_chatInput->setPlaceholderText(m_txtChatPlaceholder);
 
-    QPushButton* sendBtn = new QPushButton("Send", this);
+    QPushButton* sendBtn = new QPushButton(m_txtSend, this);
     sendBtn->setObjectName("sendBtn");
 
     inputLayout->addWidget(m_chatInput);
@@ -75,7 +75,7 @@ void GameWindow::onSendChatClicked() {
 }
 
 void GameWindow::appendChatMessage(int senderId, const QString& text) {
-    QString timeStr = QDateTime::currentDateTime().toString("HH:mm");
+    QString timeStr = QDateTime::currentDateTime().toString(m_dateTimeFormat);
     QString color = m_colorUser;
     QString displayName = m_prefixUser + QString::number(senderId);
 
@@ -90,10 +90,10 @@ void GameWindow::appendChatMessage(int senderId, const QString& text) {
 
 void GameWindow::setupTopBar(QVBoxLayout* mainLayout) {
     QHBoxLayout* topBar = new QHBoxLayout();
-    m_statusLabel = new QLabel("Waiting for turn...", this);
+    m_statusLabel = new QLabel(m_txtWaiting, this);
     m_statusLabel->setObjectName("statusLabel");
 
-    m_endTurnButton = new QPushButton("End Turn", this);
+    m_endTurnButton = new QPushButton(m_txtEndTurn, this);
     m_endTurnButton->setObjectName("endTurnButton");
     connect(m_endTurnButton, &QPushButton::clicked, this, &GameWindow::onEndTurnClicked);
 
@@ -167,7 +167,7 @@ void GameWindow::setInteractionEnabled(bool enabled) {
     m_pileAsc2->setEnabled(enabled);
     m_handContainer->setEnabled(enabled);
 
-    m_statusLabel->setText(enabled ? "Your turn" : "Wait for your turn");
+    m_statusLabel->setText(enabled ? m_txtYourTurn : m_txtWaitTurn);
 }
 
 void GameWindow::onCardClicked(CustomCard* card) {

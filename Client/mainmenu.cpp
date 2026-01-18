@@ -9,10 +9,7 @@
 #include <QApplication>
 
 MainMenu::MainMenu(const QString& username, int userId, QWidget* parent) :
-    QWidget(parent),
-    m_ui(new Ui::MainMenu),
-    m_username(username),
-    m_userId(userId) {
+    QWidget(parent), m_ui(new Ui::MainMenu), m_username(username), m_userId(userId) {
     m_ui->setupUi(this);
 
     initializeUi();
@@ -71,8 +68,7 @@ void MainMenu::handlePlayerListUpdate(const QJsonArray& players) {
     m_ui->lobbyPlayersList->clear();
     for (const auto& val : players) {
         QJsonObject p = val.toObject();
-        QString text = m_playerDisplayFormat.arg(p[m_keyUsername].toString())
-            .arg(p[m_keyUserId].toInt());
+        QString text = m_playerDisplayFormat.arg(p[m_keyUsername].toString()).arg(p[m_keyUserId].toInt());
         m_ui->lobbyPlayersList->addItem(text);
     }
 }

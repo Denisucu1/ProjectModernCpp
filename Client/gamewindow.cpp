@@ -9,37 +9,36 @@ GameWindow::GameWindow(QWidget* parent) : QWidget(parent), m_selectedCardInHand(
 GameWindow::~GameWindow() {}
 
 void GameWindow::setupUI() {
-    this->setMinimumSize(minWindowWidth, minWindowHeight);
+    this->setMinimumSize(m_minWinWidth, m_minWinHeight);
 
     QHBoxLayout* layoutGlobal = new QHBoxLayout(this);
-    layoutGlobal->setContentsMargins(10, 10, 10, 10);
-    layoutGlobal->setSpacing(15);
+    layoutGlobal->setContentsMargins(m_layoutPadding, m_layoutPadding, m_layoutPadding, m_layoutPadding);
+    layoutGlobal->setSpacing(m_tableSpacing);
 
     QWidget* gameAreaContainer = new QWidget(this);
     QVBoxLayout* gameLayout = new QVBoxLayout(gameAreaContainer);
     gameLayout->setContentsMargins(0, 0, 0, 0);
 
     setupTopBar(gameLayout);
-    gameLayout->addStretch(stretchSmall);
+    gameLayout->addStretch(m_stretchSmall);
     setupTableArea(gameLayout);
-    gameLayout->addStretch(stretchSmall);
+    gameLayout->addStretch(m_stretchSmall);
     setupHandArea(gameLayout);
 
-    layoutGlobal->addWidget(gameAreaContainer, 3); 
-
+    layoutGlobal->addWidget(gameAreaContainer, m_gameAreaStretch);
     setupChatUI(layoutGlobal);
 }
 
 void GameWindow::setupChatUI(QHBoxLayout* mainLayout) {
     QWidget* chatContainer = new QWidget(this);
-    chatContainer->setObjectName("chatContainer"); 
-    chatContainer->setFixedWidth(280);
+    chatContainer->setObjectName("chatContainer");
+    chatContainer->setFixedWidth(m_chatWidth);
 
     QVBoxLayout* chatLayout = new QVBoxLayout(chatContainer);
-    chatLayout->setContentsMargins(10, 10, 10, 10);
+    chatLayout->setContentsMargins(m_layoutPadding / 2, m_layoutPadding / 2, m_layoutPadding / 2, m_layoutPadding / 2);
 
     QLabel* chatTitle = new QLabel("GAME CHAT", this);
-    chatTitle->setObjectName("chatTitle"); 
+    chatTitle->setObjectName("chatTitle");
     chatLayout->addWidget(chatTitle);
 
     m_chatDisplay = new QTextEdit(this);
@@ -48,14 +47,14 @@ void GameWindow::setupChatUI(QHBoxLayout* mainLayout) {
     chatLayout->addWidget(m_chatDisplay);
 
     QHBoxLayout* inputLayout = new QHBoxLayout();
-    inputLayout->setSpacing(8);
+    inputLayout->setSpacing(m_inputSpacing);
 
     m_chatInput = new QLineEdit(this);
     m_chatInput->setObjectName("chatInput");
     m_chatInput->setPlaceholderText("Type a message...");
 
     QPushButton* sendBtn = new QPushButton("Send", this);
-    sendBtn->setObjectName("sendBtn"); 
+    sendBtn->setObjectName("sendBtn");
 
     inputLayout->addWidget(m_chatInput);
     inputLayout->addWidget(sendBtn);
@@ -64,8 +63,9 @@ void GameWindow::setupChatUI(QHBoxLayout* mainLayout) {
     connect(sendBtn, &QPushButton::clicked, this, &GameWindow::onSendChatClicked);
     connect(m_chatInput, &QLineEdit::returnPressed, this, &GameWindow::onSendChatClicked);
 
-    mainLayout->addWidget(chatContainer, 1);
+    mainLayout->addWidget(chatContainer, m_stretchSmall);
 }
+
 void GameWindow::onSendChatClicked() {
     QString text = m_chatInput->text().trimmed();
     if (!text.isEmpty()) {
@@ -76,17 +76,15 @@ void GameWindow::onSendChatClicked() {
 
 void GameWindow::appendChatMessage(int senderId, const QString& text) {
     QString timeStr = QDateTime::currentDateTime().toString("HH:mm");
+    QString color = m_colorUser;
+    QString displayName = m_prefixUser + QString::number(senderId);
 
-    QString color = "#4dabf7";
-    QString displayName = "User " + QString::number(senderId);
-
-    if (senderId == -1) {
-        color = "#888888";
-        displayName = "System";
+    if (senderId == m_systemId) {
+        color = m_colorSystem;
+        displayName = m_nameSystem;
     }
 
     m_chatDisplay->append(CHAT_FORMAT.arg(timeStr, color, displayName, text));
-
     m_chatDisplay->verticalScrollBar()->setValue(m_chatDisplay->verticalScrollBar()->maximum());
 }
 
@@ -96,7 +94,7 @@ void GameWindow::setupTopBar(QVBoxLayout* mainLayout) {
     m_statusLabel->setObjectName("statusLabel");
 
     m_endTurnButton = new QPushButton("End Turn", this);
-    m_endTurnButton->setStyleSheet(endTurnStyle);
+    m_endTurnButton->setObjectName("endTurnButton");
     connect(m_endTurnButton, &QPushButton::clicked, this, &GameWindow::onEndTurnClicked);
 
     topBar->addWidget(m_statusLabel);
@@ -109,27 +107,27 @@ void GameWindow::setupTableArea(QVBoxLayout* mainLayout) {
     QWidget* tableArea = new QWidget(this);
     QHBoxLayout* tableLayout = new QHBoxLayout(tableArea);
 
-    configurePile(m_pileAsc1, CustomCard::ASCENDING, initialAscValue, stackIndexAsc1);
-    configurePile(m_pileAsc2, CustomCard::ASCENDING, initialAscValue, stackIndexAsc2);
+    configurePile(m_pileAsc1, CustomCard::ASCENDING, m_initAscVal, m_stackIdxAsc1);
+    configurePile(m_pileAsc2, CustomCard::ASCENDING, m_initAscVal, m_stackIdxAsc2);
 
     m_drawPile = new CustomCard(this);
     m_drawPile->setFaceDown(true);
     m_drawPile->setType(CustomCard::DRAW_PILE);
 
-    configurePile(m_pileDesc1, CustomCard::DESCENDING, initialDescValue, stackIndexDesc1);
-    configurePile(m_pileDesc2, CustomCard::DESCENDING, initialDescValue, stackIndexDesc2);
+    configurePile(m_pileDesc1, CustomCard::DESCENDING, m_initDescVal, m_stackIdxDesc1);
+    configurePile(m_pileDesc2, CustomCard::DESCENDING, m_initDescVal, m_stackIdxDesc2);
 
-    tableLayout->addStretch(stretchLarge);
+    tableLayout->addStretch(m_stretchLarge);
     tableLayout->addWidget(m_pileAsc1);
-    tableLayout->addSpacing(tableSpacing);
+    tableLayout->addSpacing(m_tableSpacing);
     tableLayout->addWidget(m_pileAsc2);
-    tableLayout->addStretch(stretchSmall);
+    tableLayout->addStretch(m_stretchSmall);
     tableLayout->addWidget(m_drawPile);
-    tableLayout->addStretch(stretchSmall);
+    tableLayout->addStretch(m_stretchSmall);
     tableLayout->addWidget(m_pileDesc1);
-    tableLayout->addSpacing(tableSpacing);
+    tableLayout->addSpacing(m_tableSpacing);
     tableLayout->addWidget(m_pileDesc2);
-    tableLayout->addStretch(stretchLarge);
+    tableLayout->addStretch(m_stretchLarge);
 
     mainLayout->addWidget(tableArea);
 }
@@ -145,7 +143,7 @@ void GameWindow::configurePile(CustomCard*& pile, CustomCard::CardType type, int
 void GameWindow::setupHandArea(QVBoxLayout* mainLayout) {
     m_handContainer = new QWidget(this);
     m_handContainer->setObjectName("handContainer");
-    m_handContainer->setFixedHeight(handAreaHeight);
+    m_handContainer->setFixedHeight(m_handHeight);
 
     m_handLayout = new QHBoxLayout(m_handContainer);
     m_handLayout->setAlignment(Qt::AlignCenter);
@@ -153,7 +151,7 @@ void GameWindow::setupHandArea(QVBoxLayout* mainLayout) {
 }
 
 void GameWindow::updateTable(const std::vector<int>& pilesTopCards) {
-    if (pilesTopCards.size() >= 4) {
+    if (pilesTopCards.size() >= static_cast<size_t>(m_pilesCount)) {
         m_pileAsc1->setValue(pilesTopCards[0]);
         m_pileAsc2->setValue(pilesTopCards[1]);
         m_pileDesc1->setValue(pilesTopCards[2]);
@@ -204,7 +202,7 @@ void GameWindow::updateHand(const std::vector<int>& cardValues) {
 }
 
 void GameWindow::onEndTurnClicked() {
-    emit playerMoved(0, 0);
+    emit playerMoved(m_endTurnVal, m_endTurnVal);
 }
 
 void GameWindow::setStatusMessage(const QString& message) {

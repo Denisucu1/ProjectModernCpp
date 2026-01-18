@@ -9,10 +9,10 @@ class ProfileWidget : public QWidget {
     Q_OBJECT
 public:
     explicit ProfileWidget(const QString& username, QWidget* parent = nullptr);
-    void UpdateStats(const QJsonObject& data); 
+    void updateStats(const QJsonObject& data); 
 
 private:
-    void SetupLayout(const QString& username);
+    void setupLayout(const QString& username);
 
     QLabel* m_gamesPlayedLabel;
     QLabel* m_gamesWonLabel;

@@ -26,35 +26,35 @@ public:
     ~MainMenu() override;
 
 private slots:
-    void OnPlayButtonClicked();
-    void OnExitButtonClicked();
-    void OnBackButtonClicked();
-    void OnModeBackButtonClicked();
-    void OnCancelJoinButtonClicked();
-    void OnCreateGameButtonClicked();
-    void OnJoinGameButtonClicked();
-    void OnConfirmJoinButtonClicked();
-    void OnStartGameButtonClicked();
-    void OnProfileButtonClicked();
-    void OnCloseLobbyButtonClicked();
+    void onPlayButtonClicked();
+    void onExitButtonClicked();
+    void onBackButtonClicked();
+    void onModeBackButtonClicked();
+    void onCancelJoinButtonClicked();
+    void onCreateGameButtonClicked();
+    void onJoinGameButtonClicked();
+    void onConfirmJoinButtonClicked();
+    void onStartGameButtonClicked();
+    void onProfileButtonClicked();
+    void onCloseLobbyButtonClicked();
 
-    void HandleRoomCreated(const QString& code);
-    void HandleRoomJoined(const QString& code);
-    void HandlePlayerListUpdate(const QJsonArray& players);
-    void HandleGameStateUpdate(const myproject::GameState& state);
-    void HandleGameOver(bool isVictory);
-    void HandleProfileData(const QJsonObject& data);
+    void handleRoomCreated(const QString& code);
+    void handleRoomJoined(const QString& code);
+    void handlePlayerListUpdate(const QJsonArray& players);
+    void handleGameStateUpdate(const myproject::GameState& state);
+    void handleGameOver(bool isVictory);
+    void handleProfileData(const QJsonObject& data);
 
 private:
-    void InitializeUi();
-    void ConnectUiSignals();
-    void SetupNavigationLayout();
-    void SetupMenuPages();
-    void SetupProfilePage();
-    void SetupLobbyPages();
-    void SetupNetwork();
+    void initializeUi();
+    void connectUiSignals();
+    void setupNavigationLayout();
+    void setupMenuPages();
+    void setupProfilePage();
+    void setupLobbyPages();
+    void setupNetwork();
 
-    void SwitchToPage(PageIndex page);
+    void switchToPage(PageIndex page);
 
     Ui::MainMenu* ui;
     QString m_username;
